@@ -28,14 +28,19 @@ describe("App discovery flow", () => {
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   });
 
-  it("shows a temporary signup placeholder from activity detail", async () => {
+});
+
+describe("App signup flow", () => {
+  it("confirms signup rules and opens itinerary", async () => {
     render(<App />);
 
     await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
     await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByLabelText("我愿意担任局长"));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
 
-    expect(screen.getByRole("heading", { name: "报名确认即将接入" })).toBeInTheDocument();
-    expect(screen.getByText("Task 5 会在这里接入完整报名面板。")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "活动行程" })).toBeInTheDocument();
+    expect(screen.getByText("已勾选愿意担任局长，系统会在活动前 24 小时内选择。")).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   });
 });

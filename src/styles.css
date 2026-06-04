@@ -213,11 +213,6 @@ button {
   margin-top: 28px;
 }
 
-.signup-placeholder {
-  border-top: 1px solid rgba(31, 41, 51, 0.1);
-  padding-top: 26px;
-}
-
 .info-panel {
   padding: 22px;
 }
@@ -311,5 +306,101 @@ button {
 
   .detail-columns {
     grid-template-columns: 1fr;
+  }
+}
+
+.flow-panel {
+  margin: 0 clamp(20px, 5vw, 72px) 64px;
+  max-width: 760px;
+  border-top: 1px solid rgba(31, 41, 51, 0.1);
+  padding-top: 26px;
+}
+
+.flow-panel h1 {
+  margin: 0 0 20px;
+  color: #16211f;
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.flow-panel > .ghost-button {
+  margin-bottom: 24px;
+}
+
+.rule-list,
+.status-grid {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.rule-list p,
+.status-grid p,
+.flow-panel > p:not(.eyebrow) {
+  margin: 0;
+  color: #54615f;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.rule-list p,
+.status-grid p {
+  border: 1px solid rgba(31, 41, 51, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 252, 247, 0.72);
+  padding: 14px 16px;
+}
+
+.status-grid p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2f4d4b;
+  font-weight: 700;
+}
+
+.status-grid svg {
+  flex: 0 0 auto;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 10px;
+  color: #16211f;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.check-row input {
+  width: 18px;
+  height: 18px;
+  accent-color: #8f2f25;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.button-row .primary-button,
+.button-row .ghost-button {
+  width: auto;
+  margin-top: 0;
+}
+
+@media (max-width: 760px) {
+  .flow-panel h1 {
+    font-size: 34px;
+  }
+
+  .button-row .primary-button,
+  .button-row .ghost-button {
+    width: 100%;
   }
 }

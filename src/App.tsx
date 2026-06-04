@@ -1,14 +1,16 @@
-import { ArrowLeft } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ActivityDetail } from "./components/ActivityDetail";
 import { ActivityHome } from "./components/ActivityHome";
+import { Itinerary } from "./components/Itinerary";
+import { SignupPanel } from "./components/SignupPanel";
 import { activities, users } from "./domain/mockData";
 
-type Screen = "home" | "detail" | "signup";
+type Screen = "home" | "detail" | "signup" | "itinerary";
 
 export default function App() {
   const [selectedActivityId, setSelectedActivityId] = useState(activities[0].id);
   const [screen, setScreen] = useState<Screen>("home");
+  const [willingToBeJuZhang, setWillingToBeJuZhang] = useState(false);
 
   const selectedActivity = activities.find((activity) => activity.id === selectedActivityId) ?? activities[0];
   const participants = useMemo(
@@ -36,6 +38,7 @@ export default function App() {
           activities={activities}
           onSelectActivity={(activityId) => {
             setSelectedActivityId(activityId);
+            setWillingToBeJuZhang(false);
             setScreen("detail");
           }}
         />
@@ -51,16 +54,22 @@ export default function App() {
       )}
 
       {screen === "signup" && (
-        <section className="detail-layout">
-          <button className="ghost-button" type="button" onClick={() => setScreen("detail")}>
-            <ArrowLeft size={18} /> 返回活动详情
-          </button>
-          <div className="detail-main signup-placeholder">
-            <p className="eyebrow">{selectedActivity.title}</p>
-            <h1>报名确认即将接入</h1>
-            <p className="hero-copy">Task 5 会在这里接入完整报名面板。</p>
-          </div>
-        </section>
+        <SignupPanel
+          activity={selectedActivity}
+          willingToBeJuZhang={willingToBeJuZhang}
+          onToggleJuZhang={setWillingToBeJuZhang}
+          onBack={() => setScreen("detail")}
+          onConfirm={() => setScreen("itinerary")}
+        />
+      )}
+
+      {screen === "itinerary" && (
+        <Itinerary
+          activity={selectedActivity}
+          willingToBeJuZhang={willingToBeJuZhang}
+          onOpenJuZhang={() => setScreen("itinerary")}
+          onFinishActivity={() => setScreen("itinerary")}
+        />
       )}
     </main>
   );
