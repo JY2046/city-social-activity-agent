@@ -1,6 +1,15 @@
 import { Clock, MapPin, Users } from "lucide-react";
 import type { Activity } from "../domain/types";
 
+const formationStatusLabels: Record<Activity["formationStatus"], string> = {
+  forming: "组局中",
+  nearly_full: "即将满员",
+  formed: "已成局",
+  ongoing: "进行中",
+  ended: "已结束",
+  cancelled: "已取消",
+};
+
 interface ItineraryProps {
   activity: Activity;
   willingToBeJuZhang: boolean;
@@ -32,7 +41,8 @@ export function Itinerary({
           <MapPin size={18} /> {activity.area} · {activity.venue}
         </p>
         <p>
-          <Users size={18} /> {activity.currentParticipantCount}/{activity.capacity} 人 · 已成局
+          <Users size={18} /> {activity.currentParticipantCount}/{activity.capacity} 人 ·{" "}
+          {formationStatusLabels[activity.formationStatus]}
         </p>
       </div>
       <p className="ai-note">AI 提醒：活动前 30 分钟确认到场；迟到可以在这里同步状态，不需要拉群。</p>

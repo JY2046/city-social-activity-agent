@@ -5,7 +5,7 @@ import { Itinerary } from "./components/Itinerary";
 import { SignupPanel } from "./components/SignupPanel";
 import { activities, users } from "./domain/mockData";
 
-type Screen = "home" | "detail" | "signup" | "itinerary";
+type Screen = "home" | "detail" | "signup" | "itinerary" | "juZhangPending" | "feedbackPending";
 
 export default function App() {
   const [selectedActivityId, setSelectedActivityId] = useState(activities[0].id);
@@ -59,7 +59,7 @@ export default function App() {
           willingToBeJuZhang={willingToBeJuZhang}
           onToggleJuZhang={setWillingToBeJuZhang}
           onBack={() => setScreen("detail")}
-          onConfirm={() => setScreen("itinerary")}
+          onConfirmSignup={() => setScreen("itinerary")}
         />
       )}
 
@@ -67,9 +67,31 @@ export default function App() {
         <Itinerary
           activity={selectedActivity}
           willingToBeJuZhang={willingToBeJuZhang}
-          onOpenJuZhang={() => setScreen("itinerary")}
-          onFinishActivity={() => setScreen("itinerary")}
+          onOpenJuZhang={() => setScreen("juZhangPending")}
+          onFinishActivity={() => setScreen("feedbackPending")}
         />
+      )}
+
+      {screen === "juZhangPending" && (
+        <section className="flow-panel">
+          <button className="ghost-button" type="button" onClick={() => setScreen("itinerary")}>
+            返回行程
+          </button>
+          <p className="eyebrow">局长任务</p>
+          <h1>局长任务即将接入</h1>
+          <p>Task 6 会在这里接入局长任务卡。</p>
+        </section>
+      )}
+
+      {screen === "feedbackPending" && (
+        <section className="flow-panel">
+          <button className="ghost-button" type="button" onClick={() => setScreen("itinerary")}>
+            返回行程
+          </button>
+          <p className="eyebrow">活动反馈</p>
+          <h1>活动反馈即将接入</h1>
+          <p>Task 7 会在这里接入反馈和互选流程。</p>
+        </section>
       )}
     </main>
   );

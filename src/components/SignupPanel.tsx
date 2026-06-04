@@ -5,7 +5,7 @@ interface SignupPanelProps {
   willingToBeJuZhang: boolean;
   onToggleJuZhang: (value: boolean) => void;
   onBack: () => void;
-  onConfirm: () => void;
+  onConfirmSignup: () => void;
 }
 
 export function SignupPanel({
@@ -13,7 +13,7 @@ export function SignupPanel({
   willingToBeJuZhang,
   onToggleJuZhang,
   onBack,
-  onConfirm,
+  onConfirmSignup,
 }: SignupPanelProps) {
   return (
     <section className="flow-panel">
@@ -24,8 +24,8 @@ export function SignupPanel({
       <h1>{activity.title}</h1>
       <div className="rule-list">
         <p>{activity.budgetType === "free" ? "本活动费用为 0，不需要 AA 结算。" : activity.aaRule}</p>
-        <p>普通参与者活动开始前 12 小时外可自由退出。</p>
-        <p>活动前不开放私信和联系方式，活动后双方互选才开放联系。</p>
+        <p>{activity.cancellationRule}</p>
+        <p>{activity.privacyRule}</p>
       </div>
       <label className="check-row">
         <input
@@ -36,7 +36,7 @@ export function SignupPanel({
         我愿意担任局长
       </label>
       <p className="muted">局长可以拒绝，拒绝不影响继续参加活动；接受后会收到 AI 任务卡。</p>
-      <button className="primary-button" type="button" onClick={onConfirm}>
+      <button className="primary-button" type="button" onClick={onConfirmSignup}>
         确认报名
       </button>
     </section>
