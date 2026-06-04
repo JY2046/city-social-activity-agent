@@ -10,16 +10,15 @@ interface ActivityDetailProps {
 }
 
 export function ActivityDetail({ activity, participants, onBack, onSignup }: ActivityDetailProps) {
-  const previews = participants.map(getParticipantPreview);
-
   return (
     <section className="detail-layout">
       <button className="ghost-button" type="button" onClick={onBack}>
         <ArrowLeft size={18} /> 返回活动
       </button>
       <div className="detail-main">
-        <p className="eyebrow">
-          {activity.area} · {activity.budgetType === "free" ? "免费活动" : `人均约 ${activity.estimatedCost} 元`}
+        <p className="eyebrow">{activity.area} · {activity.venue}</p>
+        <p className="detail-meta">
+          {activity.budgetType === "free" ? "免费活动" : `人均约 ${activity.estimatedCost} 元`}
         </p>
         <h1>{activity.title}</h1>
         <p className="hero-copy">{activity.aiRecommendationReason}</p>
@@ -39,24 +38,28 @@ export function ActivityDetail({ activity, participants, onBack, onSignup }: Act
             <ShieldCheck size={20} /> 参与者预览
           </h2>
           <div className="participant-list">
-            {previews.map((participant) => (
-              <article className="participant-row" key={participant.nickname}>
-                <div className="avatar">{participant.avatar}</div>
-                <div>
-                  <h3>{participant.nickname}</h3>
-                  <p>{participant.bio}</p>
-                  <p className="tag-line">
-                    <span>{participant.reputationLevel}</span>
-                    <span>{participant.attendedEventLabel}</span>
-                  </p>
-                  <p className="tag-line">
-                    {participant.interests.map((interest) => (
-                      <span key={interest}>{interest}</span>
-                    ))}
-                  </p>
-                </div>
-              </article>
-            ))}
+            {participants.map((user) => {
+              const preview = getParticipantPreview(user);
+
+              return (
+                <article className="participant-row" key={user.id}>
+                  <div className="avatar">{preview.avatar}</div>
+                  <div>
+                    <h3>{preview.nickname}</h3>
+                    <p>{preview.bio}</p>
+                    <p className="tag-line">
+                      <span>{preview.reputationLevel}</span>
+                      <span>{preview.attendedEventLabel}</span>
+                    </p>
+                    <p className="tag-line">
+                      {preview.interests.map((interest) => (
+                        <span key={interest}>{interest}</span>
+                      ))}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
       </div>
