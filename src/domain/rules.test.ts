@@ -7,6 +7,7 @@ import {
   getVisibleJuZhangCandidates,
   isMutualContact,
 } from "./rules";
+import type { Registration, User } from "./types";
 
 describe("mock data", () => {
   it("contains paid and free activities for the MVP scenarios", () => {
@@ -141,6 +142,45 @@ describe("activity rules", () => {
 
     expect(candidates[0].id).toBe("u-qiao");
     expect(candidates.every((user) => user.canBeJuZhang)).toBe(true);
+  });
+
+  it("includes only active participant registrations for ju zhang candidates", () => {
+    const candidateUsers: User[] = [
+      { ...users[0], id: "u-confirmed", attendedEventCount: 5 },
+      { ...users[0], id: "u-arrived", attendedEventCount: 4 },
+      { ...users[0], id: "u-waitlisted", attendedEventCount: 30 },
+      { ...users[0], id: "u-cancelled", attendedEventCount: 40 },
+      { ...users[0], id: "u-no-show", attendedEventCount: 50 },
+    ];
+    const activityRegistrations: Registration[] = [
+      {
+        id: "r-confirmed",
+        userId: "u-confirmed",
+        activityId: "a-review",
+        status: "confirmed",
+        willingToBeJuZhang: true,
+      },
+      { id: "r-arrived", userId: "u-arrived", activityId: "a-review", status: "arrived", willingToBeJuZhang: true },
+      {
+        id: "r-waitlisted",
+        userId: "u-waitlisted",
+        activityId: "a-review",
+        status: "waitlisted",
+        willingToBeJuZhang: true,
+      },
+      {
+        id: "r-cancelled",
+        userId: "u-cancelled",
+        activityId: "a-review",
+        status: "cancelled",
+        willingToBeJuZhang: true,
+      },
+      { id: "r-no-show", userId: "u-no-show", activityId: "a-review", status: "noShow", willingToBeJuZhang: true },
+    ];
+
+    const candidates = getVisibleJuZhangCandidates(candidateUsers, activityRegistrations, "a-review");
+
+    expect(candidates.map((user) => user.id).sort()).toEqual(["u-arrived", "u-confirmed"]);
   });
 
   it("calculates paid settlement and hides money work for free activities", () => {

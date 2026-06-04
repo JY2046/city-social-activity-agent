@@ -18,6 +18,8 @@ export interface SettlementSummary {
   isFree: boolean;
 }
 
+const activeRegistrationStatuses = new Set<Registration["status"]>(["confirmed", "arrived"]);
+
 export function getParticipantPreview(user: User): ParticipantPreview {
   return {
     nickname: user.nickname,
@@ -39,7 +41,10 @@ export function canCancelWithoutPenalty(startsAt: Date, now: Date, role: Cancell
 export function getVisibleJuZhangCandidates(users: User[], registrations: Registration[], activityId: string): User[] {
   const registrationByUser = new Map(
     registrations
-      .filter((registration) => registration.activityId === activityId)
+      .filter(
+        (registration) =>
+          registration.activityId === activityId && activeRegistrationStatuses.has(registration.status),
+      )
       .map((registration) => [registration.userId, registration]),
   );
 
