@@ -82,7 +82,7 @@ export const activities: Activity[] = [
     estimatedCost: 58,
     capacity: 5,
     currentParticipantCount: 2,
-    formationStatus: "nearly_full",
+    formationStatus: "forming",
     aiRecommendationReason: "人数少、预算轻，适合第一次尝试陌生人轻社交。",
     aaRule: "各自点单，现场自行支付。",
     cancellationRule: "普通参与者 12 小时外可自由退出。",
@@ -134,6 +134,14 @@ export const registrations: Registration[] = [
   { id: "r-1", userId: "u-lin", activityId: "a-sushi", status: "confirmed", willingToBeJuZhang: true },
   { id: "r-2", userId: "u-chen", activityId: "a-sushi", status: "confirmed", willingToBeJuZhang: false },
   { id: "r-3", userId: "u-qiao", activityId: "a-sushi", status: "arrived", willingToBeJuZhang: true },
+  { id: "r-sushi-momo", userId: "u-momo", activityId: "a-sushi", status: "confirmed", willingToBeJuZhang: false },
+  { id: "r-coffee-chen", userId: "u-chen", activityId: "a-coffee", status: "confirmed", willingToBeJuZhang: false },
+  { id: "r-coffee-qiao", userId: "u-qiao", activityId: "a-coffee", status: "confirmed", willingToBeJuZhang: true },
+  { id: "r-bar-lin", userId: "u-lin", activityId: "a-bar", status: "confirmed", willingToBeJuZhang: true },
+  { id: "r-bar-momo", userId: "u-momo", activityId: "a-bar", status: "confirmed", willingToBeJuZhang: false },
+  { id: "r-walk-lin", userId: "u-lin", activityId: "a-walk", status: "confirmed", willingToBeJuZhang: true },
+  { id: "r-walk-chen", userId: "u-chen", activityId: "a-walk", status: "confirmed", willingToBeJuZhang: false },
+  { id: "r-walk-qiao", userId: "u-qiao", activityId: "a-walk", status: "confirmed", willingToBeJuZhang: true },
 ];
 
 export const juZhangAssignments: JuZhangAssignment[] = [

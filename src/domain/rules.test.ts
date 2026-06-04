@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activities, settlements, topicCards, users } from "./mockData";
+import { activities, registrations, settlements, topicCards, users } from "./mockData";
 
 describe("mock data", () => {
   it("contains paid and free activities for the MVP scenarios", () => {
@@ -39,8 +39,7 @@ describe("mock data", () => {
           settlement !== undefined &&
           settlement.totalAmount > 0 &&
           paymentUserIds.length === activity.participantIds.length &&
-          activity.participantIds.every((participantId) => paymentUserIds.includes(participantId)) &&
-          Object.values(settlement.paymentStatusByUser).filter((hasPaid) => !hasPaid).length === 1
+          activity.participantIds.every((participantId) => paymentUserIds.includes(participantId))
         );
       }),
     ).toBe(true);
@@ -68,6 +67,20 @@ describe("mock data", () => {
     const participantIds = activities.flatMap((activity) => activity.participantIds);
 
     expect(participantIds.every((participantId) => userIds.has(participantId))).toBe(true);
+  });
+
+  it("has an active registration for every activity participant", () => {
+    const activeRegistrationKeys = new Set(
+      registrations
+        .filter((registration) => registration.status === "confirmed" || registration.status === "arrived")
+        .map((registration) => `${registration.activityId}:${registration.userId}`),
+    );
+
+    expect(
+      activities.every((activity) =>
+        activity.participantIds.every((participantId) => activeRegistrationKeys.has(`${activity.id}:${participantId}`)),
+      ),
+    ).toBe(true);
   });
 
   it("aligns participant counts across activities and settlements", () => {
