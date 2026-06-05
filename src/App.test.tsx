@@ -83,7 +83,7 @@ describe("App signup flow", () => {
     expect(screen.getByText("2/5 人 · 组局中")).toBeInTheDocument();
   });
 
-  it("opens the feedback bridge placeholder", async () => {
+  it("opens post-activity feedback from itinerary", async () => {
     render(<App />);
 
     await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
@@ -91,7 +91,9 @@ describe("App signup flow", () => {
     await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
     await userEvent.click(screen.getByRole("button", { name: "模拟活动结束" }));
 
-    expect(screen.getByRole("heading", { name: "活动反馈即将接入" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "活动反馈与互选" })).toBeInTheDocument();
+    expect(screen.getByText("双方都选择后才开放联系方式。")).toBeInTheDocument();
+    expect(screen.getByLabelText("异常反馈")).toBeInTheDocument();
   });
 });
 
@@ -133,7 +135,7 @@ describe("Ju Zhang flow", () => {
     await userEvent.click(screen.getByRole("button", { name: "接受局长" }));
     await userEvent.click(screen.getByRole("button", { name: "完成局长任务" }));
 
-    expect(screen.getByRole("heading", { name: "活动反馈即将接入" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "活动反馈与互选" })).toBeInTheDocument();
   });
 
   it("shows no-payment settlement copy for free activities", async () => {
@@ -147,5 +149,22 @@ describe("Ju Zhang flow", () => {
 
     expect(screen.getByText("本活动无费用")).toBeInTheDocument();
     expect(screen.getByText("本活动无需确认支付状态。")).toBeInTheDocument();
+  });
+});
+
+describe("feedback and mutual contact flow", () => {
+  it("returns home after post-activity feedback is completed", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+    await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
+    await userEvent.click(screen.getByRole("button", { name: "模拟活动结束" }));
+    await userEvent.click(screen.getByLabelText("愿意和 林夏 互相开放联系"));
+    await userEvent.type(screen.getByLabelText("异常反馈"), "体验顺畅，没有异常。");
+    await userEvent.click(screen.getByRole("button", { name: "完成反馈" }));
+
+    expect(screen.getByRole("heading", { name: "先活动，后关系" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "查看 周五下班日料小局" })).toBeInTheDocument();
   });
 });

@@ -442,6 +442,41 @@ button {
   width: 100%;
 }
 
+.feedback-grid {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.participant-list.compact {
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.check-row.compact {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.feedback-input {
+  width: 100%;
+  min-height: 116px;
+  margin-top: 10px;
+  resize: vertical;
+  border: 1px solid rgba(31, 41, 51, 0.18);
+  border-radius: 8px;
+  background: #fffaf3;
+  color: #1f2933;
+  padding: 12px;
+  line-height: 1.5;
+}
+
+.feedback-input:focus-visible {
+  outline: 3px solid #16211f;
+  outline-offset: 3px;
+}
+
 @media (max-width: 760px) {
   .flow-panel h1 {
     font-size: 34px;

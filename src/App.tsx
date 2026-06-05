@@ -1,12 +1,13 @@
 import { useMemo, useState } from "react";
 import { ActivityDetail } from "./components/ActivityDetail";
 import { ActivityHome } from "./components/ActivityHome";
+import { FeedbackPanel } from "./components/FeedbackPanel";
 import { Itinerary } from "./components/Itinerary";
 import { JuZhangPanel } from "./components/JuZhangPanel";
 import { SignupPanel } from "./components/SignupPanel";
 import { activities, settlements, topicCards, users } from "./domain/mockData";
 
-type Screen = "home" | "detail" | "signup" | "itinerary" | "juZhang" | "feedbackPending";
+type Screen = "home" | "detail" | "signup" | "itinerary" | "juZhang" | "feedback";
 
 export default function App() {
   const [selectedActivityId, setSelectedActivityId] = useState(activities[0].id);
@@ -81,7 +82,7 @@ export default function App() {
           activity={selectedActivity}
           willingToBeJuZhang={willingToBeJuZhang}
           onOpenJuZhang={() => setScreen("juZhang")}
-          onFinishActivity={() => setScreen("feedbackPending")}
+          onFinishActivity={() => setScreen("feedback")}
         />
       )}
 
@@ -93,19 +94,18 @@ export default function App() {
           accepted={juZhangAccepted}
           onAccept={() => setJuZhangAccepted(true)}
           onDecline={() => setScreen("itinerary")}
-          onFinish={() => setScreen("feedbackPending")}
+          onFinish={() => setScreen("feedback")}
         />
       )}
 
-      {screen === "feedbackPending" && (
-        <section className="flow-panel">
-          <button className="ghost-button" type="button" onClick={() => setScreen("itinerary")}>
-            返回行程
-          </button>
-          <p className="eyebrow">活动反馈</p>
-          <h1>活动反馈即将接入</h1>
-          <p>Task 7 会在这里接入反馈和互选流程。</p>
-        </section>
+      {screen === "feedback" && (
+        <FeedbackPanel
+          participants={participants}
+          onBackToHome={() => {
+            setJuZhangAccepted(false);
+            setScreen("home");
+          }}
+        />
       )}
     </main>
   );
