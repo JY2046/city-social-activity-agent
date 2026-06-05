@@ -1,6 +1,7 @@
 import { CheckCircle2, MessageCircle, ReceiptText, UserRoundCheck } from "lucide-react";
 import { getSettlementSummary } from "../domain/rules";
 import type { Activity, Settlement, TopicCard } from "../domain/types";
+import { activityVisuals, defaultActivityVisual } from "./activityVisuals";
 
 interface JuZhangPanelProps {
   activity: Activity;
@@ -22,11 +23,33 @@ export function JuZhangPanel({
   onFinish,
 }: JuZhangPanelProps) {
   const settlementSummary = getSettlementSummary(settlement);
+  const visual = activityVisuals[activity.id] ?? defaultActivityVisual;
 
   return (
     <section className="flow-panel ju-zhang-flow" id="ju-zhang">
       <p className="eyebrow">局长任务</p>
       <h1>局长不是组织者，只是本局的小帮手</h1>
+      <div
+        className="ju-context-card"
+        style={{
+          backgroundImage: `linear-gradient(90deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.28)), url(${visual.imageUrl})`,
+        }}
+      >
+        <p>{activity.title}</p>
+        <span>
+          {activity.area} · {activity.venue}
+        </span>
+        <span>
+          {new Date(activity.startsAt).toLocaleString("zh-CN", {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+          {" · "}
+          {activity.currentParticipantCount}/{activity.capacity} 人
+        </span>
+      </div>
       {!accepted && (
         <div className="button-row">
           <button className="primary-button" type="button" onClick={onAccept}>
