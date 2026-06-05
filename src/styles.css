@@ -203,8 +203,25 @@ p.hero-title {
   position: relative;
   min-height: 166px;
   overflow: hidden;
+  background-color: #d9b18a;
   background-position: center;
   background-size: cover;
+}
+
+.tone-warm .activity-image {
+  background-color: #c88f69;
+}
+
+.tone-fresh .activity-image {
+  background-color: #b7d5bf;
+}
+
+.tone-night .activity-image {
+  background-color: #1d2424;
+}
+
+.tone-green .activity-image {
+  background-color: #adc8a2;
 }
 
 .activity-card.featured .activity-image {
