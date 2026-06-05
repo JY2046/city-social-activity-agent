@@ -24,7 +24,7 @@ export function JuZhangPanel({
   const settlementSummary = getSettlementSummary(settlement);
 
   return (
-    <section className="flow-panel">
+    <section className="flow-panel ju-zhang-flow" id="ju-zhang">
       <p className="eyebrow">局长任务</p>
       <h1>局长不是组织者，只是本局的小帮手</h1>
       {!accepted && (

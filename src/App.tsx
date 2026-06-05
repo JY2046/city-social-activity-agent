@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { CalendarCheck2, Compass, Crown, UserRound } from "lucide-react";
 import { ActivityDetail } from "./components/ActivityDetail";
 import { ActivityHome } from "./components/ActivityHome";
 import { FeedbackPanel } from "./components/FeedbackPanel";
@@ -32,8 +33,22 @@ export default function App() {
   );
   const isHome = screen === "home";
 
+  useEffect(() => {
+    window.scrollTo({ left: 0, top: 0 });
+  }, [screen, selectedActivityId]);
+
   return (
     <main className="app-shell">
+      <header className="app-topbar">
+        <div>
+          <p className="app-location">上海 · 今日推荐</p>
+          <p className="app-date">6月5日 周五</p>
+        </div>
+        <div className="profile-badge" aria-label="我的">
+          L
+        </div>
+      </header>
+
       <section className="hero-band">
         <p className="eyebrow">City Social Activity Agent</p>
         {isHome ? (
@@ -107,6 +122,21 @@ export default function App() {
           }}
         />
       )}
+
+      <nav className="app-tabbar" aria-label="主要导航">
+        <a href="#activity-feed" aria-current={screen === "home" ? "page" : undefined}>
+          <Compass size={20} /> 发现
+        </a>
+        <a href="#itinerary" aria-current={screen === "itinerary" ? "page" : undefined}>
+          <CalendarCheck2 size={20} /> 行程
+        </a>
+        <a href="#ju-zhang" aria-current={screen === "juZhang" ? "page" : undefined}>
+          <Crown size={20} /> 局长
+        </a>
+        <a href="#profile">
+          <UserRound size={20} /> 我的
+        </a>
+      </nav>
     </main>
   );
 }

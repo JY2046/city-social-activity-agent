@@ -24,7 +24,7 @@ export function Itinerary({
   onFinishActivity,
 }: ItineraryProps) {
   return (
-    <section className="flow-panel">
+    <section className="flow-panel" id="itinerary">
       <p className="eyebrow">报名成功</p>
       <h1>活动行程</h1>
       <div className="status-grid">

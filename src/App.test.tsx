@@ -1,14 +1,28 @@
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App";
+
+beforeEach(() => {
+  vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+});
 
 afterEach(() => {
   cleanup();
+  vi.restoreAllMocks();
 });
 
 describe("App discovery flow", () => {
+  it("renders the mobile app navigation and product cues", () => {
+    render(<App />);
+
+    expect(screen.getByLabelText("主要导航")).toBeInTheDocument();
+    expect(screen.getByText("活动前不开放")).toBeInTheDocument();
+    expect(screen.getByText("活动后互选")).toBeInTheDocument();
+    expect(screen.getByText("局长")).toBeInTheDocument();
+  });
+
   it("opens an activity detail page from the feed", async () => {
     render(<App />);
 
@@ -16,6 +30,16 @@ describe("App discovery flow", () => {
 
     expect(screen.getByRole("heading", { name: "周五下班日料小局" })).toBeInTheDocument();
     expect(screen.getByText("活动前不开放私信和联系方式，活动后双方互选才开放联系。")).toBeInTheDocument();
+  });
+
+  it("returns to the top when opening a new screen", async () => {
+    const scrollSpy = vi.mocked(window.scrollTo);
+    render(<App />);
+    scrollSpy.mockClear();
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+
+    await waitFor(() => expect(scrollSpy).toHaveBeenCalledWith({ left: 0, top: 0 }));
   });
 
   it("opens a non-default activity detail page from the feed", async () => {
