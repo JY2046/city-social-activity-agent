@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import type { CSSProperties } from "react";
 import { CalendarCheck2, Compass, Crown, UserRound } from "lucide-react";
 import { ActivityDetail } from "./components/ActivityDetail";
 import { ActivityHome } from "./components/ActivityHome";
@@ -39,7 +40,10 @@ export default function App() {
   }, [screen, selectedActivityId]);
 
   return (
-    <main className={`app-shell screen-${screen}`}>
+    <main
+      className={`app-shell screen-${screen}`}
+      style={{ "--city-image": `url(${cityImageUrl})` } as CSSProperties}
+    >
       <header className="app-topbar">
         <div>
           <p className="app-location">上海 · 今日推荐</p>
