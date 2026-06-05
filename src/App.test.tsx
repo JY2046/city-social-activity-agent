@@ -109,4 +109,43 @@ describe("Ju Zhang flow", () => {
     expect(screen.getByText("如果只能把上海一个下班后最放松的地方推荐给新朋友，你会选哪里？")).toBeInTheDocument();
     expect(screen.getByText("人均 168 元")).toBeInTheDocument();
   });
+
+  it("returns to itinerary when the selected user declines ju zhang", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+    await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
+    await userEvent.click(screen.getByRole("button", { name: "查看局长任务" }));
+    await userEvent.click(screen.getByRole("button", { name: "拒绝，不影响参加" }));
+
+    expect(screen.getByRole("heading", { name: "活动行程" })).toBeInTheDocument();
+    expect(screen.getByText("你没有勾选局长，仍可正常参加活动。")).toBeInTheDocument();
+  });
+
+  it("opens feedback after ju zhang tasks are completed", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+    await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
+    await userEvent.click(screen.getByRole("button", { name: "查看局长任务" }));
+    await userEvent.click(screen.getByRole("button", { name: "接受局长" }));
+    await userEvent.click(screen.getByRole("button", { name: "完成局长任务" }));
+
+    expect(screen.getByRole("heading", { name: "活动反馈即将接入" })).toBeInTheDocument();
+  });
+
+  it("shows no-payment settlement copy for free activities", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 免费城市散步局" }));
+    await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
+    await userEvent.click(screen.getByRole("button", { name: "查看局长任务" }));
+    await userEvent.click(screen.getByRole("button", { name: "接受局长" }));
+
+    expect(screen.getByText("本活动无费用")).toBeInTheDocument();
+    expect(screen.getByText("本活动无需确认支付状态。")).toBeInTheDocument();
+  });
 });
