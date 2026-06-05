@@ -2,17 +2,29 @@ import { useMemo, useState } from "react";
 import { ActivityDetail } from "./components/ActivityDetail";
 import { ActivityHome } from "./components/ActivityHome";
 import { Itinerary } from "./components/Itinerary";
+import { JuZhangPanel } from "./components/JuZhangPanel";
 import { SignupPanel } from "./components/SignupPanel";
-import { activities, users } from "./domain/mockData";
+import { activities, settlements, topicCards, users } from "./domain/mockData";
 
-type Screen = "home" | "detail" | "signup" | "itinerary" | "juZhangPending" | "feedbackPending";
+type Screen = "home" | "detail" | "signup" | "itinerary" | "juZhang" | "feedbackPending";
 
 export default function App() {
   const [selectedActivityId, setSelectedActivityId] = useState(activities[0].id);
   const [screen, setScreen] = useState<Screen>("home");
   const [willingToBeJuZhang, setWillingToBeJuZhang] = useState(false);
+  const [juZhangAccepted, setJuZhangAccepted] = useState(false);
 
   const selectedActivity = activities.find((activity) => activity.id === selectedActivityId) ?? activities[0];
+  const topicCard =
+    topicCards.find((candidateTopicCard) => candidateTopicCard.activityId === selectedActivity.id) ?? topicCards[0];
+  const settlement =
+    settlements.find((candidateSettlement) => candidateSettlement.activityId === selectedActivity.id) ?? {
+      activityId: selectedActivity.id,
+      type: selectedActivity.budgetType,
+      totalAmount: 0,
+      participantCount: selectedActivity.currentParticipantCount,
+      paymentStatusByUser: {},
+    };
   const participants = useMemo(
     () => users.filter((user) => selectedActivity.participantIds.includes(user.id)),
     [selectedActivity],
@@ -39,6 +51,7 @@ export default function App() {
           onSelectActivity={(activityId) => {
             setSelectedActivityId(activityId);
             setWillingToBeJuZhang(false);
+            setJuZhangAccepted(false);
             setScreen("detail");
           }}
         />
@@ -67,20 +80,21 @@ export default function App() {
         <Itinerary
           activity={selectedActivity}
           willingToBeJuZhang={willingToBeJuZhang}
-          onOpenJuZhang={() => setScreen("juZhangPending")}
+          onOpenJuZhang={() => setScreen("juZhang")}
           onFinishActivity={() => setScreen("feedbackPending")}
         />
       )}
 
-      {screen === "juZhangPending" && (
-        <section className="flow-panel">
-          <button className="ghost-button" type="button" onClick={() => setScreen("itinerary")}>
-            返回行程
-          </button>
-          <p className="eyebrow">局长任务</p>
-          <h1>局长任务即将接入</h1>
-          <p>Task 6 会在这里接入局长任务卡。</p>
-        </section>
+      {screen === "juZhang" && (
+        <JuZhangPanel
+          activity={selectedActivity}
+          topicCard={topicCard}
+          settlement={settlement}
+          accepted={juZhangAccepted}
+          onAccept={() => setJuZhangAccepted(true)}
+          onDecline={() => setScreen("itinerary")}
+          onFinish={() => setScreen("feedbackPending")}
+        />
       )}
 
       {screen === "feedbackPending" && (

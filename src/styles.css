@@ -394,6 +394,54 @@ button {
   margin-top: 0;
 }
 
+.task-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.task-card {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px;
+  align-items: flex-start;
+  min-height: 104px;
+  border: 1px solid rgba(31, 41, 51, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 252, 247, 0.76);
+  padding: 16px;
+}
+
+.task-card svg {
+  flex: 0 0 auto;
+  margin-top: 3px;
+  color: #2d5f5d;
+}
+
+.task-card h2 {
+  margin: 0 0 8px;
+  color: #16211f;
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+.task-card p {
+  overflow-wrap: anywhere;
+  margin: 0 0 6px;
+  color: #54615f;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.task-card p:last-child {
+  margin-bottom: 0;
+}
+
+.task-list > .primary-button {
+  width: 100%;
+}
+
 @media (max-width: 760px) {
   .flow-panel h1 {
     font-size: 34px;

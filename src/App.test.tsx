@@ -83,19 +83,30 @@ describe("App signup flow", () => {
     expect(screen.getByText("2/5 人 · 组局中")).toBeInTheDocument();
   });
 
-  it("opens itinerary bridge placeholders", async () => {
+  it("opens the feedback bridge placeholder", async () => {
     render(<App />);
 
     await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
     await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
     await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
-    await userEvent.click(screen.getByRole("button", { name: "查看局长任务" }));
-
-    expect(screen.getByRole("heading", { name: "局长任务即将接入" })).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole("button", { name: "返回行程" }));
     await userEvent.click(screen.getByRole("button", { name: "模拟活动结束" }));
 
     expect(screen.getByRole("heading", { name: "活动反馈即将接入" })).toBeInTheDocument();
+  });
+});
+
+describe("Ju Zhang flow", () => {
+  it("lets the selected user accept ju zhang tasks and see settlement", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+    await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByLabelText("我愿意担任局长"));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
+    await userEvent.click(screen.getByRole("button", { name: "查看局长任务" }));
+    await userEvent.click(screen.getByRole("button", { name: "接受局长" }));
+
+    expect(screen.getByText("如果只能把上海一个下班后最放松的地方推荐给新朋友，你会选哪里？")).toBeInTheDocument();
+    expect(screen.getByText("人均 168 元")).toBeInTheDocument();
   });
 });
