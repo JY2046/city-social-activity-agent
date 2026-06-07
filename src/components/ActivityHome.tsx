@@ -78,6 +78,7 @@ export function ActivityHome({ activities, onSelectActivity }: ActivityHomeProps
         {displayActivities.map((activity, index) => {
           const visual = activityVisuals[activity.id] ?? defaultActivityVisual;
           const isFeatured = index === 0;
+          const shouldShowAiNote = isFeatured || activity.type !== "walk";
           const startsAtText = new Date(activity.startsAt).toLocaleString("zh-CN", {
             month: "short",
             day: "numeric",
@@ -139,13 +140,15 @@ export function ActivityHome({ activities, onSelectActivity }: ActivityHomeProps
                       </p>
                     </>
                   )}
-                  <p className="ai-note">
-                    <Sparkles size={16} />
-                    <span>
-                      <strong>AI 推荐</strong>
-                      {activity.aiRecommendationReason}
-                    </span>
-                  </p>
+                  {shouldShowAiNote && (
+                    <p className="ai-note">
+                      <Sparkles size={16} />
+                      <span>
+                        <strong>AI 推荐</strong>
+                        {activity.aiRecommendationReason}
+                      </span>
+                    </p>
+                  )}
                   {!isFeatured && (
                     <button
                       className="primary-button"

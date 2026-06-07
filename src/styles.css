@@ -1190,6 +1190,22 @@ p.hero-title {
   right: 9px;
 }
 
+.screen-home .activity-card.tone-green:not(.featured) {
+  min-height: 94px;
+}
+
+.screen-home .activity-card.tone-green:not(.featured) .activity-image {
+  height: 78px;
+}
+
+.screen-home .activity-card.tone-green:not(.featured) .activity-body {
+  padding-right: 28px;
+}
+
+.screen-home .activity-card.tone-green:not(.featured) .primary-button {
+  bottom: 9px;
+}
+
 .screen-juZhang {
   max-width: 430px;
   padding-bottom: 0;
