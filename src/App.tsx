@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
-import { CalendarCheck2, Compass, Crown, UserRound } from "lucide-react";
+import { CalendarCheck2, ChevronDown, Compass, Crown, MapPin, UserRound } from "lucide-react";
 import { ActivityDetail } from "./components/ActivityDetail";
 import { ActivityHome } from "./components/ActivityHome";
 import { FeedbackPanel } from "./components/FeedbackPanel";
@@ -46,8 +46,10 @@ export default function App() {
     >
       <header className="app-topbar">
         <div>
-          <p className="app-location">上海 · 今日推荐</p>
-          <p className="app-date">6月5日 周五</p>
+          <p className="app-location">
+            <MapPin size={18} /> 上海 <ChevronDown size={14} />
+          </p>
+          <p className="app-date">6月5日 周四 18:40</p>
         </div>
         <div className="profile-badge" aria-label="我的">
           L

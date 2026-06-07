@@ -1,11 +1,16 @@
 import {
   CalendarDays,
   ChevronRight,
+  Coffee,
+  Crown,
+  Flame,
+  Footprints,
   Lock,
   MapPin,
   Search,
   SlidersHorizontal,
   Sparkles,
+  Utensils,
   UserRoundCheck,
 } from "lucide-react";
 import { Fragment } from "react";
@@ -22,6 +27,13 @@ const typeLabels: Record<Activity["type"], string> = {
   coffee: "咖啡",
   bar: "小酒馆",
   walk: "免费散步",
+};
+
+const typeIcons: Record<Activity["type"], typeof Utensils> = {
+  dinner: Utensils,
+  coffee: Coffee,
+  bar: Coffee,
+  walk: Footprints,
 };
 
 export function ActivityHome({ activities, onSelectActivity }: ActivityHomeProps) {
@@ -71,7 +83,7 @@ export function ActivityHome({ activities, onSelectActivity }: ActivityHomeProps
         <span className="filter-chip">咖啡</span>
         <span className="filter-chip">酒吧</span>
         <span className="filter-chip">免费活动</span>
-        <span className="filter-chip">全部</span>
+        <span className="filter-chip">全部 <ChevronRight size={13} /></span>
       </section>
 
       <section className="content-grid" id="activity-feed" aria-label="活动列表">
@@ -86,6 +98,8 @@ export function ActivityHome({ activities, onSelectActivity }: ActivityHomeProps
             minute: "2-digit",
           });
           const costText = activity.budgetType === "free" ? "免费" : `约 ${activity.estimatedCost} 元`;
+          const TypeIcon = typeIcons[activity.type];
+          const isFormed = activity.formationStatus === "formed";
 
           return (
             <Fragment key={activity.id}>
@@ -93,12 +107,12 @@ export function ActivityHome({ activities, onSelectActivity }: ActivityHomeProps
                 <div className="activity-image" style={{ backgroundImage: `url(${visual.imageUrl})` }}>
                   <div className="image-shade" />
                   <div className="card-topline">
-                    <span>{activity.formationStatus === "formed" ? "已成局" : "报名中"}</span>
+                    <span>{isFormed && isFeatured ? <Flame size={14} /> : null}{isFormed ? "已成局" : "报名中"}</span>
                     <span>{activity.currentParticipantCount}/{activity.capacity} 人</span>
                   </div>
                   {isFeatured && (
                     <div className="featured-overlay">
-                      <span className="type-mark">{typeLabels[activity.type]}</span>
+                      <span className="type-mark"><TypeIcon size={14} />{typeLabels[activity.type]}</span>
                       <h2>{activity.title}</h2>
                       <p className="muted">
                         <MapPin size={16} /> {activity.area} · {activity.venue}
@@ -124,7 +138,7 @@ export function ActivityHome({ activities, onSelectActivity }: ActivityHomeProps
                   {!isFeatured && (
                     <>
                       <div className="activity-title-row">
-                        <span className="type-mark">{typeLabels[activity.type]}</span>
+                        <span className="type-mark"><TypeIcon size={14} />{typeLabels[activity.type]}</span>
                         <span className="headcount-pill">
                           {activity.currentParticipantCount}/{activity.capacity} 人
                         </span>
@@ -147,6 +161,11 @@ export function ActivityHome({ activities, onSelectActivity }: ActivityHomeProps
                         <strong>AI 推荐</strong>
                         {activity.aiRecommendationReason}
                       </span>
+                      {isFeatured && (
+                        <span className="leader-pill">
+                          <Crown size={15} /> 局长：乔一
+                        </span>
+                      )}
                     </p>
                   )}
                   {!isFeatured && (

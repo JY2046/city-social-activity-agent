@@ -1,5 +1,6 @@
 import {
   Bell,
+  Bot,
   CalendarDays,
   CheckCircle2,
   ChevronRight,
@@ -9,6 +10,7 @@ import {
   MapPin,
   MessageCircle,
   MoreHorizontal,
+  RefreshCw,
   ReceiptText,
   Share2,
   Tag,
@@ -126,7 +128,8 @@ export function JuZhangPanel({
               <h2>
                 <Crown size={20} /> 局长任务
               </h2>
-              <span>系统会提供指引</span>
+              <small>系统会提供指引</small>
+              <span className="ju-title-action">查看全部 <ChevronRight size={15} /></span>
             </div>
             <div className="ju-task-grid">
               <article>
@@ -152,12 +155,18 @@ export function JuZhangPanel({
               <h2>
                 <MessageCircle size={20} /> AI 话题卡
               </h2>
-              <span>为你们精选</span>
+              <small>为你们精选</small>
+              <span className="ju-title-action">换一张 <RefreshCw size={14} /></span>
             </div>
             <div className="topic-visual-card">
-              <MessageCircle size={42} />
+              <Bot size={42} />
               <p>{topicCard.visibleText}</p>
               <small>这是一个开放式话题，分享体验或理由都很棒</small>
+              <div className="topic-dots" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </div>
             </div>
           </article>
 

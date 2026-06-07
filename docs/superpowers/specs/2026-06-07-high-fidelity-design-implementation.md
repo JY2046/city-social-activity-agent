@@ -4,7 +4,7 @@
 
 Make the prototype look like the selected design mockups, not merely inspired by them.
 
-The implementation must treat the two selected mockups as the visual source of truth:
+The user explicitly confirmed on 2026-06-07 that the two supplied screenshots are the intended home and JuZhang designs. The implementation must treat these two images as the visual source of truth, not as loose inspiration:
 
 - Home / discovery source: `/Users/lily/.codex/generated_images/019e91b4-95ca-7a81-b267-a2f0dfef33fc/ig_09f7a6d86af070f2016a2235d228648195b351c711a2aed3fc.png`
 - JuZhang source: `/Users/lily/.codex/generated_images/019e91b4-95ca-7a81-b267-a2f0dfef33fc/ig_09f7a6d86af070f2016a223670d3748195ad58821ba5dadf8f.png`
@@ -26,8 +26,8 @@ The implementation must treat the two selected mockups as the visual source of t
 
 Only two visual surfaces are in scope for this pass:
 
-1. Home discovery feed, based on design option 2.
-2. Accepted JuZhang task workspace, based on design option 3.
+1. Home discovery feed, matching the supplied light Shanghai skyline screenshot.
+2. Accepted JuZhang task workspace, matching the supplied dark restaurant/lantern screenshot.
 
 Other screens may keep the current product style unless they block navigation to these two surfaces.
 
@@ -198,9 +198,8 @@ Before handoff:
 
 The work is acceptable only when:
 
-- The first visual read of the home screen resembles design option 2.
-- The first visual read of the JuZhang screen resembles design option 3.
+- The first visual read of the home screen resembles the supplied light Shanghai skyline home screenshot.
+- The first visual read of the JuZhang screen resembles the supplied dark restaurant/lantern JuZhang screenshot.
 - Home no longer reads as a generic web dashboard.
 - JuZhang no longer reads as a light shell with dark task cards.
 - Tests and production build pass.
-
