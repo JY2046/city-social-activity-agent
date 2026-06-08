@@ -70,6 +70,20 @@ export const activities: Activity[] = [
     privacyRule: "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
     requiresSettlement: true,
     participantIds: ["u-lin", "u-chen", "u-momo", "u-qiao"],
+    gallery: [
+      { imagePath: "images/activity-sushi.jpg", alt: "若竹日料寿司拼盘", sourceLabel: "场所公开图" },
+      { imagePath: "images/venue-night.jpg", alt: "若竹日料夜间门店氛围", sourceLabel: "商家图" },
+      { imagePath: "images/activity-coffee.jpg", alt: "以往小局桌面交流氛围", sourceLabel: "用户活动图" },
+    ],
+    attractionSummary:
+      "若竹日料在静安寺附近，位置方便，下班后过去压力不大。店内空间偏安静，适合 4-6 人边吃边聊，不像热闹餐厅那样需要大声说话。寿司和烤物都适合分享，人均约 168 元，适合作为第一次陌生人饭局的低压力选择。",
+    venueProofs: ["大众点评静安日料热门榜前列", "小红书多人收藏", "适合 4-6 人安静聊天"],
+    experienceHighlights: [
+      { title: "招牌寿司拼盘", description: "适合多人分享，点单压力低，开场不容易冷场。" },
+      { title: "烤物和小食", description: "节奏慢，适合边吃边聊，也方便 AA 结算。" },
+      { title: "安静桌位", description: "比热闹大桌更适合第一次见面的轻社交。" },
+    ],
+    locationGuide: "静安寺商圈步行可达，建议活动开始前 10 分钟到店门口集合。",
   },
   {
     id: "a-coffee",
@@ -89,6 +103,20 @@ export const activities: Activity[] = [
     privacyRule: "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
     requiresSettlement: true,
     participantIds: ["u-chen", "u-qiao"],
+    gallery: [
+      { imagePath: "images/activity-coffee.jpg", alt: "梧桐边咖啡拿铁", sourceLabel: "场所公开图" },
+      { imagePath: "images/city-skyline.jpg", alt: "武康路周边城市街景", sourceLabel: "平台实拍" },
+      { imagePath: "images/activity-walk.jpg", alt: "以往周末轻社交活动照片", sourceLabel: "用户活动图" },
+    ],
+    attractionSummary:
+      "梧桐边咖啡靠近武康路，周末下午过去不赶时间，周边也适合活动后散步。这里预算轻、人数少，聊天声音不用太大，适合第一次尝试陌生人轻社交的人。人均约 58 元，点一杯咖啡就能自然坐下来聊。",
+    venueProofs: ["武康路周边热门咖啡馆", "适合第一次轻社交", "预算轻、停留感强"],
+    experienceHighlights: [
+      { title: "手冲咖啡", description: "适合从口味偏好自然展开话题。" },
+      { title: "窗边座位", description: "氛围松弛，适合两三人轮流聊天。" },
+      { title: "活动后散步", description: "周边街区适合继续轻松走一段。" },
+    ],
+    locationGuide: "武康路梧桐街区内，建议地铁到站后步行前往，活动后可顺路散步。",
   },
   {
     id: "a-bar",
@@ -108,6 +136,20 @@ export const activities: Activity[] = [
     privacyRule: "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
     requiresSettlement: true,
     participantIds: ["u-lin", "u-momo"],
+    gallery: [
+      { imagePath: "images/activity-bar.jpg", alt: "小酒馆夜间吧台", sourceLabel: "场所公开图" },
+      { imagePath: "images/venue-night.jpg", alt: "小酒馆门口夜间氛围", sourceLabel: "商家图" },
+      { imagePath: "images/activity-sushi.jpg", alt: "以往饭局桌面分享照片", sourceLabel: "用户活动图" },
+    ],
+    attractionSummary:
+      "三楼小酒馆在陕西南路附近，适合想轻松聊天但不想进入大型酒局的人。空间偏暗、节奏慢，适合小范围微醺聊天，系统会强调边界和安全规则。人均约 120 元，适合愿意尝试夜间轻社交、但希望人数可控的人。",
+    venueProofs: ["陕西南路小酒馆热门收藏", "小桌低压力聊天", "平台强调边界和安全"],
+    experienceHighlights: [
+      { title: "低度特调", description: "适合微醺但不强制拼酒。" },
+      { title: "吧台小食", description: "方便边聊边点，消费更容易控制。" },
+      { title: "暗调氛围", description: "更适合放松聊天，不适合大声热闹局。" },
+    ],
+    locationGuide: "陕西南路附近，建议结伴离场或使用打车，活动中不强制饮酒。",
   },
   {
     id: "a-walk",
@@ -127,6 +169,20 @@ export const activities: Activity[] = [
     privacyRule: "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
     requiresSettlement: false,
     participantIds: ["u-lin", "u-chen", "u-qiao"],
+    gallery: [
+      { imagePath: "images/activity-walk.jpg", alt: "苏州河散步路线", sourceLabel: "平台实拍" },
+      { imagePath: "images/city-skyline.jpg", alt: "上海城市河岸风景", sourceLabel: "场所公开图" },
+      { imagePath: "images/activity-coffee.jpg", alt: "以往散步后咖啡休息照片", sourceLabel: "用户活动图" },
+    ],
+    attractionSummary:
+      "苏州河这段路线开阔、节奏轻，适合第一次尝试平台活动的人。费用为 0，不需要处理 AA，也没有餐桌社交的压力。边走边聊更自然，如果聊得来，活动后还可以一起找咖啡店继续坐一会儿。",
+    venueProofs: ["免费低门槛", "路线开阔好找", "适合第一次参加"],
+    experienceHighlights: [
+      { title: "河岸路线", description: "边走边聊，沉默也不会尴尬。" },
+      { title: "四行仓库集合", description: "地点明确，第一次参加也容易找到。" },
+      { title: "活动后可续聊", description: "双方愿意时可附近找咖啡继续聊。" },
+    ],
+    locationGuide: "四行仓库附近集合，沿苏州河轻松步行，本活动无费用。",
   },
 ];
 

@@ -18,6 +18,17 @@ export interface User {
   canBeJuZhang: boolean;
 }
 
+export interface ActivityGalleryItem {
+  imagePath: string;
+  alt: string;
+  sourceLabel: string;
+}
+
+export interface ActivityExperienceHighlight {
+  title: string;
+  description: string;
+}
+
 export interface Activity {
   id: string;
   title: string;
@@ -36,6 +47,11 @@ export interface Activity {
   privacyRule: string;
   requiresSettlement: boolean;
   participantIds: string[];
+  gallery: ActivityGalleryItem[];
+  attractionSummary: string;
+  venueProofs: string[];
+  experienceHighlights: ActivityExperienceHighlight[];
+  locationGuide: string;
 }
 
 export interface Registration {

@@ -33,6 +33,21 @@ describe("App discovery flow", () => {
     expect(screen.getByRole("button", { name: "返回活动首页" })).toBeInTheDocument();
   });
 
+  it("shows restaurant photos, AI attraction copy, dishes, location, and spend on dinner detail", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+
+    expect(screen.getByText("场所公开图")).toBeInTheDocument();
+    expect(screen.getByText("用户活动图")).toBeInTheDocument();
+    expect(screen.getByText("AI 活动吸引点")).toBeInTheDocument();
+    expect(screen.getByText(/若竹日料在静安寺附近/)).toBeInTheDocument();
+    expect(screen.getByText("大众点评静安日料热门榜前列")).toBeInTheDocument();
+    expect(screen.getByText("招牌寿司拼盘")).toBeInTheDocument();
+    expect(screen.getByText("位置与消费")).toBeInTheDocument();
+    expect(screen.getAllByText("人均约 168 元").length).toBeGreaterThan(0);
+  });
+
   it("returns to the top when opening a new screen", async () => {
     const scrollSpy = vi.mocked(window.scrollTo);
     render(<App />);
@@ -49,7 +64,9 @@ describe("App discovery flow", () => {
     await userEvent.click(screen.getByRole("button", { name: "查看 周末咖啡聊天局" }));
 
     expect(screen.getByRole("heading", { name: "周末咖啡聊天局" })).toBeInTheDocument();
-    expect(screen.getByText("武康路 · 梧桐边咖啡")).toBeInTheDocument();
+    expect(screen.getAllByText("武康路 · 梧桐边咖啡").length).toBeGreaterThan(0);
+    expect(screen.getByText(/梧桐边咖啡靠近武康路/)).toBeInTheDocument();
+    expect(screen.getByText("手冲咖啡")).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   });
 
