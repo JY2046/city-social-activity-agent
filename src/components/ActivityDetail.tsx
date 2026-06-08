@@ -26,6 +26,14 @@ export function ActivityDetail({ activity, participants, onBack, onSignup, onJoi
       <button className="ghost-button" type="button" onClick={onBack}>
         <ArrowLeft size={18} /> 返回活动首页
       </button>
+      <div className="detail-main">
+        <p className="eyebrow">{activity.area} · {activity.venue}</p>
+        <p className="detail-meta">
+          {activity.budgetType === "free" ? "免费活动" : `人均约 ${activity.estimatedCost} 元`}
+        </p>
+        <h1>{activity.title}</h1>
+        <p className="hero-copy">{activity.aiRecommendationReason}</p>
+      </div>
       <p className="detail-section-kicker">
         <Images size={17} /> 活动公开照片
       </p>
@@ -36,14 +44,6 @@ export function ActivityDetail({ activity, participants, onBack, onSignup, onJoi
             <figcaption>{item.sourceLabel}</figcaption>
           </figure>
         ))}
-      </div>
-      <div className="detail-main">
-        <p className="eyebrow">{activity.area} · {activity.venue}</p>
-        <p className="detail-meta">
-          {activity.budgetType === "free" ? "免费活动" : `人均约 ${activity.estimatedCost} 元`}
-        </p>
-        <h1>{activity.title}</h1>
-        <p className="hero-copy">{activity.aiRecommendationReason}</p>
       </div>
       <section className="detail-facts" aria-label="活动关键信息">
         <p>
@@ -59,7 +59,7 @@ export function ActivityDetail({ activity, participants, onBack, onSignup, onJoi
       <div className="detail-columns">
         <section className="info-panel attraction-panel">
           <h2>
-            <Sparkles size={20} /> AI 活动吸引点
+            <Sparkles size={20} /> 种草理由
           </h2>
           <p>{activity.attractionSummary}</p>
           <div className="proof-strip">
@@ -100,11 +100,11 @@ export function ActivityDetail({ activity, participants, onBack, onSignup, onJoi
           <p>{activity.locationGuide}</p>
         </section>
 
-        <section className="info-panel">
+        <section className="info-panel participant-preview-panel">
           <h2>
             <ShieldCheck size={20} /> 参与者预览
           </h2>
-          <div className="participant-list">
+          <div className="participant-list compact-preview">
             {participants.map((user) => {
               const preview = getParticipantPreview(user);
 
@@ -116,10 +116,7 @@ export function ActivityDetail({ activity, participants, onBack, onSignup, onJoi
                     <p>{preview.bio}</p>
                     <p className="tag-line">
                       <span>{preview.reputationLevel}</span>
-                      <span>{preview.attendedEventLabel}</span>
-                    </p>
-                    <p className="tag-line">
-                      {preview.interests.map((interest) => (
+                      {preview.interests.slice(0, 2).map((interest) => (
                         <span key={interest}>{interest}</span>
                       ))}
                     </p>

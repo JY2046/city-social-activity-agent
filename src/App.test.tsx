@@ -40,7 +40,8 @@ describe("App discovery flow", () => {
 
     expect(screen.getByText("场所公开图")).toBeInTheDocument();
     expect(screen.getByText("用户活动图")).toBeInTheDocument();
-    expect(screen.getByText("AI 活动吸引点")).toBeInTheDocument();
+    expect(screen.getByText("种草理由")).toBeInTheDocument();
+    expect(screen.queryByText("AI 活动吸引点")).not.toBeInTheDocument();
     expect(screen.getByText(/若竹日料在静安寺附近/)).toBeInTheDocument();
     expect(screen.getByText("大众点评静安日料热门榜前列")).toBeInTheDocument();
     expect(screen.getByText("招牌寿司拼盘")).toBeInTheDocument();
