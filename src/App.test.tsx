@@ -30,6 +30,7 @@ describe("App discovery flow", () => {
 
     expect(screen.getByRole("heading", { name: "周五下班日料小局" })).toBeInTheDocument();
     expect(screen.getByText("活动前不开放私信和联系方式，活动后双方互选才开放联系。")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "返回活动首页" })).toBeInTheDocument();
   });
 
   it("returns to the top when opening a new screen", async () => {
@@ -50,6 +51,19 @@ describe("App discovery flow", () => {
     expect(screen.getByRole("heading", { name: "周末咖啡聊天局" })).toBeInTheDocument();
     expect(screen.getByText("武康路 · 梧桐边咖啡")).toBeInTheDocument();
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+  });
+
+  it("shows a waitlist CTA for a full activity", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 小酒馆微醺聊天局" }));
+
+    expect(screen.getByRole("button", { name: "加入候补排队" })).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "加入候补排队" }));
+
+    expect(screen.getByRole("heading", { name: "候补排队中" })).toBeInTheDocument();
+    expect(screen.getByText("如果有名额释放，系统会按候补顺序通知你。")).toBeInTheDocument();
   });
 
 });
@@ -76,6 +90,7 @@ describe("App signup flow", () => {
     await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
 
     expect(screen.getByText("你没有勾选局长，仍可正常参加活动。")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "申请成为局长" })).toBeInTheDocument();
   });
 
   it("does not show ju zhang task entry when signup did not opt in", async () => {
@@ -98,6 +113,44 @@ describe("App signup flow", () => {
     expect(screen.getByRole("group", { name: "同步到场状态" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "我会准时到" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "可能迟到" })).toBeInTheDocument();
+  });
+
+  it("returns from itinerary to activity detail", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+    await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
+
+    await userEvent.click(screen.getByRole("button", { name: "返回活动详情" }));
+
+    expect(screen.getByRole("heading", { name: "周五下班日料小局" })).toBeInTheDocument();
+  });
+
+  it("lets an ordinary participant apply for the ju zhang queue after signup", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+    await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
+    await userEvent.click(screen.getByRole("button", { name: "申请成为局长" }));
+
+    expect(screen.getByText("局长候补排队中")).toBeInTheDocument();
+  });
+
+  it("shows ordinary participant settlement confirmation for paid activities", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+    await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
+
+    expect(screen.getByRole("button", { name: "查看费用明细" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "确认我已支付" })).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "确认我已支付" }));
+
+    expect(screen.getByText("已提交支付确认，等待局长核对")).toBeInTheDocument();
   });
 
   it("shows free activity signup fee rules", async () => {
@@ -135,7 +188,7 @@ describe("App signup flow", () => {
     await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
     await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
     await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
-    await userEvent.click(screen.getByRole("button", { name: "模拟活动结束" }));
+    await userEvent.click(screen.getByRole("button", { name: "填写活动反馈" }));
 
     expect(screen.getByRole("heading", { name: "活动反馈与互选" })).toBeInTheDocument();
     expect(screen.getByText("双方都选择后才开放联系方式。")).toBeInTheDocument();
@@ -156,6 +209,8 @@ describe("Ju Zhang flow", () => {
 
     expect(screen.getByText("如果只能把上海一个下班后最放松的地方推荐给新朋友，你会选哪里？")).toBeInTheDocument();
     expect(screen.getByText("人均 168 元")).toBeInTheDocument();
+    expect(screen.getByText("到场核准")).toBeInTheDocument();
+    expect(screen.getByText("填写局长反馈")).toBeInTheDocument();
   });
 
   it("returns to itinerary when the selected user declines ju zhang", async () => {
@@ -208,7 +263,7 @@ describe("feedback and mutual contact flow", () => {
     await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
     await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
     await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
-    await userEvent.click(screen.getByRole("button", { name: "模拟活动结束" }));
+    await userEvent.click(screen.getByRole("button", { name: "填写活动反馈" }));
     await userEvent.click(screen.getByLabelText("愿意和 林夏 互相开放联系"));
     await userEvent.type(screen.getByLabelText("异常反馈"), "体验顺畅，没有异常。");
     await userEvent.click(screen.getByRole("button", { name: "完成反馈" }));

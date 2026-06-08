@@ -33,6 +33,11 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: default;
+  opacity: 0.68;
+}
+
 .app-shell {
   position: relative;
   min-height: 100vh;
@@ -2753,6 +2758,219 @@ p.hero-title {
 .screen-juZhang .ju-bottom-actions .ghost-button,
 .screen-juZhang .ju-bottom-actions .primary-button {
   min-height: 44px;
+  font-size: 12px;
+}
+
+.operation-card,
+.waitlist-tip {
+  display: grid;
+  gap: 12px;
+  border: 1px solid rgba(39, 62, 56, 0.08);
+  border-radius: 20px;
+  background: rgba(247, 250, 243, 0.86);
+  padding: 14px;
+}
+
+.operation-card {
+  margin-top: 12px;
+}
+
+.operation-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  color: #17211f;
+  font-size: 17px;
+  font-weight: 950;
+  line-height: 1.2;
+}
+
+.operation-card p,
+.waitlist-copy,
+.waitlist-tip p,
+.state-copy {
+  margin: 0;
+  color: #5f6b65;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.operation-card .primary-button,
+.operation-card .ghost-button {
+  width: 100%;
+  min-height: 42px;
+  margin: 0;
+  padding: 10px 13px;
+  font-size: 13px;
+}
+
+.settlement-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.settlement-actions .ghost-button,
+.settlement-actions .primary-button {
+  min-height: 40px;
+}
+
+.waitlist-panel .primary-button {
+  margin-top: 14px;
+}
+
+.waitlist-tip {
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+}
+
+.waitlist-tip svg {
+  color: #d95745;
+}
+
+.screen-home .content-grid > .product-cues {
+  margin: -2px 0 2px;
+  border-radius: 18px;
+}
+
+.screen-home .content-grid > .product-cues div {
+  min-height: 68px;
+  padding: 9px 6px;
+}
+
+.screen-home .content-grid > .product-cues strong {
+  font-size: 12px;
+}
+
+.screen-home .content-grid > .product-cues span {
+  font-size: 10px;
+}
+
+.screen-home .activity-card.featured .type-mark {
+  position: static;
+  margin: 0 0 6px;
+  background: rgba(229, 239, 226, 0.94);
+  color: #3d7a48;
+}
+
+.screen-home .activity-card.featured .featured-overlay {
+  bottom: 9px;
+}
+
+.screen-juZhang .ju-ai-reminder {
+  margin-top: 10px;
+}
+
+.screen-juZhang .ju-feedback-card,
+.screen-juZhang .ju-arrival-card,
+.screen-juZhang .ju-coordination-card {
+  position: static;
+  margin: 8px 15px 0;
+  overflow: visible;
+}
+
+.ju-arrival-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.ju-arrival-grid span {
+  display: grid;
+  gap: 4px;
+  border: 1px solid rgba(255, 253, 248, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 253, 248, 0.05);
+  color: rgba(255, 253, 248, 0.68);
+  padding: 9px 7px;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.ju-arrival-grid strong {
+  color: #dff3bd;
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.ju-check-list,
+.ju-payment-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ju-check-list span,
+.ju-payment-list span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 13px;
+  background: rgba(255, 253, 248, 0.06);
+  color: rgba(255, 253, 248, 0.74);
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.ju-check-list svg,
+.ju-payment-list svg {
+  color: #9fc27c;
+}
+
+.ju-payment-list {
+  margin-top: 10px;
+}
+
+.ju-payment-list .pending svg {
+  color: #e1b76c;
+}
+
+.ju-feedback-card {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 11px;
+  align-items: center;
+  border: 1px solid rgba(255, 253, 248, 0.1);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 8% 20%, rgba(159, 194, 124, 0.16), transparent 34%),
+    linear-gradient(135deg, rgba(27, 32, 30, 0.94), rgba(14, 17, 16, 0.98));
+  padding: 13px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+}
+
+.ju-feedback-card > svg {
+  color: #ff8a92;
+}
+
+.ju-feedback-card h2 {
+  margin: 0 0 4px;
+  color: #fffdf8;
+  font-size: 17px;
+  font-weight: 950;
+}
+
+.ju-feedback-card p {
+  margin: 0;
+  color: rgba(255, 253, 248, 0.66);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.ju-feedback-card .ghost-button {
+  grid-column: 1 / -1;
+  width: 100%;
+  min-height: 38px;
+  border-color: rgba(255, 253, 248, 0.1);
+  background: rgba(255, 253, 248, 0.09);
+  color: #fffdf8;
+  padding: 9px 11px;
   font-size: 12px;
 }
 

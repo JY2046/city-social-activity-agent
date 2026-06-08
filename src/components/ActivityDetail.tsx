@@ -7,13 +7,16 @@ interface ActivityDetailProps {
   participants: User[];
   onBack: () => void;
   onSignup: () => void;
+  onJoinWaitlist: () => void;
 }
 
-export function ActivityDetail({ activity, participants, onBack, onSignup }: ActivityDetailProps) {
+export function ActivityDetail({ activity, participants, onBack, onSignup, onJoinWaitlist }: ActivityDetailProps) {
+  const isFull = activity.currentParticipantCount >= activity.capacity;
+
   return (
     <section className="detail-layout">
       <button className="ghost-button" type="button" onClick={onBack}>
-        <ArrowLeft size={18} /> 返回活动
+        <ArrowLeft size={18} /> 返回活动首页
       </button>
       <div className="detail-main">
         <p className="eyebrow">{activity.area} · {activity.venue}</p>
@@ -29,8 +32,8 @@ export function ActivityDetail({ activity, participants, onBack, onSignup }: Act
           <p>{activity.aaRule}</p>
           <p>{activity.cancellationRule}</p>
           <p>{activity.privacyRule}</p>
-          <button className="primary-button" type="button" onClick={onSignup}>
-            报名并确认规则
+          <button className="primary-button" type="button" onClick={isFull ? onJoinWaitlist : onSignup}>
+            {isFull ? "加入候补排队" : "报名并确认规则"}
           </button>
         </section>
         <section className="info-panel">

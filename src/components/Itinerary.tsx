@@ -1,6 +1,18 @@
-import { CheckCircle2, Clock, MessageSquareText, Timer, MapPin, Users } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Clock,
+  Crown,
+  CreditCard,
+  MessageSquareText,
+  ReceiptText,
+  Timer,
+  MapPin,
+  Users,
+} from "lucide-react";
 import { useState } from "react";
-import type { Activity } from "../domain/types";
+import { getSettlementSummary } from "../domain/rules";
+import type { Activity, Settlement } from "../domain/types";
 
 const formationStatusLabels: Record<Activity["formationStatus"], string> = {
   forming: "组局中",
@@ -14,20 +26,37 @@ const formationStatusLabels: Record<Activity["formationStatus"], string> = {
 interface ItineraryProps {
   activity: Activity;
   willingToBeJuZhang: boolean;
+  juZhangQueued: boolean;
+  paymentConfirmed: boolean;
+  settlement: Settlement;
+  onBackToDetail: () => void;
+  onApplyJuZhang: () => void;
   onOpenJuZhang: () => void;
+  onConfirmPayment: () => void;
   onFinishActivity: () => void;
 }
 
 export function Itinerary({
   activity,
   willingToBeJuZhang,
+  juZhangQueued,
+  paymentConfirmed,
+  settlement,
+  onBackToDetail,
+  onApplyJuZhang,
   onOpenJuZhang,
+  onConfirmPayment,
   onFinishActivity,
 }: ItineraryProps) {
   const [arrivalStatus, setArrivalStatus] = useState<"onTime" | "late" | "unsure">("onTime");
+  const [showSettlementDetail, setShowSettlementDetail] = useState(false);
+  const settlementSummary = getSettlementSummary(settlement);
 
   return (
     <section className="flow-panel" id="itinerary">
+      <button className="ghost-button" type="button" onClick={onBackToDetail}>
+        <ArrowLeft size={18} /> 返回活动详情
+      </button>
       <p className="eyebrow">报名成功</p>
       <h1>活动行程</h1>
       <div className="status-grid">
@@ -80,19 +109,55 @@ export function Itinerary({
           </button>
         </div>
       </div>
-      <p>
-        {willingToBeJuZhang
-          ? "已勾选愿意担任局长，系统会在活动前 24 小时内选择。"
-          : "你没有勾选局长，仍可正常参加活动。"}
-      </p>
-      <div className="button-row">
-        {willingToBeJuZhang && (
+      <section className="operation-card">
+        <div>
+          <h2>
+            <Crown size={18} /> 局长协助
+          </h2>
+          <p>
+            {willingToBeJuZhang
+              ? "已勾选愿意担任局长，系统会在活动前 24 小时内选择。"
+              : "你没有勾选局长，仍可正常参加活动。"}
+          </p>
+          {juZhangQueued && <p className="state-copy">局长候补排队中</p>}
+        </div>
+        {willingToBeJuZhang ? (
           <button className="primary-button" type="button" onClick={onOpenJuZhang}>
             查看局长任务
           </button>
+        ) : (
+          <button className="ghost-button" type="button" disabled={juZhangQueued} onClick={onApplyJuZhang}>
+            {juZhangQueued ? "已进入候补" : "申请成为局长"}
+          </button>
         )}
+      </section>
+
+      <section className="operation-card settlement-panel">
+        <div>
+          <h2>
+            <ReceiptText size={18} /> {settlementSummary.isFree ? "费用状态" : "AA 结算确认"}
+          </h2>
+          <p>{settlementSummary.label}</p>
+          {showSettlementDetail && !settlementSummary.isFree && (
+            <p className="state-copy">系统按当前账单计算你的应付费用，支付后由局长核对状态。</p>
+          )}
+          {paymentConfirmed && <p className="state-copy">已提交支付确认，等待局长核对</p>}
+        </div>
+        {!settlementSummary.isFree && (
+          <div className="settlement-actions">
+            <button className="ghost-button" type="button" onClick={() => setShowSettlementDetail(true)}>
+              <CreditCard size={17} /> 查看费用明细
+            </button>
+            <button className="primary-button" type="button" disabled={paymentConfirmed} onClick={onConfirmPayment}>
+              <CheckCircle2 size={17} /> {paymentConfirmed ? "已确认支付" : "确认我已支付"}
+            </button>
+          </div>
+        )}
+      </section>
+
+      <div className="button-row">
         <button className="ghost-button" type="button" onClick={onFinishActivity}>
-          模拟活动结束
+          填写活动反馈
         </button>
       </div>
     </section>

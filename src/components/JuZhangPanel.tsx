@@ -150,6 +150,50 @@ export function JuZhangPanel({
             </div>
           </div>
 
+          <section className="ju-section-card ju-arrival-card">
+            <div className="ju-section-title">
+              <h2>
+                <ClipboardCheck size={20} /> 到场核准
+              </h2>
+              <small>活动前 30 分钟</small>
+            </div>
+            <div className="ju-arrival-grid">
+              <span>
+                <strong>{Math.max(activity.currentParticipantCount - 1, 0)}</strong>
+                已确认到场
+              </span>
+              <span>
+                <strong>1</strong>
+                可能迟到
+              </span>
+              <span>
+                <strong>{activity.capacity - activity.currentParticipantCount}</strong>
+                可候补名额
+              </span>
+            </div>
+            <p className="settlement-helper">根据到场同步状态，必要时提醒候补用户或协助迟到成员更新信息。</p>
+          </section>
+
+          <section className="ju-section-card ju-coordination-card">
+            <div className="ju-section-title">
+              <h2>
+                <MessageCircle size={20} /> 活动中协调
+              </h2>
+              <small>AI 会给低压力指引</small>
+            </div>
+            <div className="ju-check-list">
+              <span>
+                <CheckCircle2 size={17} /> 开场时使用 AI 话题卡
+              </span>
+              <span>
+                <CheckCircle2 size={17} /> 观察是否有人落单
+              </span>
+              <span>
+                <CheckCircle2 size={17} /> 结账前提醒 AA 方式
+              </span>
+            </div>
+          </section>
+
           <article className="ju-topic-card">
             <div className="ju-section-title">
               <h2>
@@ -201,6 +245,19 @@ export function JuZhangPanel({
             <p className="settlement-helper">
               {settlementSummary.isFree ? "本活动无需确认支付状态。" : `还有 ${settlementSummary.unpaidCount} 人未确认支付。`}
             </p>
+            {!settlementSummary.isFree && (
+              <div className="ju-payment-list">
+                <span>
+                  <CheckCircle2 size={17} /> 林夏 已支付
+                </span>
+                <span>
+                  <CheckCircle2 size={17} /> 陈予 已支付
+                </span>
+                <span className="pending">
+                  <ReceiptText size={17} /> Momo 待核对
+                </span>
+              </div>
+            )}
           </article>
 
           <article className="ju-mutual-card">
@@ -212,12 +269,23 @@ export function JuZhangPanel({
             <span>活动结束后开启</span>
           </article>
 
+          <article className="ju-feedback-card">
+            <Heart size={24} />
+            <div>
+              <h2>活动后反馈</h2>
+              <p>记录现场体验、异常情况和是否推荐继续开放同类活动。</p>
+            </div>
+            <button className="ghost-button" type="button" onClick={onFinish}>
+              填写局长反馈
+            </button>
+          </article>
+
           <div className="ju-bottom-actions">
             <button className="ghost-button" type="button">
               <CalendarDays size={18} /> 添加到日历
             </button>
             <button className="primary-button" type="button" aria-label="完成局长任务" onClick={onFinish}>
-              <UserPlus size={18} /> 邀请朋友一起报名
+              <UserPlus size={18} /> 活动后反馈
             </button>
           </div>
         </>

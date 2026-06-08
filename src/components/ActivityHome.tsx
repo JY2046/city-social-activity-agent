@@ -181,7 +181,7 @@ export function ActivityHome({ activities, onSelectActivity }: ActivityHomeProps
                   )}
                 </div>
               </article>
-              {index === 2 && renderProductCues()}
+              {index === 0 && renderProductCues()}
             </Fragment>
           );
         })}

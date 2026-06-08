@@ -7,15 +7,20 @@ import { FeedbackPanel } from "./components/FeedbackPanel";
 import { Itinerary } from "./components/Itinerary";
 import { JuZhangPanel } from "./components/JuZhangPanel";
 import { SignupPanel } from "./components/SignupPanel";
+import { WaitlistPanel } from "./components/WaitlistPanel";
 import { activities, settlements, topicCards, users } from "./domain/mockData";
 
-type Screen = "home" | "detail" | "signup" | "itinerary" | "juZhang" | "feedback";
+type Screen = "home" | "detail" | "signup" | "itinerary" | "juZhang" | "feedback" | "waitlist";
+type WaitlistType = "activity" | "juZhang";
 
 export default function App() {
   const [selectedActivityId, setSelectedActivityId] = useState(activities[0].id);
   const [screen, setScreen] = useState<Screen>("home");
   const [willingToBeJuZhang, setWillingToBeJuZhang] = useState(false);
   const [juZhangAccepted, setJuZhangAccepted] = useState(false);
+  const [juZhangQueued, setJuZhangQueued] = useState(false);
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+  const [waitlistType, setWaitlistType] = useState<WaitlistType>("activity");
 
   const selectedActivity = activities.find((activity) => activity.id === selectedActivityId) ?? activities[0];
   const topicCard =
@@ -76,6 +81,8 @@ export default function App() {
             setSelectedActivityId(activityId);
             setWillingToBeJuZhang(false);
             setJuZhangAccepted(false);
+            setJuZhangQueued(false);
+            setPaymentConfirmed(false);
             setScreen("detail");
           }}
         />
@@ -87,6 +94,10 @@ export default function App() {
           participants={participants}
           onBack={() => setScreen("home")}
           onSignup={() => setScreen("signup")}
+          onJoinWaitlist={() => {
+            setWaitlistType("activity");
+            setScreen("waitlist");
+          }}
         />
       )}
 
@@ -104,7 +115,17 @@ export default function App() {
         <Itinerary
           activity={selectedActivity}
           willingToBeJuZhang={willingToBeJuZhang}
+          juZhangQueued={juZhangQueued}
+          paymentConfirmed={paymentConfirmed}
+          settlement={settlement}
+          onBackToDetail={() => setScreen("detail")}
+          onApplyJuZhang={() => {
+            setJuZhangQueued(true);
+            setWaitlistType("juZhang");
+            setScreen("waitlist");
+          }}
           onOpenJuZhang={() => setScreen("juZhang")}
+          onConfirmPayment={() => setPaymentConfirmed(true)}
           onFinishActivity={() => setScreen("feedback")}
         />
       )}
@@ -128,6 +149,15 @@ export default function App() {
             setJuZhangAccepted(false);
             setScreen("home");
           }}
+        />
+      )}
+
+      {screen === "waitlist" && (
+        <WaitlistPanel
+          activity={selectedActivity}
+          type={waitlistType}
+          onBackToDetail={() => setScreen("detail")}
+          onBackToItinerary={() => setScreen("itinerary")}
         />
       )}
 
