@@ -148,6 +148,6 @@ Expected: build exits 0.
 
 Capture home, detail, itinerary, JuZhang top, and JuZhang scrolled at `375 x 812`.
 
-- [ ] **Step 4: Commit and push**
+- [x] **Step 4: Commit and push**
 
 Commit the plan and implementation, push to GitHub, and verify GitHub Pages uses the new asset hashes.
