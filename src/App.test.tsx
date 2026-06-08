@@ -78,6 +78,28 @@ describe("App signup flow", () => {
     expect(screen.getByText("你没有勾选局长，仍可正常参加活动。")).toBeInTheDocument();
   });
 
+  it("does not show ju zhang task entry when signup did not opt in", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+    await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
+
+    expect(screen.queryByRole("button", { name: "查看局长任务" })).not.toBeInTheDocument();
+  });
+
+  it("collects arrival status after signup succeeds", async () => {
+    render(<App />);
+
+    await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
+    await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
+
+    expect(screen.getByRole("group", { name: "同步到场状态" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "我会准时到" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "可能迟到" })).toBeInTheDocument();
+  });
+
   it("shows free activity signup fee rules", async () => {
     render(<App />);
 
@@ -141,12 +163,13 @@ describe("Ju Zhang flow", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
     await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByLabelText("我愿意担任局长"));
     await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
     await userEvent.click(screen.getByRole("button", { name: "查看局长任务" }));
     await userEvent.click(screen.getByRole("button", { name: "拒绝，不影响参加" }));
 
     expect(screen.getByRole("heading", { name: "活动行程" })).toBeInTheDocument();
-    expect(screen.getByText("你没有勾选局长，仍可正常参加活动。")).toBeInTheDocument();
+    expect(screen.getByText("已勾选愿意担任局长，系统会在活动前 24 小时内选择。")).toBeInTheDocument();
   });
 
   it("opens feedback after ju zhang tasks are completed", async () => {
@@ -154,6 +177,7 @@ describe("Ju Zhang flow", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "查看 周五下班日料小局" }));
     await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByLabelText("我愿意担任局长"));
     await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
     await userEvent.click(screen.getByRole("button", { name: "查看局长任务" }));
     await userEvent.click(screen.getByRole("button", { name: "接受局长" }));
@@ -167,6 +191,7 @@ describe("Ju Zhang flow", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "查看 免费城市散步局" }));
     await userEvent.click(screen.getByRole("button", { name: "报名并确认规则" }));
+    await userEvent.click(screen.getByLabelText("我愿意担任局长"));
     await userEvent.click(screen.getByRole("button", { name: "确认报名" }));
     await userEvent.click(screen.getByRole("button", { name: "查看局长任务" }));
     await userEvent.click(screen.getByRole("button", { name: "接受局长" }));

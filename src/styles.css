@@ -2455,6 +2455,307 @@ p.hero-title {
   background: linear-gradient(135deg, #ef476f, #ff8f33);
 }
 
+/* Mobile QA fixes, 2026-06-08: prioritize real phone usability over exact first-screen packing. */
+.screen-home {
+  padding-bottom: 74px;
+}
+
+.screen-home .search-panel {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 0 16px 9px;
+}
+
+.screen-home .search-box,
+.screen-home .filter-button {
+  min-height: 38px;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.screen-home .search-box {
+  padding: 0 12px;
+}
+
+.screen-home .search-box input {
+  font-size: 13px;
+}
+
+.screen-home .filter-button {
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.screen-home .filter-strip {
+  gap: 6px;
+  padding: 0 13px 9px;
+}
+
+.screen-home .filter-chip {
+  min-height: 27px;
+  padding: 6px 9px;
+  font-size: 12px;
+}
+
+.screen-home .content-grid {
+  gap: 9px;
+  padding: 0 14px 18px;
+}
+
+.screen-home .activity-card.featured .activity-image {
+  min-height: 172px;
+}
+
+.screen-home .card-topline {
+  padding: 10px;
+}
+
+.screen-home .card-topline span {
+  min-height: 24px;
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+.screen-home .activity-card.featured .type-mark {
+  position: absolute;
+  top: 48px;
+  left: 12px;
+  z-index: 2;
+  font-size: 13px;
+}
+
+.screen-home .activity-card.featured .type-mark svg {
+  width: 24px;
+  height: 24px;
+}
+
+.screen-home .featured-overlay {
+  right: 14px;
+  bottom: 8px;
+  left: 12px;
+  padding-top: 72px;
+}
+
+.screen-home .featured-overlay .type-mark {
+  margin-bottom: 0;
+}
+
+.screen-home .featured-overlay h2 {
+  max-width: 230px;
+  margin-bottom: 6px;
+  font-size: 22px;
+}
+
+.screen-home .featured-overlay .muted {
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.screen-home .featured-overlay .primary-button {
+  min-height: 34px;
+  max-width: 108px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.screen-home .activity-card.featured .ai-note {
+  min-height: auto;
+  gap: 5px;
+  padding: 7px 10px;
+  font-size: 10px;
+  line-height: 1.28;
+}
+
+.screen-home .activity-card.featured .ai-note strong {
+  margin-right: 5px;
+  font-size: 11px;
+}
+
+.screen-home .leader-pill {
+  padding: 6px 8px;
+  font-size: 11px;
+}
+
+.screen-home .activity-card:not(.featured) .ai-note {
+  display: flex;
+  margin-top: 5px;
+  padding: 4px 7px;
+  font-size: 10px;
+  line-height: 1.22;
+  -webkit-line-clamp: 2;
+}
+
+.screen-home .activity-card:not(.featured) .ai-note strong {
+  font-size: 10px;
+}
+
+.screen-home .product-cues {
+  position: static;
+  width: auto;
+  margin: 2px 0 4px;
+  transform: none;
+}
+
+.screen-home .product-cues div {
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 1px 6px;
+  padding: 8px 7px;
+}
+
+.screen-home .product-cues svg {
+  width: 23px;
+  height: 23px;
+  padding: 6px;
+}
+
+.screen-home .product-cues strong {
+  font-size: 10px;
+}
+
+.screen-home .product-cues span {
+  font-size: 9px;
+}
+
+.screen-home .app-tabbar {
+  min-height: 58px;
+  padding: 4px 14px 6px;
+  border-radius: 18px 18px 0 0;
+}
+
+.screen-home .app-tabbar a {
+  gap: 2px;
+  padding: 5px 2px;
+  font-size: 11px;
+}
+
+.screen-home .app-tabbar a svg {
+  width: 24px;
+  height: 24px;
+}
+
+.screen-home .app-tabbar a[aria-current="page"] svg {
+  padding: 4px;
+}
+
+.arrival-sync {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0;
+  border: 1px solid rgba(39, 62, 56, 0.08);
+  border-radius: 18px;
+  background: rgba(247, 250, 243, 0.86);
+  padding: 13px;
+}
+
+.arrival-sync h2 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 5px;
+  color: #17211f;
+  font-size: 16px;
+  font-weight: 950;
+}
+
+.arrival-sync p {
+  margin: 0;
+  color: #5f6b65;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.arrival-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.arrival-options button {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid rgba(36, 76, 66, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.76);
+  color: #52635d;
+  padding: 7px 8px;
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.arrival-options button[aria-pressed="true"] {
+  border-color: transparent;
+  background: #244c42;
+  color: #fffdf8;
+}
+
+.screen-juZhang {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.screen-juZhang .ju-zhang-flow {
+  padding-bottom: 92px;
+}
+
+.screen-juZhang .ju-settlement-card,
+.screen-juZhang .ju-mutual-card {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  margin: 8px 15px 0;
+  overflow: visible;
+}
+
+.screen-juZhang .ju-settlement-card {
+  padding: 10px;
+}
+
+.screen-juZhang .ju-settlement-card .ju-section-title {
+  min-height: 24px;
+  margin-bottom: 8px;
+}
+
+.screen-juZhang .settlement-steps span {
+  font-size: 9px;
+  line-height: 1.24;
+}
+
+.screen-juZhang .settlement-steps span svg {
+  width: 28px;
+  height: 28px;
+  padding: 8px;
+}
+
+.screen-juZhang .settlement-helper {
+  display: block;
+  margin-top: 9px;
+  padding: 8px 10px;
+  font-size: 11px;
+}
+
+.screen-juZhang .ju-mutual-card {
+  min-height: 58px;
+  padding: 10px 13px;
+}
+
+.screen-juZhang .ju-bottom-actions {
+  top: auto;
+  bottom: 0;
+  padding: 9px 12px 10px;
+  border-radius: 22px 22px 0 0;
+}
+
+.screen-juZhang .ju-bottom-actions .ghost-button,
+.screen-juZhang .ju-bottom-actions .primary-button {
+  min-height: 44px;
+  font-size: 12px;
+}
+
 @media (min-width: 760px) {
   body {
     padding: 24px 0;
