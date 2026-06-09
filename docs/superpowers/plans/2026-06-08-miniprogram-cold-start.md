@@ -227,17 +227,22 @@ Completed on 2026-06-09:
 - Modify: `apps/miniprogram/src/services/notificationService.ts`
 - Create: `docs/miniprogram/wechat-capabilities.md`
 
-- [ ] **Step 1: Login integration**
+- [x] **Step 1: Login integration**
 
 Add WeChat login wrapper and store server-issued user identity.
 
-- [ ] **Step 2: Subscription message request points**
+- [x] **Step 2: Subscription message request points**
 
 Request subscription messages after signup, waitlist join, JuZhang acceptance, and feedback completion when appropriate.
 
-- [ ] **Step 3: Safety and privacy notes**
+- [x] **Step 3: Safety and privacy notes**
 
 Document data permissions and privacy prompts needed before release.
+
+Completed on 2026-06-09:
+
+- `npm test -- apps/miniprogram/src/services/authService.test.ts apps/miniprogram/src/services/notificationService.test.ts`
+- `docs/miniprogram/wechat-capabilities.md`
 
 ## Task 9: First Release QA
 
