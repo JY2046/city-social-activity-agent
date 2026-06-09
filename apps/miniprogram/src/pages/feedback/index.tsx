@@ -3,13 +3,14 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "@tarojs/taro";
 
 import { getActivity } from "../../services/activityService";
+import { createActivityReadAdapter, loadActivityDetail } from "../../services/activityReadService";
 import {
   createFeedbackAdapter,
   runGetFeedbackCompletionState,
   runSubmitFeedback,
   type FeedbackCompletionState,
 } from "../../services/feedbackService";
-import { DEFAULT_CURRENT_USER_ID, getUserDisplayName } from "../../services/mockData";
+import { DEFAULT_CURRENT_USER_ID, getUserDisplayName, type MiniProgramActivity } from "../../services/mockData";
 
 import "../signup/index.css";
 import "./index.css";
@@ -17,9 +18,10 @@ import "./index.css";
 export default function FeedbackPage() {
   const router = useRouter();
   const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
-  const activity = getActivity(activityId);
-  const candidateUserId = activity?.participantIds.find((userId) => userId !== DEFAULT_CURRENT_USER_ID) ?? "u-lin";
+  const activityReadAdapter = useMemo(() => createActivityReadAdapter(), []);
   const adapter = useMemo(() => createFeedbackAdapter(), []);
+  const [activity, setActivity] = useState<MiniProgramActivity | undefined>(() => getActivity(activityId));
+  const candidateUserId = activity?.participantIds.find((userId) => userId !== DEFAULT_CURRENT_USER_ID) ?? "u-lin";
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [abnormalText, setAbnormalText] = useState("");
   const [completionState, setCompletionState] = useState<FeedbackCompletionState>({
@@ -29,6 +31,39 @@ export default function FeedbackPage() {
   });
   const [submitMessage, setSubmitMessage] = useState("正在同步反馈状态...");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadActivity() {
+      const result = await loadActivityDetail(activityId, activityReadAdapter);
+
+      if (!isMounted) {
+        return;
+      }
+
+      if (result.status === "ready") {
+        setActivity(result.activity);
+        return;
+      }
+
+      if (result.status === "empty") {
+        setActivity(undefined);
+        setSubmitMessage("活动不存在或暂不可反馈");
+        return;
+      }
+
+      if (result.status === "error") {
+        setSubmitMessage(result.message);
+      }
+    }
+
+    void loadActivity();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activityId, activityReadAdapter]);
 
   async function refreshCompletionState(nextMessage?: string) {
     const result = await runGetFeedbackCompletionState(adapter, activityId, candidateUserId);

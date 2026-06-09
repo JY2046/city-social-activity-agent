@@ -1,11 +1,13 @@
 import { Button, Text, View } from "@tarojs/components";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "@tarojs/taro";
 
 import { getActivity } from "../../services/activityService";
+import { createActivityReadAdapter, loadActivityDetail } from "../../services/activityReadService";
 import { DEFAULT_CURRENT_USER_ID, getSettlementByActivityId } from "../../services/mockData";
 import { formatActivityDateTime, getCostLabel } from "../../services/activityPresentation";
 import { getArrivalOptions, getPaymentActionLabel } from "../../services/flowViewModels";
+import type { MiniProgramActivity } from "../../services/mockData";
 import type { ArrivalStatus } from "../../services/registrationService";
 import {
   createRegistrationWriteAdapter,
@@ -21,12 +23,47 @@ import "./index.css";
 export default function ItineraryPage() {
   const router = useRouter();
   const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-coffee";
-  const activity = getActivity(activityId);
+  const activityReadAdapter = useMemo(() => createActivityReadAdapter(), []);
+  const [activity, setActivity] = useState<MiniProgramActivity | undefined>(() => getActivity(activityId));
   const [arrivalStatus, setArrivalStatus] = useState<ArrivalStatus>("confirmed");
   const [isJuZhangQueued, setIsJuZhangQueued] = useState(false);
-  const [settlement, setSettlement] = useState(activity ? getSettlementByActivityId(activity.id) : undefined);
+  const [settlement, setSettlement] = useState(() => getSettlementByActivityId(activityId));
   const [pendingAction, setPendingAction] = useState<string | undefined>();
   const [actionMessage, setActionMessage] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadActivity() {
+      const result = await loadActivityDetail(activityId, activityReadAdapter);
+
+      if (!isMounted) {
+        return;
+      }
+
+      if (result.status === "ready") {
+        setActivity(result.activity);
+        setActionMessage("");
+        return;
+      }
+
+      if (result.status === "empty") {
+        setActivity(undefined);
+        setActionMessage("活动不存在或暂不可查看");
+        return;
+      }
+
+      if (result.status === "error") {
+        setActionMessage(result.message);
+      }
+    }
+
+    void loadActivity();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activityId, activityReadAdapter]);
 
   async function handleArrival(status: ArrivalStatus) {
     if (!activity) {

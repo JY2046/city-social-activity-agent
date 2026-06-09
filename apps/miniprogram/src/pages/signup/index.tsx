@@ -1,24 +1,64 @@
 import { Button, Switch, Text, View } from "@tarojs/components";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "@tarojs/taro";
 import type { Registration } from "@city-social/domain";
 
 import { getActivity } from "../../services/activityService";
+import {
+  createActivityReadAdapter,
+  loadActivityDetail,
+} from "../../services/activityReadService";
 import { getSignupViewState } from "../../services/flowViewModels";
 import { createRegistrationWriteAdapter, runSignup } from "../../services/registrationWriteService";
+import type { MiniProgramActivity } from "../../services/mockData";
 
 import "./index.css";
 
 export default function SignupPage() {
   const router = useRouter();
   const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
-  const activity = getActivity(activityId);
+  const activityReadAdapter = useMemo(() => createActivityReadAdapter(), []);
+  const [activity, setActivity] = useState<MiniProgramActivity | undefined>(() => getActivity(activityId));
   const [rulesAccepted, setRulesAccepted] = useState(false);
   const [willingToBeJuZhang, setWillingToBeJuZhang] = useState(false);
   const [registration, setRegistration] = useState<Registration | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const viewState = getSignupViewState(registration);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadActivity() {
+      const result = await loadActivityDetail(activityId, activityReadAdapter);
+
+      if (!isMounted) {
+        return;
+      }
+
+      if (result.status === "ready") {
+        setActivity(result.activity);
+        setSubmitMessage("");
+        return;
+      }
+
+      if (result.status === "empty") {
+        setActivity(undefined);
+        setSubmitMessage("活动不存在或暂不可报名");
+        return;
+      }
+
+      if (result.status === "error") {
+        setSubmitMessage(result.message);
+      }
+    }
+
+    void loadActivity();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activityId, activityReadAdapter]);
 
   async function handleSignup() {
     if (!rulesAccepted || !activity) {

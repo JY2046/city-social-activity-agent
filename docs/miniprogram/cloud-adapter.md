@@ -113,13 +113,16 @@ Current async adapter coverage:
 
 - Discover and activity detail read through the async activity read boundary.
 - Signup, waitlist, itinerary arrival, and itinerary settlement write through the async registration write boundary.
+- Signup, waitlist, itinerary, JuZhang, and feedback pages load their activity or workspace display context through async adapters.
+- JuZhang assignment, arrival checks, JuZhang settlement checks, feedback submission, and feedback completion state run through async page adapters.
 - Uploadable cloud function packages now cover activity reads, signup, waitlist, arrival, settlement, JuZhang workspace, JuZhang response, feedback submission, and feedback completion state.
 
-Remaining page migration work:
+Remaining cloud hardening work:
 
-1. Let signup, waitlist, itinerary, JuZhang, and feedback pages load their display context from cloud reads when `CITY_SOCIAL_DATA_SOURCE=cloud`.
-2. Add JuZhang and feedback async page adapters with loading and error states.
-3. Keep mock mode as the default visual prototype path.
+1. Deploy the generated cloud function folders in WeChat Developer Tools.
+2. Create and import the `cloud/seed/*.json` collections in the selected Cloud Development environment.
+3. Build with `CITY_SOCIAL_DATA_SOURCE=cloud` and `WECHAT_CLOUD_ENV_ID=<your-env-id>` for cloud-mode QA.
+4. Keep mock mode as the default visual prototype path until cloud database transaction boundaries are added.
 
 This keeps the existing mock prototype stable while cloud mode is introduced page by page.
 

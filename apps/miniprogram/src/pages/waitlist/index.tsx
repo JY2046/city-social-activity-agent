@@ -1,11 +1,12 @@
 import { Button, Text, View } from "@tarojs/components";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "@tarojs/taro";
 
 import { getActivity } from "../../services/activityService";
+import { createActivityReadAdapter, loadActivityDetail } from "../../services/activityReadService";
 import { getWaitlistDescription, getWaitlistTitle } from "../../services/flowViewModels";
 import { createRegistrationWriteAdapter, runJoinWaitlist } from "../../services/registrationWriteService";
-import type { WaitlistType } from "../../services/mockData";
+import type { MiniProgramActivity, WaitlistType } from "../../services/mockData";
 
 import "../signup/index.css";
 import "./index.css";
@@ -14,10 +15,45 @@ export default function WaitlistPage() {
   const router = useRouter();
   const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-bar";
   const waitlistType: WaitlistType = router.params.type === "juZhang" ? "juZhang" : "activity";
-  const activity = getActivity(activityId);
+  const activityReadAdapter = useMemo(() => createActivityReadAdapter(), []);
+  const [activity, setActivity] = useState<MiniProgramActivity | undefined>(() => getActivity(activityId));
   const [order, setOrder] = useState<number | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadActivity() {
+      const result = await loadActivityDetail(activityId, activityReadAdapter);
+
+      if (!isMounted) {
+        return;
+      }
+
+      if (result.status === "ready") {
+        setActivity(result.activity);
+        setSubmitMessage("");
+        return;
+      }
+
+      if (result.status === "empty") {
+        setActivity(undefined);
+        setSubmitMessage("活动不存在或暂不可排队");
+        return;
+      }
+
+      if (result.status === "error") {
+        setSubmitMessage(result.message);
+      }
+    }
+
+    void loadActivity();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activityId, activityReadAdapter]);
 
   async function handleJoinWaitlist() {
     if (!activity) {
