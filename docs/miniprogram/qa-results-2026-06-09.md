@@ -12,6 +12,26 @@ This QA pass focused on local WeChat Developer Tools import and repository-side 
 - AppID mode: `touristappid`
 - Mini Program root: `dist/`
 
+## AppID Privacy Note
+
+The public repository should keep `apps/miniprogram/project.config.json` on `touristappid`.
+
+Reason:
+
+- A Mini Program AppID is an application identifier, not the AppSecret.
+- Exposing only AppID does not grant upload, admin, cloud database, payment, or API access.
+- Still, a real AppID can publicly associate this repository with the Mini Program before launch.
+
+For preview QA, temporarily replace `touristappid` with the real AppID locally, generate the preview QR code, then restore `touristappid` before committing.
+
+Never commit:
+
+- AppSecret
+- cloud environment secret keys
+- payment merchant secrets
+- private API tokens
+- production database credentials
+
 ## Import Result
 
 Imported successfully through WeChat Developer Tools CLI:
