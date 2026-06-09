@@ -6,7 +6,14 @@ import { getActivity } from "../../services/activityService";
 import { DEFAULT_CURRENT_USER_ID, getSettlementByActivityId } from "../../services/mockData";
 import { formatActivityDateTime, getCostLabel } from "../../services/activityPresentation";
 import { getArrivalOptions, getPaymentActionLabel } from "../../services/flowViewModels";
-import { confirmArrival, confirmPayment, joinWaitlist, signup, type ArrivalStatus } from "../../services/registrationService";
+import type { ArrivalStatus } from "../../services/registrationService";
+import {
+  createRegistrationWriteAdapter,
+  runConfirmArrival,
+  runConfirmPayment,
+  runJoinWaitlist,
+  runSignup,
+} from "../../services/registrationWriteService";
 
 import "../signup/index.css";
 import "./index.css";
@@ -18,33 +25,66 @@ export default function ItineraryPage() {
   const [arrivalStatus, setArrivalStatus] = useState<ArrivalStatus>("confirmed");
   const [isJuZhangQueued, setIsJuZhangQueued] = useState(false);
   const [settlement, setSettlement] = useState(activity ? getSettlementByActivityId(activity.id) : undefined);
+  const [pendingAction, setPendingAction] = useState<string | undefined>();
+  const [actionMessage, setActionMessage] = useState("");
 
-  function handleArrival(status: ArrivalStatus) {
+  async function handleArrival(status: ArrivalStatus) {
     if (!activity) {
       return;
     }
 
-    signup(activity.id, { willingToBeJuZhang: false });
-    confirmArrival(activity.id, status);
-    setArrivalStatus(status);
+    const adapter = createRegistrationWriteAdapter();
+    setPendingAction(`arrival-${status}`);
+    setActionMessage("");
+    const signupResult = await runSignup(adapter, activity.id, { willingToBeJuZhang: false });
+    const arrivalResult =
+      signupResult.status === "ready" ? await runConfirmArrival(adapter, activity.id, status) : signupResult;
+    setPendingAction(undefined);
+
+    if (arrivalResult.status === "ready") {
+      setArrivalStatus(status);
+      return;
+    }
+
+    setActionMessage(arrivalResult.message);
   }
 
-  function handlePayment() {
+  async function handlePayment() {
     if (!activity) {
       return;
     }
 
-    signup(activity.id, { willingToBeJuZhang: false });
-    setSettlement(confirmPayment(activity.id));
+    const adapter = createRegistrationWriteAdapter();
+    setPendingAction("payment");
+    setActionMessage("");
+    await runSignup(adapter, activity.id, { willingToBeJuZhang: false });
+    const paymentResult = await runConfirmPayment(adapter, activity.id);
+    setPendingAction(undefined);
+
+    if (paymentResult.status === "ready") {
+      setSettlement(paymentResult.settlement);
+      return;
+    }
+
+    setActionMessage(paymentResult.message);
   }
 
-  function handleJuZhangQueue() {
+  async function handleJuZhangQueue() {
     if (!activity) {
       return;
     }
 
-    joinWaitlist(activity.id, "juZhang");
-    setIsJuZhangQueued(true);
+    setPendingAction("juZhangQueue");
+    setActionMessage("");
+    const result = await runJoinWaitlist(createRegistrationWriteAdapter(), activity.id, "juZhang");
+    setPendingAction(undefined);
+
+    if (result.status === "ready") {
+      setIsJuZhangQueued(true);
+      return;
+    }
+
+    setActionMessage(result.message);
   }
 
   return (
@@ -69,9 +109,10 @@ export default function ItineraryPage() {
             <Button
               className={arrivalStatus === option.status ? "arrival-button active" : "arrival-button"}
               key={option.status}
+              disabled={pendingAction !== undefined}
               onClick={() => handleArrival(option.status)}
             >
-              {option.label}
+              {pendingAction === `arrival-${option.status}` ? "同步中" : option.label}
             </Button>
           ))}
         </View>
@@ -80,18 +121,20 @@ export default function ItineraryPage() {
       <View className="flow-card">
         <Text className="card-title">局长申请</Text>
         <Text className="card-copy">如果该活动已有局长，会进入候选队列。</Text>
-        <Button className="outline-button" onClick={handleJuZhangQueue}>
-          {isJuZhangQueued ? "局长排队中" : "申请局长"}
+        <Button className="outline-button" disabled={pendingAction !== undefined} onClick={handleJuZhangQueue}>
+          {pendingAction === "juZhangQueue" ? "提交中" : isJuZhangQueued ? "局长排队中" : "申请局长"}
         </Button>
       </View>
 
       <View className="flow-card">
         <Text className="card-title">费用确认</Text>
         <Text className="card-copy">普通参与者确认自己的费用和支付状态，局长再统一核准。</Text>
-        <Button className="outline-button" onClick={handlePayment}>
-          {getPaymentActionLabel(settlement, DEFAULT_CURRENT_USER_ID)}
+        <Button className="outline-button" disabled={pendingAction !== undefined} onClick={handlePayment}>
+          {pendingAction === "payment" ? "确认中" : getPaymentActionLabel(settlement, DEFAULT_CURRENT_USER_ID)}
         </Button>
       </View>
+
+      {actionMessage ? <Text className="flow-message">{actionMessage}</Text> : null}
 
       <View className="bottom-link-row">
         <Text className="bottom-link">返回活动详情页</Text>

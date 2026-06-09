@@ -4,7 +4,7 @@ import { useRouter } from "@tarojs/taro";
 
 import { getActivity } from "../../services/activityService";
 import { getWaitlistDescription, getWaitlistTitle } from "../../services/flowViewModels";
-import { joinWaitlist } from "../../services/registrationService";
+import { createRegistrationWriteAdapter, runJoinWaitlist } from "../../services/registrationWriteService";
 import type { WaitlistType } from "../../services/mockData";
 
 import "../signup/index.css";
@@ -16,13 +16,25 @@ export default function WaitlistPage() {
   const waitlistType: WaitlistType = router.params.type === "juZhang" ? "juZhang" : "activity";
   const activity = getActivity(activityId);
   const [order, setOrder] = useState<number | undefined>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
 
-  function handleJoinWaitlist() {
+  async function handleJoinWaitlist() {
     if (!activity) {
       return;
     }
 
-    setOrder(joinWaitlist(activity.id, waitlistType).order);
+    setIsSubmitting(true);
+    setSubmitMessage("");
+    const result = await runJoinWaitlist(createRegistrationWriteAdapter(), activity.id, waitlistType);
+    setIsSubmitting(false);
+
+    if (result.status === "ready") {
+      setOrder(result.waitlistEntry.order);
+      return;
+    }
+
+    setSubmitMessage(result.message);
   }
 
   return (
@@ -33,9 +45,10 @@ export default function WaitlistPage() {
       <View className="flow-card waitlist-card">
         <Text className="card-title">{activity?.title ?? "活动不存在"}</Text>
         <Text className="card-copy">{getWaitlistDescription(waitlistType)}</Text>
-        <Button className="primary-button" disabled={!activity} onClick={handleJoinWaitlist}>
-          {order ? `已排第 ${order} 位` : "加入排队"}
+        <Button className="primary-button" disabled={!activity || isSubmitting} onClick={handleJoinWaitlist}>
+          {isSubmitting ? "提交中" : order ? `已排第 ${order} 位` : "加入排队"}
         </Button>
+        {submitMessage ? <Text className="flow-message">{submitMessage}</Text> : null}
       </View>
 
       <View className="flow-card">

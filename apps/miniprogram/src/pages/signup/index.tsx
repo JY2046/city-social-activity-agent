@@ -1,10 +1,11 @@
 import { Button, Switch, Text, View } from "@tarojs/components";
 import { useState } from "react";
 import { useRouter } from "@tarojs/taro";
+import type { Registration } from "@city-social/domain";
 
 import { getActivity } from "../../services/activityService";
 import { getSignupViewState } from "../../services/flowViewModels";
-import { signup } from "../../services/registrationService";
+import { createRegistrationWriteAdapter, runSignup } from "../../services/registrationWriteService";
 
 import "./index.css";
 
@@ -14,15 +15,27 @@ export default function SignupPage() {
   const activity = getActivity(activityId);
   const [rulesAccepted, setRulesAccepted] = useState(false);
   const [willingToBeJuZhang, setWillingToBeJuZhang] = useState(false);
-  const [registration, setRegistration] = useState<ReturnType<typeof signup> | undefined>();
+  const [registration, setRegistration] = useState<Registration | undefined>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
   const viewState = getSignupViewState(registration);
 
-  function handleSignup() {
+  async function handleSignup() {
     if (!rulesAccepted || !activity) {
       return;
     }
 
-    setRegistration(signup(activity.id, { willingToBeJuZhang }));
+    setIsSubmitting(true);
+    setSubmitMessage("");
+    const result = await runSignup(createRegistrationWriteAdapter(), activity.id, { willingToBeJuZhang });
+    setIsSubmitting(false);
+
+    if (result.status === "ready") {
+      setRegistration(result.registration);
+      return;
+    }
+
+    setSubmitMessage(result.message);
   }
 
   return (
@@ -53,9 +66,10 @@ export default function SignupPage() {
         </View>
       </View>
 
-      <Button className="primary-button" disabled={!rulesAccepted || !activity} onClick={handleSignup}>
-        确认报名
+      <Button className="primary-button" disabled={!rulesAccepted || !activity || isSubmitting} onClick={handleSignup}>
+        {isSubmitting ? "提交中" : "确认报名"}
       </Button>
+      {submitMessage ? <Text className="flow-message">{submitMessage}</Text> : null}
 
       <View className="result-card">
         <Text className="result-title">{viewState.title}</Text>

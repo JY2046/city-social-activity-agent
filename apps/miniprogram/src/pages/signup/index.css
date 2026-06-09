@@ -12,7 +12,8 @@
 .card-copy,
 .switch-label,
 .result-title,
-.task-entry {
+.task-entry,
+.flow-message {
   display: block;
 }
 
@@ -93,4 +94,12 @@
   background: #edf5e7;
   font-size: 24px;
   font-weight: 800;
+}
+
+.flow-message {
+  margin-top: 16px;
+  color: #d84b3f;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.35;
 }
