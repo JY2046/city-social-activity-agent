@@ -13,6 +13,8 @@
     "build": "tsc -b && vite build",
     "generate:cloud-seed": "npm --workspace @city-social/domain run build && node scripts/generate-cloud-seed.mjs",
     "generate:cloud-functions": "node scripts/generate-cloud-functions.mjs",
+    "wechat:cloud-functions:dry-run": "node scripts/wechat-cloud-deploy.mjs",
+    "wechat:cloud-functions:deploy": "node scripts/wechat-cloud-deploy.mjs --execute",
     "test": "vitest run",
     "test:watch": "vitest"
   },

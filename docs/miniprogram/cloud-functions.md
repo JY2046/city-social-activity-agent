@@ -143,6 +143,32 @@ Upload in WeChat Developer Tools:
 5. For every function, install cloud dependencies when Developer Tools prompts.
 6. Rebuild the Mini Program and test the activity feed, detail, signup, waitlist, arrival, and settlement flows.
 
+CLI deploy helper:
+
+```bash
+/Applications/wechatwebdevtools.app/Contents/MacOS/cli cloud env list --project apps/miniprogram
+WECHAT_CLOUD_ENV_ID=<your-env-id> npm run wechat:cloud-functions:dry-run
+WECHAT_CLOUD_ENV_ID=<your-env-id> npm run wechat:cloud-functions:deploy
+```
+
+Use the first command to list Cloud Development environments when the WeChat Developer Tools CLI can reach the WeChat cloud service. If it returns `ret:1000 system error`, open WeChat Developer Tools, go to Cloud Development, and copy the environment ID from the environment selector instead.
+
+The dry-run command prints the exact WeChat Developer Tools CLI command without uploading anything. The deploy command adds `--execute` and runs:
+
+```bash
+/Applications/wechatwebdevtools.app/Contents/MacOS/cli cloud functions deploy \
+  --env <your-env-id> \
+  --project apps/miniprogram \
+  --remote-npm-install \
+  --names listActivities getActivityDetail signupActivity joinWaitlist confirmArrival confirmSettlement getJuZhangWorkspace respondJuZhangAssignment submitFeedback getFeedbackCompletionState
+```
+
+Notes:
+
+- `apps/miniprogram/project.config.json` already points `cloudfunctionRoot` to `../../cloud/functions/deploy/`.
+- The helper requires `WECHAT_CLOUD_ENV_ID` or `--env <your-env-id>` so a public repo never needs to store a cloud environment id.
+- Use `npm run generate:cloud-functions` before deploying after runtime changes.
+
 Production deployment note:
 
 - The current adapter is shaped like WeChat Cloud Database and is covered by local tests, but the multi-document writes must be wrapped in WeChat Cloud Database transactions before real traffic.

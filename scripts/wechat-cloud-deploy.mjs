@@ -1,0 +1,131 @@
+#!/usr/bin/env node
+
+import { spawn } from "node:child_process";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const defaultCliPath = "/Applications/wechatwebdevtools.app/Contents/MacOS/cli";
+const defaultProjectPath = resolve("apps/miniprogram");
+const deployFunctionNames = [
+  "listActivities",
+  "getActivityDetail",
+  "signupActivity",
+  "joinWaitlist",
+  "confirmArrival",
+  "confirmSettlement",
+  "getJuZhangWorkspace",
+  "respondJuZhangAssignment",
+  "submitFeedback",
+  "getFeedbackCompletionState",
+];
+
+function readFlagValue(args, flagName) {
+  const index = args.indexOf(flagName);
+
+  return index >= 0 ? args[index + 1] : undefined;
+}
+
+function quoteShellArg(value) {
+  return /^[A-Za-z0-9_./:=@-]+$/.test(value) ? value : `'${value.replaceAll("'", "'\\''")}'`;
+}
+
+export function getDeployFunctionNames() {
+  return [...deployFunctionNames];
+}
+
+export function createDeployCommand({
+  cliPath = defaultCliPath,
+  envId,
+  projectPath = defaultProjectPath,
+  functionNames = deployFunctionNames,
+}) {
+  return [
+    cliPath,
+    "cloud",
+    "functions",
+    "deploy",
+    "--env",
+    envId,
+    "--project",
+    projectPath,
+    "--remote-npm-install",
+    "--names",
+    ...functionNames,
+  ];
+}
+
+export function createDeployPlan({
+  envId = process.env.WECHAT_CLOUD_ENV_ID ?? "",
+  cliPath = defaultCliPath,
+  projectPath = defaultProjectPath,
+  functionNames = deployFunctionNames,
+} = {}) {
+  if (!envId.trim()) {
+    throw new Error("WECHAT_CLOUD_ENV_ID is required");
+  }
+
+  const command = createDeployCommand({
+    cliPath,
+    envId,
+    projectPath,
+    functionNames,
+  });
+
+  return {
+    command,
+    functionNames: [...functionNames],
+    shellCommand: command.map(quoteShellArg).join(" "),
+  };
+}
+
+export function isDirectRun(moduleUrl, argvPath, cwd = process.cwd()) {
+  if (!argvPath) {
+    return false;
+  }
+
+  return fileURLToPath(moduleUrl) === resolve(cwd, argvPath);
+}
+
+function runCommand(command) {
+  return new Promise((resolvePromise, reject) => {
+    const child = spawn(command[0], command.slice(1), { stdio: "inherit" });
+
+    child.on("error", reject);
+    child.on("exit", (code) => {
+      if (code === 0) {
+        resolvePromise();
+        return;
+      }
+
+      reject(new Error(`WeChat cloud deploy failed with exit code ${code}`));
+    });
+  });
+}
+
+async function main() {
+  const args = process.argv.slice(2);
+  const envId = readFlagValue(args, "--env") ?? process.env.WECHAT_CLOUD_ENV_ID ?? "";
+  const cliPath = readFlagValue(args, "--cli") ?? defaultCliPath;
+  const projectPath = readFlagValue(args, "--project") ?? defaultProjectPath;
+  const shouldExecute = args.includes("--execute");
+  const plan = createDeployPlan({ envId, cliPath, projectPath });
+
+  console.log(`Cloud environment: ${envId}`);
+  console.log(`Project: ${projectPath}`);
+  console.log(`Functions: ${plan.functionNames.join(", ")}`);
+  console.log(`Command: ${plan.shellCommand}`);
+
+  if (!shouldExecute) {
+    console.log("Dry run only. Add --execute to deploy.");
+    return;
+  }
+
+  await runCommand(plan.command);
+}
+
+if (isDirectRun(import.meta.url, process.argv[1])) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+  });
+}

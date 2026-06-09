@@ -29,3 +29,17 @@ npm run generate:cloud-functions
 ```
 
 Then upload each function folder in WeChat Developer Tools Cloud Development. Do not edit generated `runtime.js` files directly; update `scripts/generate-cloud-functions.mjs` instead.
+
+CLI dry run:
+
+```bash
+WECHAT_CLOUD_ENV_ID=<your-env-id> npm run wechat:cloud-functions:dry-run
+```
+
+CLI deploy:
+
+```bash
+WECHAT_CLOUD_ENV_ID=<your-env-id> npm run wechat:cloud-functions:deploy
+```
+
+The deploy helper uses the `cloudfunctionRoot` configured in `apps/miniprogram/project.config.json` and passes `--remote-npm-install` so `wx-server-sdk` is installed in Cloud Development instead of uploading local `node_modules`.
