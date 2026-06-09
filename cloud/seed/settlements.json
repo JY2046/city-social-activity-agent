@@ -1,0 +1,57 @@
+[
+  {
+    "activityId": "a-sushi",
+    "type": "paid",
+    "totalAmount": 672,
+    "participantCount": 4,
+    "paymentStatusByUser": {
+      "u-lin": true,
+      "u-chen": true,
+      "u-momo": false,
+      "u-qiao": true
+    },
+    "_id": "a-sushi",
+    "merchantPaymentMode": "selfPayToMerchant",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "activityId": "a-coffee",
+    "type": "paid",
+    "totalAmount": 116,
+    "participantCount": 2,
+    "paymentStatusByUser": {
+      "u-chen": true,
+      "u-qiao": false
+    },
+    "_id": "a-coffee",
+    "merchantPaymentMode": "selfPayToMerchant",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "activityId": "a-bar",
+    "type": "paid",
+    "totalAmount": 240,
+    "participantCount": 2,
+    "paymentStatusByUser": {
+      "u-lin": true,
+      "u-momo": false
+    },
+    "_id": "a-bar",
+    "merchantPaymentMode": "selfPayToMerchant",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "activityId": "a-walk",
+    "type": "free",
+    "totalAmount": 0,
+    "participantCount": 3,
+    "paymentStatusByUser": {},
+    "_id": "a-walk",
+    "merchantPaymentMode": "free",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  }
+]
