@@ -16,6 +16,28 @@ Client integration:
 - Shared cloud response parsing lives in `apps/miniprogram/src/services/cloudFunctionClient.ts`.
 - See `docs/miniprogram/cloud-adapter.md` for the build-time mock/cloud switch.
 
+Local implementation status:
+
+- The first locally testable handler layer lives in `cloud/functions/src/cloudHandlers.ts`.
+- `cloud/functions/src/cloudStore.ts` currently provides an in-memory store seeded from domain mock data so cloud behavior can be tested without the WeChat runtime.
+- `cloud/functions/src/cloudRuntime.ts` dispatches by cloud function name and returns the same envelope expected by the Mini Program client.
+- Before production deployment, replace the in-memory store with a WeChat Cloud Database adapter that implements the same activity, registration, waitlist, and settlement operations.
+
+Local verification:
+
+```bash
+npm test -- cloud/functions/src/cloudHandlers.test.ts cloud/functions/src/cloudRuntime.test.ts
+```
+
+First covered functions:
+
+- `listActivities`
+- `getActivityDetail`
+- `signupActivity`
+- `joinWaitlist`
+- `confirmArrival`
+- `confirmSettlement`
+
 ## Functions
 
 ### `loginOrCreateUser`
