@@ -1,3 +1,6 @@
+import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -5,6 +8,7 @@ import {
   createDeployPlan,
   getDeployFunctionNames,
   isDirectRun,
+  validateDeployPackages,
 } from "./wechat-cloud-deploy.mjs";
 
 describe("wechat cloud deploy helper", () => {
@@ -61,6 +65,18 @@ describe("wechat cloud deploy helper", () => {
   it("recognizes direct execution even when argv uses a relative path", () => {
     expect(isDirectRun("file:///repo/scripts/wechat-cloud-deploy.mjs", "scripts/wechat-cloud-deploy.mjs", "/repo")).toBe(
       true,
+    );
+  });
+
+  it("fails fast when a deploy package is missing required files", async () => {
+    const root = await mkdtemp(join(tmpdir(), "wechat-cloud-deploy-"));
+    const functionDir = join(root, "listActivities");
+    await mkdir(functionDir);
+    await writeFile(join(functionDir, "index.js"), "exports.main = async () => ({});\n");
+    await writeFile(join(functionDir, "package.json"), "{\"dependencies\":{\"wx-server-sdk\":\"latest\"}}\n");
+
+    await expect(validateDeployPackages(root, ["listActivities"])).rejects.toThrow(
+      "listActivities is missing runtime.js",
     );
   });
 });

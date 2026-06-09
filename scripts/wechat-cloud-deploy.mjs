@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
+import { access } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const defaultCliPath = "/Applications/wechatwebdevtools.app/Contents/MacOS/cli";
 const defaultProjectPath = resolve("apps/miniprogram");
+const defaultDeployRoot = resolve("cloud/functions/deploy");
+const requiredDeployFiles = ["index.js", "runtime.js", "package.json"];
 const deployFunctionNames = [
   "listActivities",
   "getActivityDetail",
@@ -78,6 +81,18 @@ export function createDeployPlan({
   };
 }
 
+export async function validateDeployPackages(deployRoot = defaultDeployRoot, functionNames = deployFunctionNames) {
+  for (const functionName of functionNames) {
+    for (const fileName of requiredDeployFiles) {
+      try {
+        await access(resolve(deployRoot, functionName, fileName));
+      } catch {
+        throw new Error(`${functionName} is missing ${fileName}`);
+      }
+    }
+  }
+}
+
 export function isDirectRun(moduleUrl, argvPath, cwd = process.cwd()) {
   if (!argvPath) {
     return false;
@@ -107,11 +122,15 @@ async function main() {
   const envId = readFlagValue(args, "--env") ?? process.env.WECHAT_CLOUD_ENV_ID ?? "";
   const cliPath = readFlagValue(args, "--cli") ?? defaultCliPath;
   const projectPath = readFlagValue(args, "--project") ?? defaultProjectPath;
+  const deployRoot = readFlagValue(args, "--deploy-root") ?? defaultDeployRoot;
   const shouldExecute = args.includes("--execute");
   const plan = createDeployPlan({ envId, cliPath, projectPath });
 
+  await validateDeployPackages(deployRoot, plan.functionNames);
+
   console.log(`Cloud environment: ${envId}`);
   console.log(`Project: ${projectPath}`);
+  console.log(`Deploy root: ${deployRoot}`);
   console.log(`Functions: ${plan.functionNames.join(", ")}`);
   console.log(`Command: ${plan.shellCommand}`);
 

@@ -153,7 +153,7 @@ WECHAT_CLOUD_ENV_ID=<your-env-id> npm run wechat:cloud-functions:deploy
 
 Use the first command to list Cloud Development environments when the WeChat Developer Tools CLI can reach the WeChat cloud service. If it returns `ret:1000 system error`, open WeChat Developer Tools, go to Cloud Development, and copy the environment ID from the environment selector instead.
 
-The dry-run command prints the exact WeChat Developer Tools CLI command without uploading anything. The deploy command adds `--execute` and runs:
+The dry-run command first verifies every generated cloud function folder has `index.js`, `runtime.js`, and `package.json`, then prints the exact WeChat Developer Tools CLI command without uploading anything. The deploy command adds `--execute` and runs:
 
 ```bash
 /Applications/wechatwebdevtools.app/Contents/MacOS/cli cloud functions deploy \
