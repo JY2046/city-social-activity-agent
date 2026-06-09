@@ -1,0 +1,15 @@
+import { getMockStore, type MiniProgramActivity } from "./mockData";
+
+function clone<T>(value: T): T {
+  return structuredClone(value);
+}
+
+export function listActivities(): MiniProgramActivity[] {
+  return clone(getMockStore().activities);
+}
+
+export function getActivity(activityId: string): MiniProgramActivity | undefined {
+  const activity = getMockStore().activities.find((item) => item.id === activityId);
+
+  return activity ? clone(activity) : undefined;
+}

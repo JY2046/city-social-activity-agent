@@ -1,0 +1,162 @@
+import {
+  mockActivities,
+  mockRegistrations,
+  mockSettlements,
+  mockUsers,
+  type Activity,
+  type ActivityGalleryItem,
+  type Registration,
+  type Settlement,
+  type User,
+} from "@city-social/domain";
+
+export const DEFAULT_CURRENT_USER_ID = "u-current";
+
+export type WaitlistType = "activity" | "juZhang";
+
+export interface MiniProgramActivity extends Activity {
+  coverImagePath: string;
+  gallery: ActivityGalleryItem[];
+}
+
+export interface WaitlistEntry {
+  id: string;
+  activityId: string;
+  userId: string;
+  type: WaitlistType;
+  order: number;
+  status: "waiting" | "promoted" | "cancelled";
+}
+
+export interface MockStore {
+  users: User[];
+  activities: MiniProgramActivity[];
+  registrations: Registration[];
+  settlements: Settlement[];
+  waitlistEntries: WaitlistEntry[];
+}
+
+const currentUser: User = {
+  id: DEFAULT_CURRENT_USER_ID,
+  nickname: "Lily",
+  avatar: "L",
+  interests: ["饭局", "咖啡", "城市散步"],
+  bio: "正在体验小程序冷启动版本。",
+  reputationLevel: "可信参与者",
+  attendedEventCount: 5,
+  showAttendedEventCount: true,
+  badges: ["准时到场"],
+  canBeJuZhang: true,
+};
+
+function clone<T>(value: T): T {
+  return structuredClone(value);
+}
+
+function toMiniProgramImagePath(imagePath: string): string {
+  return `/assets/${imagePath}`;
+}
+
+function toMiniProgramActivity(activity: Activity): MiniProgramActivity {
+  const gallery = activity.gallery.map((item) => ({
+    ...item,
+    imagePath: toMiniProgramImagePath(item.imagePath),
+  }));
+
+  return {
+    ...activity,
+    gallery,
+    coverImagePath: gallery[0]?.imagePath ?? "/assets/images/activity-sushi.jpg",
+  };
+}
+
+function createInitialStore(): MockStore {
+  return {
+    users: [...clone(mockUsers), currentUser],
+    activities: clone(mockActivities).map(toMiniProgramActivity),
+    registrations: clone(mockRegistrations),
+    settlements: clone(mockSettlements),
+    waitlistEntries: [],
+  };
+}
+
+let store = createInitialStore();
+
+export function resetMockStore(): MockStore {
+  store = createInitialStore();
+
+  return getMockStore();
+}
+
+export function getMockStore(): MockStore {
+  return store;
+}
+
+export function listWaitlistEntries(): WaitlistEntry[] {
+  return clone(store.waitlistEntries);
+}
+
+export function getSettlementByActivityId(activityId: string): Settlement | undefined {
+  const settlement = store.settlements.find((item) => item.activityId === activityId);
+
+  return settlement ? clone(settlement) : undefined;
+}
+
+export function createWaitlistEntry(activityId: string, userId: string, type: WaitlistType): WaitlistEntry {
+  const existingEntry = store.waitlistEntries.find(
+    (entry) => entry.activityId === activityId && entry.userId === userId && entry.type === type,
+  );
+
+  if (existingEntry) {
+    return clone(existingEntry);
+  }
+
+  const order =
+    store.waitlistEntries.filter((entry) => entry.activityId === activityId && entry.type === type).length + 1;
+  const entry: WaitlistEntry = {
+    id: `w-${activityId}-${type}-${userId}`,
+    activityId,
+    userId,
+    type,
+    order,
+    status: "waiting",
+  };
+
+  store.waitlistEntries.push(entry);
+
+  return clone(entry);
+}
+
+export function upsertRegistration(registration: Registration): Registration {
+  const existingIndex = store.registrations.findIndex(
+    (item) => item.activityId === registration.activityId && item.userId === registration.userId,
+  );
+
+  if (existingIndex >= 0) {
+    store.registrations[existingIndex] = registration;
+  } else {
+    store.registrations.push(registration);
+  }
+
+  return clone(registration);
+}
+
+export function updateActivity(activity: MiniProgramActivity): MiniProgramActivity {
+  const existingIndex = store.activities.findIndex((item) => item.id === activity.id);
+
+  if (existingIndex >= 0) {
+    store.activities[existingIndex] = activity;
+  }
+
+  return clone(activity);
+}
+
+export function updateSettlement(settlement: Settlement): Settlement {
+  const existingIndex = store.settlements.findIndex((item) => item.activityId === settlement.activityId);
+
+  if (existingIndex >= 0) {
+    store.settlements[existingIndex] = settlement;
+  }
+
+  return clone(settlement);
+}

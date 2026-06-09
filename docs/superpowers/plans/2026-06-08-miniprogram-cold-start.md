@@ -97,11 +97,11 @@ Completed on 2026-06-09:
 - Create: `apps/miniprogram/src/services/mockData.ts`
 - Create: `apps/miniprogram/src/services/registrationService.ts`
 
-- [ ] **Step 1: Add activity mock data**
+- [x] **Step 1: Add activity mock data**
 
 Copy the current curated activities into a Mini Program service shape with local image paths.
 
-- [ ] **Step 2: Add service functions**
+- [x] **Step 2: Add service functions**
 
 Expose:
 
@@ -114,9 +114,13 @@ confirmArrival(activityId, arrivalStatus)
 confirmPayment(activityId)
 ```
 
-- [ ] **Step 3: Add unit tests**
+- [x] **Step 3: Add unit tests**
 
 Verify waitlist, signup, and payment status transitions with pure service tests.
+
+Completed on 2026-06-09:
+
+- `npm test -- apps/miniprogram/src/services/registrationService.test.ts`
 
 ## Task 4: Discover And Detail Pages
 

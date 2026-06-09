@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "vite",
+    "pretest": "npm --workspace @city-social/domain run build",
     "build": "tsc -b && vite build",
     "test": "vitest run",
     "test:watch": "vitest"
