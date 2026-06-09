@@ -10,6 +10,12 @@ This document defines the cloud function layer for the Mini Program MVP. Functio
 - Every function writes an `adminActions` or operation log entry for high-risk state changes.
 - Every function must reject blocked or limited users.
 
+Client integration:
+
+- Mini Program cloud wrappers live in `apps/miniprogram/src/services/cloudServices.ts`.
+- Shared cloud response parsing lives in `apps/miniprogram/src/services/cloudFunctionClient.ts`.
+- See `docs/miniprogram/cloud-adapter.md` for the build-time mock/cloud switch.
+
 ## Functions
 
 ### `loginOrCreateUser`

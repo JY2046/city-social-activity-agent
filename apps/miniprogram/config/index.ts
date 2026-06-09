@@ -13,7 +13,10 @@ export default defineConfig<"webpack5">(async () => {
     sourceRoot: "src",
     outputRoot: "dist",
     plugins: [],
-    defineConstants: {},
+    defineConstants: {
+      __CITY_SOCIAL_DATA_SOURCE__: JSON.stringify(process.env.CITY_SOCIAL_DATA_SOURCE ?? "mock"),
+      __WECHAT_CLOUD_ENV_ID__: JSON.stringify(process.env.WECHAT_CLOUD_ENV_ID ?? ""),
+    },
     copy: {
       patterns: [
         {
