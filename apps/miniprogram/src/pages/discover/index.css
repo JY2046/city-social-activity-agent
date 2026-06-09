@@ -112,6 +112,18 @@
   box-shadow: 0 8px 18px rgba(36, 69, 47, 0.24);
 }
 
+.feed-state {
+  display: block;
+  margin: 6px 0 24px;
+  padding: 18px 22px;
+  border-radius: 20px;
+  color: #526458;
+  background: rgba(255, 253, 250, 0.72);
+  border: 1px solid rgba(36, 69, 47, 0.08);
+  font-size: 23px;
+  line-height: 1.35;
+}
+
 .activity-list {
   display: flex;
   flex-direction: column;

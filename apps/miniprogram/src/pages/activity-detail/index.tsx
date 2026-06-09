@@ -1,7 +1,8 @@
 import { View, Text } from "@tarojs/components";
 import { useRouter, useShareAppMessage } from "@tarojs/taro";
+import { useEffect, useState } from "react";
 import DetailGallery from "../../components/DetailGallery";
-import { getActivity } from "../../services/activityService";
+import { loadActivityDetail, type ActivityDetailLoadState } from "../../services/activityReadService";
 import {
   formatActivityDateTime,
   getActivityStatusLabel,
@@ -11,15 +12,51 @@ import {
 
 import "./index.css";
 
+const initialDetailState: ActivityDetailLoadState = {
+  status: "loading",
+  activity: undefined,
+};
+
 export default function ActivityDetailPage() {
   const router = useRouter();
   const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
-  const activity = getActivity(activityId);
+  const [detailState, setDetailState] = useState<ActivityDetailLoadState>(initialDetailState);
+  const activity = detailState.activity;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    void loadActivityDetail(activityId).then((nextState) => {
+      if (isMounted) {
+        setDetailState(nextState);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activityId]);
 
   useShareAppMessage(() => ({
-    title: activity?.title ?? "先活动，后关系",
+    title: activity?.title ?? "开个小局",
     path: `/pages/activity-detail/index?activityId=${activity?.id ?? activityId}`,
   }));
+
+  if (detailState.status === "loading") {
+    return (
+      <View className="detail-page">
+        <Text className="detail-state">正在打开这个小局...</Text>
+      </View>
+    );
+  }
+
+  if (detailState.status === "error") {
+    return (
+      <View className="detail-page">
+        <Text className="detail-state">活动加载失败：{detailState.message}</Text>
+      </View>
+    );
+  }
 
   if (!activity) {
     return (

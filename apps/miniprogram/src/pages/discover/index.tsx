@@ -1,12 +1,33 @@
 import { View, Text } from "@tarojs/components";
+import { useEffect, useState } from "react";
 import ActivityCard from "../../components/ActivityCard";
-import { listActivities } from "../../services/activityService";
+import { loadActivityFeed, type ActivityFeedLoadState } from "../../services/activityReadService";
 
 import "./index.css";
 
+const initialFeedState: ActivityFeedLoadState = {
+  status: "loading",
+  activities: [],
+};
+
 export default function DiscoverPage() {
-  const activities = listActivities();
+  const [feedState, setFeedState] = useState<ActivityFeedLoadState>(initialFeedState);
+  const activities = feedState.activities;
   const [featuredActivity, ...activityList] = activities;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    void loadActivityFeed().then((nextState) => {
+      if (isMounted) {
+        setFeedState(nextState);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <View className="page page-light">
@@ -31,6 +52,10 @@ export default function DiscoverPage() {
         <Text className="category">酒吧</Text>
         <Text className="category">免费活动</Text>
       </View>
+
+      {feedState.status === "loading" ? <Text className="feed-state">正在打开今天的小局...</Text> : null}
+      {feedState.status === "error" ? <Text className="feed-state">活动加载失败：{feedState.message}</Text> : null}
+      {feedState.status === "empty" ? <Text className="feed-state">今天的小局还在准备中</Text> : null}
 
       {featuredActivity ? <ActivityCard activity={featuredActivity} featured /> : null}
 

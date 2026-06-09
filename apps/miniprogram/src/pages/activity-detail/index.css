@@ -13,8 +13,19 @@
 .section-copy,
 .highlight-title,
 .secondary-action,
-.primary-action {
+.primary-action,
+.detail-state {
   display: block;
+}
+
+.detail-state {
+  padding: 28px;
+  border-radius: 26px;
+  color: rgba(247, 244, 236, 0.86);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 28px;
+  line-height: 1.45;
 }
 
 .hero-panel {
