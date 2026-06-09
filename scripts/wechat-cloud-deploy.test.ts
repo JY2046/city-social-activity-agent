@@ -31,6 +31,7 @@ describe("wechat cloud deploy helper", () => {
     expect(
       createDeployCommand({
         cliPath: "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+        deployRoot: "/repo/cloud/functions/deploy",
         envId: "cloud1-dev",
         projectPath: "/repo/apps/miniprogram",
       }),
@@ -44,17 +45,17 @@ describe("wechat cloud deploy helper", () => {
       "--project",
       "/repo/apps/miniprogram",
       "--remote-npm-install",
-      "--names",
-      "listActivities",
-      "getActivityDetail",
-      "signupActivity",
-      "joinWaitlist",
-      "confirmArrival",
-      "confirmSettlement",
-      "getJuZhangWorkspace",
-      "respondJuZhangAssignment",
-      "submitFeedback",
-      "getFeedbackCompletionState",
+      "--paths",
+      "/repo/cloud/functions/deploy/listActivities",
+      "/repo/cloud/functions/deploy/getActivityDetail",
+      "/repo/cloud/functions/deploy/signupActivity",
+      "/repo/cloud/functions/deploy/joinWaitlist",
+      "/repo/cloud/functions/deploy/confirmArrival",
+      "/repo/cloud/functions/deploy/confirmSettlement",
+      "/repo/cloud/functions/deploy/getJuZhangWorkspace",
+      "/repo/cloud/functions/deploy/respondJuZhangAssignment",
+      "/repo/cloud/functions/deploy/submitFeedback",
+      "/repo/cloud/functions/deploy/getFeedbackCompletionState",
     ]);
   });
 

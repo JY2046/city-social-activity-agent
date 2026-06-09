@@ -38,6 +38,7 @@ export function getDeployFunctionNames() {
 
 export function createDeployCommand({
   cliPath = defaultCliPath,
+  deployRoot = defaultDeployRoot,
   envId,
   projectPath = defaultProjectPath,
   functionNames = deployFunctionNames,
@@ -52,14 +53,15 @@ export function createDeployCommand({
     "--project",
     projectPath,
     "--remote-npm-install",
-    "--names",
-    ...functionNames,
+    "--paths",
+    ...functionNames.map((functionName) => resolve(deployRoot, functionName)),
   ];
 }
 
 export function createDeployPlan({
   envId = process.env.WECHAT_CLOUD_ENV_ID ?? "",
   cliPath = defaultCliPath,
+  deployRoot = defaultDeployRoot,
   projectPath = defaultProjectPath,
   functionNames = deployFunctionNames,
 } = {}) {
@@ -69,6 +71,7 @@ export function createDeployPlan({
 
   const command = createDeployCommand({
     cliPath,
+    deployRoot,
     envId,
     projectPath,
     functionNames,
