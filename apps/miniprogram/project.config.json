@@ -1,8 +1,8 @@
 {
   "miniprogramRoot": "dist/",
   "cloudfunctionRoot": "../../cloud/functions/deploy/",
-  "projectname": "city-social-activity-agent",
-  "description": "City social activity agent WeChat Mini Program MVP",
+  "projectname": "开个小局",
+  "description": "开个小局 WeChat Mini Program MVP",
   "appid": "touristappid",
   "setting": {
     "urlCheck": false,

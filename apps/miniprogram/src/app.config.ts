@@ -13,7 +13,7 @@ export default defineAppConfig({
   window: {
     backgroundTextStyle: "light",
     navigationBarBackgroundColor: "#f7f4ec",
-    navigationBarTitleText: "先活动，后关系",
+    navigationBarTitleText: "开个小局",
     navigationBarTextStyle: "black",
   },
   tabBar: {

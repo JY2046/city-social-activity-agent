@@ -9,7 +9,7 @@ function readTemplateIds(value: string | undefined): string[] {
 
 export default defineConfig<"webpack5">(async () => {
   const config: UserConfigExport<"webpack5"> = {
-    projectName: "city-social-activity-agent",
+    projectName: "kaige-xiaoju",
     date: "2026-06-09",
     designWidth: 750,
     deviceRatio: {
