@@ -8,7 +8,15 @@
     "es6": true,
     "enhance": true,
     "postcss": true,
-    "minified": true
+    "minified": true,
+    "minifyWXML": true,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./dist"
+      }
+    ]
   },
   "compileType": "miniprogram"
 }
