@@ -156,17 +156,22 @@ Completed on 2026-06-09:
 - Modify: `apps/miniprogram/src/pages/itinerary/index.tsx`
 - Modify: `apps/miniprogram/src/pages/waitlist/index.tsx`
 
-- [ ] **Step 1: Signup confirmation**
+- [x] **Step 1: Signup confirmation**
 
 Render rules confirmation and optional JuZhang willingness.
 
-- [ ] **Step 2: Itinerary operations**
+- [x] **Step 2: Itinerary operations**
 
 Render arrival sync buttons, JuZhang application, settlement confirmation, and return-to-detail.
 
-- [ ] **Step 3: Waitlist states**
+- [x] **Step 3: Waitlist states**
 
 Render activity waitlist and JuZhang waitlist states.
+
+Completed on 2026-06-09:
+
+- `npm test -- apps/miniprogram/src/services/flowViewModels.test.ts`
+- `npm --workspace apps/miniprogram run build:weapp`
 
 ## Task 6: JuZhang And Feedback
 

@@ -1,15 +1,46 @@
-import { View, Text } from "@tarojs/components";
+import { Button, Text, View } from "@tarojs/components";
+import { useState } from "react";
+import { useRouter } from "@tarojs/taro";
 
-import "../discover/index.css";
+import { getActivity } from "../../services/activityService";
+import { getWaitlistDescription, getWaitlistTitle } from "../../services/flowViewModels";
+import { joinWaitlist } from "../../services/registrationService";
+import type { WaitlistType } from "../../services/mockData";
+
+import "../signup/index.css";
+import "./index.css";
 
 export default function WaitlistPage() {
+  const router = useRouter();
+  const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-bar";
+  const waitlistType: WaitlistType = router.params.type === "juZhang" ? "juZhang" : "activity";
+  const activity = getActivity(activityId);
+  const [order, setOrder] = useState<number | undefined>();
+
+  function handleJoinWaitlist() {
+    if (!activity) {
+      return;
+    }
+
+    setOrder(joinWaitlist(activity.id, waitlistType).order);
+  }
+
   return (
-    <View className="page page-light">
-      <Text className="eyebrow">排队中</Text>
-      <Text className="title">有名额会提醒你</Text>
-      <View className="activity-card">
-        <Text className="activity-title">活动排队与局长排队分开</Text>
-        <Text className="reason">满员活动可以排队；已有局长时，也可以进入局长候选队列。</Text>
+    <View className="flow-page">
+      <Text className="flow-eyebrow">排队</Text>
+      <Text className="flow-title">{getWaitlistTitle(waitlistType)}</Text>
+
+      <View className="flow-card waitlist-card">
+        <Text className="card-title">{activity?.title ?? "活动不存在"}</Text>
+        <Text className="card-copy">{getWaitlistDescription(waitlistType)}</Text>
+        <Button className="primary-button" disabled={!activity} onClick={handleJoinWaitlist}>
+          {order ? `已排第 ${order} 位` : "加入排队"}
+        </Button>
+      </View>
+
+      <View className="flow-card">
+        <Text className="card-title">提醒状态</Text>
+        <Text className="card-copy">后续接入订阅消息后，有名额或局长候选变化时会提醒。</Text>
       </View>
     </View>
   );
