@@ -2,7 +2,7 @@
   "miniprogramRoot": "dist/",
   "projectname": "city-social-activity-agent",
   "description": "City social activity agent WeChat Mini Program MVP",
-  "appid": "touristappid",
+  "appid": "wx547532d9259e5356",
   "setting": {
     "urlCheck": false,
     "es6": true,
