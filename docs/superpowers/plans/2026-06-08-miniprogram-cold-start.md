@@ -131,17 +131,22 @@ Completed on 2026-06-09:
 - Create: `apps/miniprogram/src/components/ActivityCard.tsx`
 - Create: `apps/miniprogram/src/components/DetailGallery.tsx`
 
-- [ ] **Step 1: Build activity feed**
+- [x] **Step 1: Build activity feed**
 
 Render curated activity cards with title, image, type, status, time, cost, and CTA.
 
-- [ ] **Step 2: Build activity detail**
+- [x] **Step 2: Build activity detail**
 
 Render title card, public photos below title, `种草理由`, highlights, compact participant preview, rules, and signup/waitlist CTA.
 
-- [ ] **Step 3: Add share metadata**
+- [x] **Step 3: Add share metadata**
 
 Configure activity detail to support WeChat share path with `activityId`.
+
+Completed on 2026-06-09:
+
+- `npm test -- apps/miniprogram/src/services/activityPresentation.test.ts`
+- `npm --workspace apps/miniprogram run build:weapp`
 
 ## Task 5: Signup, Itinerary, Waitlist
 

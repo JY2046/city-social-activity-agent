@@ -15,7 +15,12 @@ export default defineConfig<"webpack5">(async () => {
     plugins: [],
     defineConstants: {},
     copy: {
-      patterns: [],
+      patterns: [
+        {
+          from: "src/assets/images",
+          to: "dist/assets/images",
+        },
+      ],
       options: {},
     },
     framework: "react",

@@ -1,0 +1,70 @@
+import { Image, Text, View } from "@tarojs/components";
+
+import {
+  formatActivityDateTime,
+  getActivityCtaLabel,
+  getActivityStatusLabel,
+  getActivityTypeLabel,
+  getCostLabel,
+} from "../services/activityPresentation";
+import type { MiniProgramActivity } from "../services/mockData";
+
+import "./ActivityCard.css";
+
+interface ActivityCardProps {
+  activity: MiniProgramActivity;
+  featured?: boolean;
+}
+
+export default function ActivityCard({ activity, featured = false }: ActivityCardProps) {
+  if (featured) {
+    return (
+      <View className="featured-activity">
+        <Image className="featured-image" src={activity.coverImagePath} mode="aspectFill" />
+        <View className="featured-overlay">
+          <View className="featured-topline">
+            <Text className="status-hot">{getActivityStatusLabel(activity)}</Text>
+            <Text className="headcount">
+              {activity.currentParticipantCount}/{activity.capacity} 人
+            </Text>
+          </View>
+          <Text className="type-chip">{getActivityTypeLabel(activity.type)}</Text>
+          <Text className="featured-title">{activity.title}</Text>
+          <Text className="featured-meta">
+            {activity.area} · {activity.venue}
+          </Text>
+          <View className="featured-bottom">
+            <Text className="featured-meta">
+              {formatActivityDateTime(activity.startsAt)} · {getCostLabel(activity)}
+            </Text>
+            <Text className="featured-cta">{getActivityCtaLabel(activity)}</Text>
+          </View>
+        </View>
+        <View className="ai-strip">
+          <Text className="ai-label">AI 推荐</Text>
+          <Text className="ai-copy">{activity.aiRecommendationReason}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View className="activity-row-card">
+      <Image className="row-image" src={activity.coverImagePath} mode="aspectFill" />
+      <View className="row-content">
+        <View className="row-topline">
+          <Text className="row-type">{getActivityTypeLabel(activity.type)}</Text>
+          <Text className="row-status">{getActivityStatusLabel(activity)}</Text>
+        </View>
+        <Text className="row-title">{activity.title}</Text>
+        <Text className="row-meta">
+          {activity.area} · {activity.venue}
+        </Text>
+        <Text className="row-meta">
+          {formatActivityDateTime(activity.startsAt)} · {getCostLabel(activity)}
+        </Text>
+        <Text className="row-reason">{activity.aiRecommendationReason}</Text>
+      </View>
+    </View>
+  );
+}

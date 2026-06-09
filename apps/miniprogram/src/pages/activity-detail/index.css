@@ -1,6 +1,6 @@
 .detail-page {
   min-height: 100vh;
-  padding: 72px 32px 48px;
+  padding: 52px 30px 44px;
   box-sizing: border-box;
   background: #080a09;
   color: #f7f4ec;
@@ -10,8 +10,18 @@
 .detail-title,
 .detail-meta,
 .section-title,
-.section-copy {
+.section-copy,
+.highlight-title,
+.secondary-action,
+.primary-action {
   display: block;
+}
+
+.hero-panel {
+  padding: 34px 28px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .type-label {
@@ -25,7 +35,7 @@
 
 .detail-title {
   margin-top: 24px;
-  font-size: 52px;
+  font-size: 50px;
   font-weight: 800;
   line-height: 1.16;
 }
@@ -38,7 +48,7 @@
 }
 
 .section {
-  margin-top: 48px;
+  margin-top: 24px;
   padding: 28px;
   border-radius: 28px;
   background: rgba(255, 255, 255, 0.08);
@@ -56,4 +66,41 @@
   color: rgba(247, 244, 236, 0.82);
   font-size: 26px;
   line-height: 1.65;
+}
+
+.highlight-item {
+  margin-top: 24px;
+}
+
+.highlight-title {
+  color: #f4f1e9;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.bottom-actions {
+  display: flex;
+  gap: 18px;
+  padding-top: 28px;
+}
+
+.secondary-action,
+.primary-action {
+  flex: 1;
+  min-width: 0;
+  padding: 22px 16px;
+  border-radius: 999px;
+  text-align: center;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.secondary-action {
+  color: #f7f4ec;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.primary-action {
+  color: #fff;
+  background: linear-gradient(90deg, #ef3f68, #ff8b2b);
 }
