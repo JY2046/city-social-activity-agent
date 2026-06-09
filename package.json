@@ -12,6 +12,7 @@
     "pretest": "npm --workspace @city-social/domain run build",
     "build": "tsc -b && vite build",
     "generate:cloud-seed": "npm --workspace @city-social/domain run build && node scripts/generate-cloud-seed.mjs",
+    "generate:cloud-functions": "node scripts/generate-cloud-functions.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },

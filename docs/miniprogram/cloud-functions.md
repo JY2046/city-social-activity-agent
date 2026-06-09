@@ -24,12 +24,12 @@ Local implementation status:
 - `cloud/functions/src/cloudSeed.ts` creates cold-start seed documents for the first cloud database collections.
 - `cloud/functions/src/cloudDatabaseAdapter.ts` contains the first WeChat Cloud Database-shaped adapter for seed import, approved activity reads, signup, waitlist, arrival, and settlement writes.
 - `cloud/functions/src/cloudDatabaseHandlers.ts` wraps the database adapter in the same cloud function envelopes used by the client.
-- Before production deployment, replace the in-memory store with a WeChat Cloud Database adapter that implements the same activity, registration, waitlist, and settlement operations.
+- `scripts/generate-cloud-functions.mjs` writes uploadable JavaScript cloud function packages into `cloud/functions/deploy`.
 
 Local verification:
 
 ```bash
-npm test -- cloud/functions/src/cloudHandlers.test.ts cloud/functions/src/cloudRuntime.test.ts cloud/functions/src/cloudSeed.test.ts cloud/functions/src/cloudDatabaseAdapter.test.ts cloud/functions/src/cloudDatabaseHandlers.test.ts
+npm test -- cloud/functions/src/cloudHandlers.test.ts cloud/functions/src/cloudRuntime.test.ts cloud/functions/src/cloudSeed.test.ts cloud/functions/src/cloudDatabaseAdapter.test.ts cloud/functions/src/cloudDatabaseHandlers.test.ts cloud/functions/src/cloudDeployFiles.test.ts
 ```
 
 First covered functions:
@@ -102,6 +102,38 @@ The current database adapter covers:
 - idempotent activity and JuZhang waitlist joins
 - arrival status updates
 - ordinary participant settlement confirmation
+
+## Uploadable Cloud Function Packages
+
+Generate WeChat Developer Tools-ready function folders with:
+
+```bash
+npm run generate:cloud-functions
+```
+
+The command writes these deployable packages:
+
+- `cloud/functions/deploy/listActivities`
+- `cloud/functions/deploy/getActivityDetail`
+- `cloud/functions/deploy/signupActivity`
+- `cloud/functions/deploy/joinWaitlist`
+- `cloud/functions/deploy/confirmArrival`
+- `cloud/functions/deploy/confirmSettlement`
+
+Each folder contains:
+
+- `index.js`: exports the selected cloud function entry.
+- `runtime.js`: self-contained CommonJS runtime using `wx-server-sdk`.
+- `package.json`: declares `wx-server-sdk`.
+
+Upload in WeChat Developer Tools:
+
+1. Open the Mini Program project at `apps/miniprogram`.
+2. Open Cloud Development.
+3. Confirm the active environment is the development environment you seeded.
+4. In the cloud function tree, upload and deploy each folder under `cloud/functions/deploy`.
+5. For every function, install cloud dependencies when Developer Tools prompts.
+6. Rebuild the Mini Program and test the activity feed, detail, signup, waitlist, arrival, and settlement flows.
 
 Production deployment note:
 
