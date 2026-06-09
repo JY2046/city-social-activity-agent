@@ -4,7 +4,7 @@ import { useRouter } from "@tarojs/taro";
 
 import { getActivity } from "../../services/activityService";
 import { getFeedbackCompletionState, submitFeedback } from "../../services/feedbackService";
-import { DEFAULT_CURRENT_USER_ID } from "../../services/mockData";
+import { DEFAULT_CURRENT_USER_ID, getUserDisplayName } from "../../services/mockData";
 
 import "../signup/index.css";
 import "./index.css";
@@ -49,7 +49,7 @@ export default function FeedbackPage() {
               key={userId}
               onClick={() => toggleSelection(userId)}
             >
-              {userId}
+              {getUserDisplayName(userId)}
             </Button>
           ))}
         </View>

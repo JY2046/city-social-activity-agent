@@ -8,7 +8,7 @@ import {
   signup,
 } from "./registrationService";
 import { getActivity, listActivities } from "./activityService";
-import { DEFAULT_CURRENT_USER_ID, getSettlementByActivityId, listWaitlistEntries } from "./mockData";
+import { DEFAULT_CURRENT_USER_ID, getSettlementByActivityId, getUserDisplayName, listWaitlistEntries } from "./mockData";
 
 describe("mini program registration service", () => {
   beforeEach(() => {
@@ -26,6 +26,11 @@ describe("mini program registration service", () => {
   it("returns an activity by id", () => {
     expect(getActivity("a-sushi")?.title).toBe("周五下班日料小局");
     expect(getActivity("missing")).toBeUndefined();
+  });
+
+  it("resolves user display names without exposing internal ids", () => {
+    expect(getUserDisplayName("u-lin")).toBe("林夏");
+    expect(getUserDisplayName("missing-user")).toBe("匿名参与者");
   });
 
   it("signs up the current user and keeps ju zhang willingness explicit", () => {

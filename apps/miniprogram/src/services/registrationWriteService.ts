@@ -62,7 +62,11 @@ export function createMockRegistrationWriteAdapter(): RegistrationWriteAdapter {
     async confirmArrival(activityId, status) {
       return confirmArrival(activityId, status);
     },
-    async confirmPayment(activityId) {
+    async confirmPayment(activityId, mode = "selfPayToMerchant") {
+      if (mode !== "selfPayToMerchant") {
+        throw new Error("Mock settlement only supports selfPayToMerchant mode");
+      }
+
       return confirmPayment(activityId);
     },
   };

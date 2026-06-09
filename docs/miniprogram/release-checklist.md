@@ -67,6 +67,7 @@ Official documentation entry points:
 
 ## Subscription Messages
 
+- [ ] Configure real WeChat subscription template IDs through release environment variables; do not ship placeholder template IDs.
 - [ ] Define message templates for signup success.
 - [ ] Define waitlist promotion reminder.
 - [ ] Define JuZhang invitation reminder.

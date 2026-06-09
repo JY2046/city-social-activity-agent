@@ -111,6 +111,10 @@ export function getMockStore(): MockStore {
   return store;
 }
 
+export function getUserDisplayName(userId: string): string {
+  return store.users.find((user) => user.id === userId)?.nickname ?? "匿名参与者";
+}
+
 export function listWaitlistEntries(): WaitlistEntry[] {
   return clone(store.waitlistEntries);
 }

@@ -68,6 +68,15 @@ describe("registration write service", () => {
     });
   });
 
+  it("returns an explicit error when mock payment cannot support a non-default mode", async () => {
+    signup("a-coffee", { willingToBeJuZhang: false });
+
+    await expect(runConfirmPayment(createMockRegistrationWriteAdapter(), "a-coffee", "juZhangCollects")).resolves.toEqual({
+      status: "error",
+      message: "Mock settlement only supports selfPayToMerchant mode",
+    });
+  });
+
   it("returns an error state when a write adapter fails", async () => {
     const adapter: RegistrationWriteAdapter = {
       signupActivity: vi.fn(async () => {

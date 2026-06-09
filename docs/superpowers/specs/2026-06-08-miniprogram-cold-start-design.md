@@ -129,6 +129,10 @@ Required for MVP:
 - JuZhang responsibility boundary: coordination only, not legal or financial guarantee.
 - Safety copy for alcohol, night activities, and offline meetups.
 - Clear cancellation rules for ordinary participants and JuZhang.
+- Minor protection policy: verify age before activity participation, require guardian consent if any low-risk minor flow is ever allowed, and prohibit minors from alcohol-related, late-night, or other restricted activities.
+- PIPL-aligned data handling: collect only necessary profile, activity, feedback, and safety data; document account deletion and personal-data deletion timing; disclose cloud provider and third-party data sharing boundaries.
+- Emergency response flow: provide an in-activity report path, define manual review SLA for threat/harassment/safety reports, publish an emergency platform contact, and document escalation to public-safety authorities for severe incidents.
+- Subscription message privacy controls: limit reminder frequency, request permission only in relevant user actions, and provide a clear unsubscribe or opt-out path.
 
 ## Data Model
 

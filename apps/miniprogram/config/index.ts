@@ -1,5 +1,12 @@
 import { defineConfig, type UserConfigExport } from "@tarojs/cli";
 
+function readTemplateIds(value: string | undefined): string[] {
+  return (value ?? "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export default defineConfig<"webpack5">(async () => {
   const config: UserConfigExport<"webpack5"> = {
     projectName: "city-social-activity-agent",
@@ -16,6 +23,12 @@ export default defineConfig<"webpack5">(async () => {
     defineConstants: {
       __CITY_SOCIAL_DATA_SOURCE__: JSON.stringify(process.env.CITY_SOCIAL_DATA_SOURCE ?? "mock"),
       __WECHAT_CLOUD_ENV_ID__: JSON.stringify(process.env.WECHAT_CLOUD_ENV_ID ?? ""),
+      __WECHAT_SUBSCRIPTION_TEMPLATE_IDS__: JSON.stringify({
+        signup: readTemplateIds(process.env.WECHAT_TEMPLATE_SIGNUP_IDS),
+        waitlist: readTemplateIds(process.env.WECHAT_TEMPLATE_WAITLIST_IDS),
+        juZhang: readTemplateIds(process.env.WECHAT_TEMPLATE_JUZHANG_IDS),
+        feedback: readTemplateIds(process.env.WECHAT_TEMPLATE_FEEDBACK_IDS),
+      }),
     },
     copy: {
       patterns: [
