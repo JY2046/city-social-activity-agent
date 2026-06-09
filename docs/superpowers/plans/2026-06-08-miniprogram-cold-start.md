@@ -29,15 +29,15 @@
 - Create: `packages/domain/package.json`
 - Create: `packages/domain/src/index.ts`
 
-- [ ] **Step 1: Add Mini Program workspace package**
+- [x] **Step 1: Add Mini Program workspace package**
 
 Add an isolated Taro app package so the Web prototype remains stable while Mini Program work begins.
 
-- [ ] **Step 2: Add shared domain package**
+- [x] **Step 2: Add shared domain package**
 
 Move reusable activity, registration, JuZhang, settlement, and feedback types into `packages/domain/src/index.ts`.
 
-- [ ] **Step 3: Verify install/build path**
+- [x] **Step 3: Verify install/build path**
 
 Run:
 
@@ -47,6 +47,12 @@ npm --workspace apps/miniprogram run build:weapp
 ```
 
 Expected: Mini Program build succeeds or fails only because Taro dependencies are not installed yet.
+
+Completed on 2026-06-09:
+
+- `npm install`
+- `npm --workspace @city-social/domain run build`
+- `npm --workspace apps/miniprogram run build:weapp`
 
 ## Task 2: Page Shell And Navigation
 
@@ -61,15 +67,15 @@ Expected: Mini Program build succeeds or fails only because Taro dependencies ar
 - Create: `apps/miniprogram/src/pages/feedback/index.tsx`
 - Create: `apps/miniprogram/src/pages/profile/index.tsx`
 
-- [ ] **Step 1: Register Mini Program pages**
+- [x] **Step 1: Register Mini Program pages**
 
 Configure all MVP pages in `app.config.ts`.
 
-- [ ] **Step 2: Implement static page shells**
+- [x] **Step 2: Implement static page shells**
 
 Each page renders a title and a minimal empty state matching the product flow.
 
-- [ ] **Step 3: Build**
+- [x] **Step 3: Build**
 
 Run:
 
@@ -78,6 +84,10 @@ npm --workspace apps/miniprogram run build:weapp
 ```
 
 Expected: all pages compile.
+
+Completed on 2026-06-09:
+
+- `npm --workspace apps/miniprogram run build:weapp`
 
 ## Task 3: Mock Data Adapter
 

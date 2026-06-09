@@ -1,0 +1,33 @@
+{
+  "name": "@city-social/miniprogram",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prebuild:weapp": "npm --workspace @city-social/domain run build",
+    "build:weapp": "taro build --type weapp",
+    "dev:weapp": "taro build --type weapp --watch"
+  },
+  "dependencies": {
+    "@babel/runtime": "latest",
+    "@city-social/domain": "file:../../packages/domain",
+    "@tarojs/components": "latest",
+    "@tarojs/plugin-framework-react": "latest",
+    "@tarojs/react": "latest",
+    "@tarojs/runtime": "latest",
+    "@tarojs/taro": "latest",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "latest",
+    "@babel/preset-typescript": "latest",
+    "@tarojs/cli": "latest",
+    "@tarojs/plugin-platform-weapp": "latest",
+    "@tarojs/webpack5-runner": "latest",
+    "@vitejs/plugin-react": "4.3.4",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "babel-preset-taro": "latest"
+  }
+}
