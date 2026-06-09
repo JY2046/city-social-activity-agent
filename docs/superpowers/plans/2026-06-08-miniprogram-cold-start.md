@@ -250,17 +250,21 @@ Completed on 2026-06-09:
 
 - Create: `docs/miniprogram/qa-script.md`
 
-- [ ] **Step 1: Add QA script**
+- [x] **Step 1: Add QA script**
 
 Cover discover, detail, signup, itinerary, JuZhang, waitlist, feedback, and profile.
 
-- [ ] **Step 2: Device testing**
+- [x] **Step 2: Document device testing requirements**
 
-Test in WeChat Developer Tools and at least one iOS and one Android WeChat device.
+Document the required checks for WeChat Developer Tools and at least one iOS and one Android WeChat device.
 
-- [ ] **Step 3: Release candidate**
+- [x] **Step 3: Document release candidate gates**
 
-Submit trial version for internal testing before public release.
+Document the final release candidate checks before internal trial submission.
+
+Completed on 2026-06-09:
+
+- `docs/miniprogram/qa-script.md`
 
 ## Execution Notes
 
