@@ -201,17 +201,23 @@ Completed on 2026-06-09:
 - Create: `docs/miniprogram/cloud-functions.md`
 - Create: `docs/miniprogram/release-checklist.md`
 
-- [ ] **Step 1: Define collections**
+- [x] **Step 1: Define collections**
 
 Document `users`, `activities`, `registrations`, `waitlists`, `juZhangAssignments`, `settlements`, `topicCards`, `feedback`, and `adminActions`.
 
-- [ ] **Step 2: Define cloud functions**
+- [x] **Step 2: Define cloud functions**
 
 Document signup, cancellation, waitlist promotion, JuZhang selection, settlement confirmation, feedback, and content safety functions.
 
-- [ ] **Step 3: Define release checklist**
+- [x] **Step 3: Define release checklist**
 
 Include account registration, category verification, privacy policy, content safety, image upload review, subscription messages, and payment deferral.
+
+Completed on 2026-06-09:
+
+- `docs/miniprogram/cloud-data-model.md`
+- `docs/miniprogram/cloud-functions.md`
+- `docs/miniprogram/release-checklist.md`
 
 ## Task 8: WeChat Capability Integration
 
