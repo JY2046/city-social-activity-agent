@@ -71,4 +71,67 @@ describe("cloud database adapter", () => {
       coverImagePath: "/assets/images/activity-sushi.jpg",
     });
   });
+
+  it("signs up available activities and updates participant and settlement state", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+
+    const registration = await adapter.signupActivity(
+      { activityId: "a-coffee", willingToBeJuZhang: true },
+      "u-current",
+    );
+
+    expect(registration).toMatchObject({
+      _id: "r-a-coffee-u-current",
+      activityId: "a-coffee",
+      userId: "u-current",
+      status: "confirmed",
+      willingToBeJuZhang: true,
+    });
+    expect(db.dump().activities["a-coffee"]).toMatchObject({
+      currentParticipantCount: 3,
+      participantIds: expect.arrayContaining(["u-current"]),
+    });
+    expect(db.dump().settlements["a-coffee"]).toMatchObject({
+      participantCount: 3,
+      paymentStatusByUser: expect.objectContaining({ "u-current": false }),
+    });
+  });
+
+  it("waitlists full activities and keeps waitlist entries idempotent", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+
+    const registration = await adapter.signupActivity(
+      { activityId: "a-bar", willingToBeJuZhang: false },
+      "u-current",
+    );
+    const firstQueue = await adapter.joinWaitlist({ activityId: "a-sushi", type: "juZhang" }, "u-current");
+    const secondQueue = await adapter.joinWaitlist({ activityId: "a-sushi", type: "juZhang" }, "u-current");
+
+    expect(registration).toMatchObject({ activityId: "a-bar", status: "waitlisted" });
+    expect(firstQueue).toMatchObject({ _id: "w-a-sushi-juZhang-u-current", order: 1 });
+    expect(secondQueue).toEqual(firstQueue);
+  });
+
+  it("confirms arrival and settlement payment state", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+    await adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: false }, "u-current");
+
+    await expect(adapter.confirmArrival({ activityId: "a-coffee", status: "arrived" }, "u-current")).resolves.toMatchObject({
+      activityId: "a-coffee",
+      userId: "u-current",
+      status: "arrived",
+    });
+    await expect(
+      adapter.confirmSettlement({ activityId: "a-coffee", mode: "selfPayToMerchant" }, "u-current"),
+    ).resolves.toMatchObject({
+      activityId: "a-coffee",
+      paymentStatusByUser: expect.objectContaining({ "u-current": true }),
+    });
+  });
 });

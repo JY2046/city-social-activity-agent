@@ -22,13 +22,14 @@ Local implementation status:
 - `cloud/functions/src/cloudStore.ts` currently provides an in-memory store seeded from domain mock data so cloud behavior can be tested without the WeChat runtime.
 - `cloud/functions/src/cloudRuntime.ts` dispatches by cloud function name and returns the same envelope expected by the Mini Program client.
 - `cloud/functions/src/cloudSeed.ts` creates cold-start seed documents for the first cloud database collections.
-- `cloud/functions/src/cloudDatabaseAdapter.ts` contains the first WeChat Cloud Database-shaped adapter for seed import and approved activity reads.
+- `cloud/functions/src/cloudDatabaseAdapter.ts` contains the first WeChat Cloud Database-shaped adapter for seed import, approved activity reads, signup, waitlist, arrival, and settlement writes.
+- `cloud/functions/src/cloudDatabaseHandlers.ts` wraps the database adapter in the same cloud function envelopes used by the client.
 - Before production deployment, replace the in-memory store with a WeChat Cloud Database adapter that implements the same activity, registration, waitlist, and settlement operations.
 
 Local verification:
 
 ```bash
-npm test -- cloud/functions/src/cloudHandlers.test.ts cloud/functions/src/cloudRuntime.test.ts cloud/functions/src/cloudSeed.test.ts cloud/functions/src/cloudDatabaseAdapter.test.ts
+npm test -- cloud/functions/src/cloudHandlers.test.ts cloud/functions/src/cloudRuntime.test.ts cloud/functions/src/cloudSeed.test.ts cloud/functions/src/cloudDatabaseAdapter.test.ts cloud/functions/src/cloudDatabaseHandlers.test.ts
 ```
 
 First covered functions:
@@ -77,8 +78,15 @@ The current database adapter covers:
 - approved activity feed reads
 - approved activity detail reads
 - deterministic seed import
+- signup writes for confirmed and waitlisted registrations
+- idempotent activity and JuZhang waitlist joins
+- arrival status updates
+- ordinary participant settlement confirmation
 
-The next adapter step is to implement transactional writes for `signupActivity`, `joinWaitlist`, `confirmArrival`, and `confirmSettlement` against WeChat Cloud Database.
+Production deployment note:
+
+- The current adapter is shaped like WeChat Cloud Database and is covered by local tests, but the multi-document writes must be wrapped in WeChat Cloud Database transactions before real traffic.
+- Transactional boundaries are required for signup capacity checks, participant count updates, settlement participant state, and waitlist order assignment.
 
 ## Functions
 
