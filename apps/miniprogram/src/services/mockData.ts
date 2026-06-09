@@ -1,12 +1,16 @@
 import {
   mockActivities,
+  mockJuZhangAssignments,
   mockRegistrations,
   mockSettlements,
+  mockTopicCards,
   mockUsers,
   type Activity,
   type ActivityGalleryItem,
+  type JuZhangAssignment,
   type Registration,
   type Settlement,
+  type TopicCard,
   type User,
 } from "@city-social/domain";
 
@@ -28,12 +32,24 @@ export interface WaitlistEntry {
   status: "waiting" | "promoted" | "cancelled";
 }
 
+export interface FeedbackEntry {
+  id: string;
+  activityId: string;
+  userId: string;
+  selectedUserIds: string[];
+  abnormalText: string;
+  createdAt: string;
+}
+
 export interface MockStore {
   users: User[];
   activities: MiniProgramActivity[];
   registrations: Registration[];
+  juZhangAssignments: JuZhangAssignment[];
   settlements: Settlement[];
+  topicCards: TopicCard[];
   waitlistEntries: WaitlistEntry[];
+  feedbackEntries: FeedbackEntry[];
 }
 
 const currentUser: User = {
@@ -75,8 +91,11 @@ function createInitialStore(): MockStore {
     users: [...clone(mockUsers), currentUser],
     activities: clone(mockActivities).map(toMiniProgramActivity),
     registrations: clone(mockRegistrations),
+    juZhangAssignments: clone(mockJuZhangAssignments),
     settlements: clone(mockSettlements),
+    topicCards: clone(mockTopicCards),
     waitlistEntries: [],
+    feedbackEntries: [],
   };
 }
 
@@ -159,4 +178,32 @@ export function updateSettlement(settlement: Settlement): Settlement {
   }
 
   return clone(settlement);
+}
+
+export function upsertJuZhangAssignment(assignment: JuZhangAssignment): JuZhangAssignment {
+  const existingIndex = store.juZhangAssignments.findIndex(
+    (item) => item.activityId === assignment.activityId && item.candidateUserId === assignment.candidateUserId,
+  );
+
+  if (existingIndex >= 0) {
+    store.juZhangAssignments[existingIndex] = assignment;
+  } else {
+    store.juZhangAssignments.push(assignment);
+  }
+
+  return clone(assignment);
+}
+
+export function upsertFeedbackEntry(feedbackEntry: FeedbackEntry): FeedbackEntry {
+  const existingIndex = store.feedbackEntries.findIndex(
+    (item) => item.activityId === feedbackEntry.activityId && item.userId === feedbackEntry.userId,
+  );
+
+  if (existingIndex >= 0) {
+    store.feedbackEntries[existingIndex] = feedbackEntry;
+  } else {
+    store.feedbackEntries.push(feedbackEntry);
+  }
+
+  return clone(feedbackEntry);
 }

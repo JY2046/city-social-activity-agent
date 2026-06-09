@@ -180,13 +180,18 @@ Completed on 2026-06-09:
 - Modify: `apps/miniprogram/src/pages/juzhang/index.tsx`
 - Modify: `apps/miniprogram/src/pages/feedback/index.tsx`
 
-- [ ] **Step 1: JuZhang workspace**
+- [x] **Step 1: JuZhang workspace**
 
 Render accept/decline, arrival check, AI topic card, coordination checklist, AA confirmation, and post-event feedback entry.
 
-- [ ] **Step 2: Feedback and mutual selection**
+- [x] **Step 2: Feedback and mutual selection**
 
 Render participant mutual selection, abnormal feedback, and completion state.
+
+Completed on 2026-06-09:
+
+- `npm test -- apps/miniprogram/src/services/juZhangService.test.ts apps/miniprogram/src/services/feedbackService.test.ts`
+- `npm --workspace apps/miniprogram run build:weapp`
 
 ## Task 7: Cloud Adapter Design
 

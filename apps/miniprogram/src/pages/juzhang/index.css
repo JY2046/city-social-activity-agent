@@ -1,0 +1,124 @@
+.juzhang-banner {
+  margin-top: 28px;
+  padding: 26px;
+  border-radius: 28px;
+  background: linear-gradient(90deg, rgba(178, 216, 139, 0.28), rgba(255, 255, 255, 0.08));
+  border: 1px solid rgba(184, 216, 144, 0.26);
+}
+
+.banner-title,
+.banner-copy,
+.tiny-chip,
+.participant-name,
+.participant-status,
+.topic-copy {
+  display: block;
+}
+
+.banner-title {
+  color: #f7f4ec;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.banner-copy {
+  margin-top: 12px;
+  color: rgba(247, 244, 236, 0.78);
+  font-size: 25px;
+  line-height: 1.45;
+}
+
+.action-row,
+.section-heading-row,
+.participant-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.action-row {
+  margin-top: 22px;
+}
+
+.accept-button,
+.decline-button,
+.mini-action {
+  height: 72px;
+  line-height: 72px;
+  border-radius: 999px;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.accept-button {
+  flex: 1;
+  color: #17251d;
+  background: #b8d890;
+}
+
+.decline-button {
+  flex: 1;
+  color: #f7f4ec;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.section-heading-row {
+  justify-content: space-between;
+}
+
+.tiny-chip {
+  flex: 0 0 auto;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: #b8d890;
+  background: rgba(184, 216, 144, 0.14);
+  font-size: 20px;
+}
+
+.task-card {
+  margin-top: 18px;
+  padding: 22px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.topic-section {
+  background: linear-gradient(135deg, rgba(121, 91, 221, 0.22), rgba(255, 255, 255, 0.08));
+}
+
+.topic-copy {
+  margin-top: 18px;
+  color: #f7f4ec;
+  font-size: 31px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.participant-row {
+  justify-content: space-between;
+  margin-top: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.participant-name {
+  flex: 1;
+  min-width: 0;
+  color: #f7f4ec;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.participant-status {
+  color: rgba(247, 244, 236, 0.7);
+  font-size: 22px;
+}
+
+.mini-action {
+  flex: 0 0 auto;
+  width: 150px;
+  color: #17251d;
+  background: #b8d890;
+  font-size: 21px;
+}

@@ -1,15 +1,80 @@
-import { View, Text } from "@tarojs/components";
+import { Button, Text, Textarea, View } from "@tarojs/components";
+import { useState } from "react";
+import { useRouter } from "@tarojs/taro";
 
-import "../discover/index.css";
+import { getActivity } from "../../services/activityService";
+import { getFeedbackCompletionState, submitFeedback } from "../../services/feedbackService";
+import { DEFAULT_CURRENT_USER_ID } from "../../services/mockData";
+
+import "../signup/index.css";
+import "./index.css";
 
 export default function FeedbackPage() {
+  const router = useRouter();
+  const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
+  const activity = getActivity(activityId);
+  const candidateUserId = activity?.participantIds.find((userId) => userId !== DEFAULT_CURRENT_USER_ID) ?? "u-lin";
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [abnormalText, setAbnormalText] = useState("");
+  const [completionState, setCompletionState] = useState(() =>
+    getFeedbackCompletionState(activityId, DEFAULT_CURRENT_USER_ID, candidateUserId),
+  );
+
+  function toggleSelection(userId: string) {
+    setSelectedUserIds((current) =>
+      current.includes(userId) ? current.filter((item) => item !== userId) : [...current, userId],
+    );
+  }
+
+  function handleSubmit() {
+    submitFeedback(activityId, {
+      selectedUserIds,
+      abnormalText,
+    });
+    setCompletionState(getFeedbackCompletionState(activityId, DEFAULT_CURRENT_USER_ID, candidateUserId));
+  }
+
   return (
-    <View className="page page-light">
-      <Text className="eyebrow">活动后互选</Text>
-      <Text className="title">双方都选择，才开放联系</Text>
-      <View className="activity-card">
-        <Text className="activity-title">反馈也用于保护活动体验</Text>
-        <Text className="reason">可以选择想继续认识的人，也可以提交异常反馈。</Text>
+    <View className="flow-page">
+      <Text className="flow-eyebrow">活动后反馈</Text>
+      <Text className="flow-title">{activity?.title ?? "活动后互选"}</Text>
+
+      <View className="flow-card">
+        <Text className="card-title">活动后互选</Text>
+        <Text className="card-copy">双方都选择，才开放联系。未互选不会打扰对方。</Text>
+        <View className="selection-list">
+          {(activity?.participantIds ?? []).map((userId) => (
+            <Button
+              className={selectedUserIds.includes(userId) ? "selection-button active" : "selection-button"}
+              key={userId}
+              onClick={() => toggleSelection(userId)}
+            >
+              {userId}
+            </Button>
+          ))}
+        </View>
+      </View>
+
+      <View className="flow-card">
+        <Text className="card-title">异常反馈</Text>
+        <Textarea
+          className="feedback-textarea"
+          value={abnormalText}
+          maxlength={120}
+          placeholder="如有迟到、爽约、不舒服的互动，可以记录在这里"
+          onInput={(event) => setAbnormalText(event.detail.value)}
+        />
+      </View>
+
+      <Button className="primary-button" onClick={handleSubmit}>
+        提交反馈
+      </Button>
+
+      <View className="result-card">
+        <Text className="result-title">{completionState.contactStateLabel}</Text>
+        <Text className="card-copy">
+          {completionState.isMutual ? "你们互相选择了对方，后续可开放联系。" : "反馈已记录，系统会保护隐私边界。"}
+        </Text>
       </View>
     </View>
   );
