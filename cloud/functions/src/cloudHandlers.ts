@@ -54,6 +54,22 @@ export interface ConfirmSettlementInput {
   mode: SettlementMode;
 }
 
+export interface RespondJuZhangAssignmentInput {
+  activityId: string;
+  response: "accepted" | "declined";
+}
+
+export interface SubmitFeedbackInput {
+  activityId: string;
+  selectedUserIds: string[];
+  abnormalText: string;
+}
+
+export interface GetFeedbackCompletionStateInput {
+  activityId: string;
+  candidateUserId: string;
+}
+
 const fixedNow = "2026-06-09T12:00:00.000Z";
 
 function ok<T>(data: T): CloudFunctionEnvelope<T> {

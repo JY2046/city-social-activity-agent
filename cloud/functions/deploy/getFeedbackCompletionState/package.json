@@ -1,0 +1,9 @@
+{
+  "name": "kaigexiaoju-get-feedback-completion-state",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

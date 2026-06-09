@@ -79,4 +79,44 @@ describe("cloud database handlers", () => {
       data: null,
     });
   });
+
+  it("dispatches ju zhang and feedback database-backed functions", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const dispatch = createCloudFunctionDispatcher(createCloudDatabaseHandlers(createCloudDatabaseAdapter(db)));
+
+    await expect(dispatch("getJuZhangWorkspace", { activityId: "a-sushi" }, { userId: "u-current" })).resolves
+      .toMatchObject({
+        ok: true,
+        data: {
+          activity: { id: "a-sushi" },
+          tasks: expect.arrayContaining([expect.objectContaining({ title: "AA 结算确认" })]),
+        },
+      });
+
+    await expect(
+      dispatch("respondJuZhangAssignment", { activityId: "a-sushi", response: "accepted" }, { userId: "u-current" }),
+    ).resolves.toMatchObject({
+      ok: true,
+      data: { activityId: "a-sushi", candidateUserId: "u-current", status: "accepted" },
+    });
+
+    await expect(
+      dispatch(
+        "submitFeedback",
+        { activityId: "a-sushi", selectedUserIds: ["u-lin"], abnormalText: "" },
+        { userId: "u-current" },
+      ),
+    ).resolves.toMatchObject({
+      ok: true,
+      data: { activityId: "a-sushi", userId: "u-current", selectedUserIds: ["u-lin"] },
+    });
+
+    await expect(
+      dispatch("getFeedbackCompletionState", { activityId: "a-sushi", candidateUserId: "u-lin" }, { userId: "u-current" }),
+    ).resolves.toMatchObject({
+      ok: true,
+      data: { hasSubmitted: true, isMutual: false, contactStateLabel: "已提交反馈" },
+    });
+  });
 });

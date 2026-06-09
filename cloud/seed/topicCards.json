@@ -1,1 +1,34 @@
-[]
+[
+  {
+    "id": "topic-sushi",
+    "activityId": "a-sushi",
+    "visibleText": "如果只能把上海一个下班后最放松的地方推荐给新朋友，你会选哪里？",
+    "_id": "topic-sushi",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "topic-coffee",
+    "activityId": "a-coffee",
+    "visibleText": "最近有没有一个让你愿意专门出门的咖啡馆、展览或小店？",
+    "_id": "topic-coffee",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "topic-bar",
+    "activityId": "a-bar",
+    "visibleText": "你更喜欢热闹小酒馆，还是能安静聊天的小吧台？",
+    "_id": "topic-bar",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "topic-walk",
+    "activityId": "a-walk",
+    "visibleText": "你在这座城市里最喜欢的一段路是哪一段？",
+    "_id": "topic-walk",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  }
+]

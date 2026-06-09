@@ -17,6 +17,10 @@ Generated function folders:
 - `joinWaitlist`
 - `confirmArrival`
 - `confirmSettlement`
+- `getJuZhangWorkspace`
+- `respondJuZhangAssignment`
+- `submitFeedback`
+- `getFeedbackCompletionState`
 
 After changing cloud runtime behavior, regenerate these folders before uploading:
 

@@ -10,6 +10,10 @@ const functionNames = [
   "joinWaitlist",
   "confirmArrival",
   "confirmSettlement",
+  "getJuZhangWorkspace",
+  "respondJuZhangAssignment",
+  "submitFeedback",
+  "getFeedbackCompletionState",
 ];
 
 function toPackageName(functionName: string) {

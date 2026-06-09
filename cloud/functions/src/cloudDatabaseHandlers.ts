@@ -4,8 +4,11 @@ import type {
   CloudRequestContext,
   ConfirmArrivalInput,
   ConfirmSettlementInput,
+  GetFeedbackCompletionStateInput,
   JoinWaitlistInput,
+  RespondJuZhangAssignmentInput,
   SignupActivityInput,
+  SubmitFeedbackInput,
 } from "./cloudHandlers";
 import type { createCloudDatabaseAdapter } from "./cloudDatabaseAdapter";
 
@@ -81,6 +84,22 @@ export function createCloudDatabaseHandlers(adapter: CloudDatabaseAdapter) {
 
     confirmSettlement(input: ConfirmSettlementInput, context: CloudRequestContext) {
       return run(() => adapter.confirmSettlement(input, context.userId));
+    },
+
+    getJuZhangWorkspace(input: { activityId: string }, _context: CloudRequestContext) {
+      return run(() => adapter.getJuZhangWorkspace(input.activityId));
+    },
+
+    respondJuZhangAssignment(input: RespondJuZhangAssignmentInput, context: CloudRequestContext) {
+      return run(() => adapter.respondJuZhangAssignment(input, context.userId));
+    },
+
+    submitFeedback(input: SubmitFeedbackInput, context: CloudRequestContext) {
+      return run(() => adapter.submitFeedback(input, context.userId));
+    },
+
+    getFeedbackCompletionState(input: GetFeedbackCompletionStateInput, context: CloudRequestContext) {
+      return run(() => adapter.getFeedbackCompletionState(input, context.userId));
     },
   };
 }

@@ -40,6 +40,10 @@ First covered functions:
 - `joinWaitlist`
 - `confirmArrival`
 - `confirmSettlement`
+- `getJuZhangWorkspace`
+- `respondJuZhangAssignment`
+- `submitFeedback`
+- `getFeedbackCompletionState`
 
 ## Cold-Start Cloud Database Seed
 
@@ -119,6 +123,10 @@ The command writes these deployable packages:
 - `cloud/functions/deploy/joinWaitlist`
 - `cloud/functions/deploy/confirmArrival`
 - `cloud/functions/deploy/confirmSettlement`
+- `cloud/functions/deploy/getJuZhangWorkspace`
+- `cloud/functions/deploy/respondJuZhangAssignment`
+- `cloud/functions/deploy/submitFeedback`
+- `cloud/functions/deploy/getFeedbackCompletionState`
 
 Each folder contains:
 

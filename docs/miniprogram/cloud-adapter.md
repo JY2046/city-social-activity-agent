@@ -109,12 +109,17 @@ Feedback:
 
 ## Next Implementation Step
 
-The current UI pages still call synchronous mock services. The next implementation step is to add async page adapters in this order:
+Current async adapter coverage:
 
-1. Discover and activity detail read from cloud when `CITY_SOCIAL_DATA_SOURCE=cloud`.
-2. Signup, waitlist, and itinerary use cloud writes with loading and error states.
-3. JuZhang workspace uses cloud read/write state.
-4. Feedback uses cloud submission and mutual-selection state.
+- Discover and activity detail read through the async activity read boundary.
+- Signup, waitlist, itinerary arrival, and itinerary settlement write through the async registration write boundary.
+- Uploadable cloud function packages now cover activity reads, signup, waitlist, arrival, settlement, JuZhang workspace, JuZhang response, feedback submission, and feedback completion state.
+
+Remaining page migration work:
+
+1. Let signup, waitlist, itinerary, JuZhang, and feedback pages load their display context from cloud reads when `CITY_SOCIAL_DATA_SOURCE=cloud`.
+2. Add JuZhang and feedback async page adapters with loading and error states.
+3. Keep mock mode as the default visual prototype path.
 
 This keeps the existing mock prototype stable while cloud mode is introduced page by page.
 

@@ -3,14 +3,20 @@ import type {
   ArrivalStatus,
   ConfirmArrivalInput,
   ConfirmSettlementInput,
+  GetFeedbackCompletionStateInput,
   JoinWaitlistInput,
+  RespondJuZhangAssignmentInput,
   SignupActivityInput,
+  SubmitFeedbackInput,
 } from "./cloudHandlers";
 import type {
   CloudActivityDocument,
+  CloudFeedbackDocument,
+  CloudJuZhangAssignmentDocument,
   CloudRegistrationDocument,
   CloudSeedData,
   CloudSettlementDocument,
+  CloudTopicCardDocument,
 } from "./cloudSeed";
 
 export interface CloudDocumentReference {
@@ -43,6 +49,14 @@ const seedCollectionOrder: Array<keyof CloudSeedData> = [
   "feedback",
   "adminActions",
 ];
+
+const juZhangTasks = [
+  { title: "开场 & 破冰", description: "借助 AI 话题卡自然开启对话" },
+  { title: "活动中协调", description: "关注大家体验，必要时协助沟通" },
+  { title: "AA 结算确认", description: "活动后确认每个人的支付状态" },
+];
+
+const activeRegistrationStatuses = new Set(["confirmed", "arrived"]);
 
 function compactQuery(query: Record<string, unknown>): Record<string, unknown> {
   return Object.fromEntries(Object.entries(query).filter(([, value]) => value !== undefined && value !== ""));
@@ -85,6 +99,27 @@ async function findRegistration(
   const result = await db.collection("registrations").where({ activityId, userId }).get();
 
   return result.data[0] as CloudRegistrationDocument | undefined;
+}
+
+function isMutualContact(
+  firstUserId: string,
+  secondUserId: string,
+  selections: Record<string, string[]>,
+): boolean {
+  return (
+    selections[firstUserId]?.includes(secondUserId) === true &&
+    selections[secondUserId]?.includes(firstUserId) === true
+  );
+}
+
+async function findJuZhangAssignment(
+  db: CloudDatabaseLike,
+  activityId: string,
+  userId: string,
+): Promise<CloudJuZhangAssignmentDocument | undefined> {
+  const result = await db.collection("juZhangAssignments").where({ activityId, candidateUserId: userId }).get();
+
+  return result.data[0] as CloudJuZhangAssignmentDocument | undefined;
 }
 
 async function createOrGetWaitlistEntry(
@@ -266,6 +301,79 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
           : { ...settlement.paymentStatusByUser, [userId]: true },
         updatedAt: now(),
       });
+    },
+
+    async getJuZhangWorkspace(activityId: string) {
+      const activity = await getDocument<CloudActivityDocument>(db, "activities", activityId);
+      const assignments = await db.collection("juZhangAssignments").where({ activityId }).get();
+      const topicCards = await db.collection("topicCards").where({ activityId }).get();
+      const registrations = await db.collection("registrations").where({ activityId }).get();
+      const settlement = await getDocument<CloudSettlementDocument>(db, "settlements", activityId);
+
+      return {
+        activity: activity?.reviewStatus === "approved" ? activity : undefined,
+        assignment: assignments.data[0] as CloudJuZhangAssignmentDocument | undefined,
+        topicCard: topicCards.data[0] as CloudTopicCardDocument | undefined,
+        settlement,
+        activeRegistrations: (registrations.data as CloudRegistrationDocument[]).filter((registration) =>
+          activeRegistrationStatuses.has(registration.status),
+        ),
+        tasks: juZhangTasks,
+      };
+    },
+
+    async respondJuZhangAssignment(
+      input: RespondJuZhangAssignmentInput,
+      userId: string,
+    ): Promise<CloudJuZhangAssignmentDocument> {
+      const existingAssignment = await findJuZhangAssignment(db, input.activityId, userId);
+      const timestamp = now();
+      const assignment: CloudJuZhangAssignmentDocument = {
+        ...(existingAssignment ?? {
+          _id: `jz-${input.activityId}-${userId}`,
+          id: `jz-${input.activityId}-${userId}`,
+          activityId: input.activityId,
+          candidateUserId: userId,
+          volunteered: true,
+          createdAt: timestamp,
+        }),
+        status: input.response,
+        updatedAt: timestamp,
+      };
+
+      return setDocument(db, "juZhangAssignments", assignment);
+    },
+
+    async submitFeedback(input: SubmitFeedbackInput, userId: string): Promise<CloudFeedbackDocument> {
+      const timestamp = now();
+      const feedback: CloudFeedbackDocument = {
+        _id: `fb-${input.activityId}-${userId}`,
+        id: `fb-${input.activityId}-${userId}`,
+        activityId: input.activityId,
+        userId,
+        selectedUserIds: input.selectedUserIds,
+        abnormalText: input.abnormalText,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      };
+
+      return setDocument(db, "feedback", feedback);
+    },
+
+    async getFeedbackCompletionState(input: GetFeedbackCompletionStateInput, userId: string) {
+      const feedbackResult = await db.collection("feedback").where({ activityId: input.activityId }).get();
+      const feedbackEntries = feedbackResult.data as CloudFeedbackDocument[];
+      const selections = Object.fromEntries(
+        feedbackEntries.map((entry) => [entry.userId, entry.selectedUserIds]),
+      ) as Record<string, string[]>;
+      const hasSubmitted = feedbackEntries.some((entry) => entry.userId === userId);
+      const isMutual = isMutualContact(userId, input.candidateUserId, selections);
+
+      return {
+        hasSubmitted,
+        isMutual,
+        contactStateLabel: isMutual ? "已互选，可开放联系" : hasSubmitted ? "已提交反馈" : "等待反馈",
+      };
     },
   };
 }

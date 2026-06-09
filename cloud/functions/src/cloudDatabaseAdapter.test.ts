@@ -134,4 +134,38 @@ describe("cloud database adapter", () => {
       paymentStatusByUser: expect.objectContaining({ "u-current": true }),
     });
   });
+
+  it("supports ju zhang workspace and post-activity feedback state", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+
+    await expect(adapter.getJuZhangWorkspace("a-sushi")).resolves.toMatchObject({
+      activity: { id: "a-sushi" },
+      topicCard: { activityId: "a-sushi" },
+      settlement: { activityId: "a-sushi" },
+      activeRegistrations: expect.arrayContaining([expect.objectContaining({ activityId: "a-sushi" })]),
+      tasks: expect.arrayContaining([expect.objectContaining({ title: "开场 & 破冰" })]),
+    });
+
+    await expect(adapter.respondJuZhangAssignment({ activityId: "a-sushi", response: "accepted" }, "u-current")).resolves
+      .toMatchObject({
+        activityId: "a-sushi",
+        candidateUserId: "u-current",
+        status: "accepted",
+      });
+
+    await adapter.submitFeedback(
+      { activityId: "a-sushi", selectedUserIds: ["u-lin"], abnormalText: "整体体验不错" },
+      "u-current",
+    );
+    await adapter.submitFeedback({ activityId: "a-sushi", selectedUserIds: ["u-current"], abnormalText: "" }, "u-lin");
+
+    await expect(adapter.getFeedbackCompletionState({ activityId: "a-sushi", candidateUserId: "u-lin" }, "u-current"))
+      .resolves.toEqual({
+        hasSubmitted: true,
+        isMutual: true,
+        contactStateLabel: "已互选，可开放联系",
+      });
+  });
 });

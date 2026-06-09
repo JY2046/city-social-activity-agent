@@ -1,12 +1,16 @@
 import {
   mockActivities,
+  mockJuZhangAssignments,
   mockRegistrations,
   mockSettlements,
+  mockTopicCards,
   mockUsers,
   type Activity,
   type ActivityGalleryItem,
+  type JuZhangAssignment,
   type Registration,
   type Settlement,
+  type TopicCard,
   type User,
 } from "@city-social/domain";
 
@@ -43,15 +47,38 @@ export interface CloudSettlementDocument extends Settlement {
   updatedAt: string;
 }
 
+export interface CloudJuZhangAssignmentDocument extends JuZhangAssignment {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CloudTopicCardDocument extends TopicCard {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CloudFeedbackDocument {
+  _id: string;
+  id: string;
+  activityId: string;
+  userId: string;
+  selectedUserIds: string[];
+  abnormalText: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface CloudSeedData {
   users: CloudUserDocument[];
   activities: CloudActivityDocument[];
   registrations: CloudRegistrationDocument[];
   settlements: CloudSettlementDocument[];
   waitlists: [];
-  juZhangAssignments: [];
-  topicCards: [];
-  feedback: [];
+  juZhangAssignments: CloudJuZhangAssignmentDocument[];
+  topicCards: CloudTopicCardDocument[];
+  feedback: CloudFeedbackDocument[];
   adminActions: [];
 }
 
@@ -128,6 +155,24 @@ function toCloudSettlementDocument(settlement: Settlement): CloudSettlementDocum
   };
 }
 
+function toCloudJuZhangAssignmentDocument(assignment: JuZhangAssignment): CloudJuZhangAssignmentDocument {
+  return {
+    ...assignment,
+    _id: assignment.id,
+    createdAt: seedNow,
+    updatedAt: seedNow,
+  };
+}
+
+function toCloudTopicCardDocument(topicCard: TopicCard): CloudTopicCardDocument {
+  return {
+    ...topicCard,
+    _id: topicCard.id,
+    createdAt: seedNow,
+    updatedAt: seedNow,
+  };
+}
+
 export function createCloudSeedData(): CloudSeedData {
   return {
     users: [...clone(mockUsers), currentUser].map(toCloudUserDocument),
@@ -135,8 +180,8 @@ export function createCloudSeedData(): CloudSeedData {
     registrations: clone(mockRegistrations).map(toCloudRegistrationDocument),
     settlements: clone(mockSettlements).map(toCloudSettlementDocument),
     waitlists: [],
-    juZhangAssignments: [],
-    topicCards: [],
+    juZhangAssignments: clone(mockJuZhangAssignments).map(toCloudJuZhangAssignmentDocument),
+    topicCards: clone(mockTopicCards).map(toCloudTopicCardDocument),
     feedback: [],
     adminActions: [],
   };

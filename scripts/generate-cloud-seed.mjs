@@ -3,8 +3,10 @@ import { resolve } from "node:path";
 
 import {
   mockActivities,
+  mockJuZhangAssignments,
   mockRegistrations,
   mockSettlements,
+  mockTopicCards,
   mockUsers,
 } from "../packages/domain/dist/index.js";
 
@@ -78,14 +80,32 @@ function toCloudSettlementDocument(settlement) {
   };
 }
 
+function toCloudJuZhangAssignmentDocument(assignment) {
+  return {
+    ...assignment,
+    _id: assignment.id,
+    createdAt: seedNow,
+    updatedAt: seedNow,
+  };
+}
+
+function toCloudTopicCardDocument(topicCard) {
+  return {
+    ...topicCard,
+    _id: topicCard.id,
+    createdAt: seedNow,
+    updatedAt: seedNow,
+  };
+}
+
 const seedData = {
   users: [...structuredClone(mockUsers), currentUser].map(toCloudUserDocument),
   activities: structuredClone(mockActivities).map(toCloudActivityDocument),
   registrations: structuredClone(mockRegistrations).map(toCloudRegistrationDocument),
   settlements: structuredClone(mockSettlements).map(toCloudSettlementDocument),
   waitlists: [],
-  juZhangAssignments: [],
-  topicCards: [],
+  juZhangAssignments: structuredClone(mockJuZhangAssignments).map(toCloudJuZhangAssignmentDocument),
+  topicCards: structuredClone(mockTopicCards).map(toCloudTopicCardDocument),
   feedback: [],
   adminActions: [],
 };

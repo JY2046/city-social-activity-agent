@@ -21,5 +21,11 @@ describe("cloud seed data", () => {
     expect(seed.registrations.every((item) => item._id && item.activityId && item.userId)).toBe(true);
     expect(seed.settlements).toEqual(expect.arrayContaining([expect.objectContaining({ _id: "a-coffee" })]));
     expect(seed.waitlists).toEqual([]);
+    expect(seed.juZhangAssignments).toEqual(
+      expect.arrayContaining([expect.objectContaining({ _id: "jz-1", activityId: "a-sushi" })]),
+    );
+    expect(seed.topicCards).toEqual(
+      expect.arrayContaining([expect.objectContaining({ _id: "topic-sushi", activityId: "a-sushi" })]),
+    );
   });
 });
