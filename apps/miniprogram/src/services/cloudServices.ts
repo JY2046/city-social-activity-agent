@@ -2,7 +2,7 @@ import type { JuZhangAssignment, Registration, Settlement } from "@city-social/d
 
 import type { FeedbackCompletionState, SubmitFeedbackOptions } from "./feedbackService";
 import type { JuZhangWorkspace } from "./juZhangService";
-import type { MiniProgramActivity, WaitlistEntry, WaitlistType } from "./mockData";
+import type { FeedbackEntry, MiniProgramActivity, WaitlistEntry, WaitlistType } from "./mockData";
 import type { ArrivalStatus, SignupOptions } from "./registrationService";
 import { callCloudFunction, type CloudCallAdapter } from "./cloudFunctionClient";
 
@@ -99,8 +99,8 @@ export function cloudSubmitFeedback(
   adapter: CloudCallAdapter,
   activityId: string,
   options: SubmitFeedbackOptions,
-) {
-  return callCloudFunction(adapter, "submitFeedback", {
+): Promise<FeedbackEntry> {
+  return callCloudFunction<FeedbackEntry>(adapter, "submitFeedback", {
     activityId,
     selectedUserIds: options.selectedUserIds,
     abnormalText: options.abnormalText,

@@ -1,9 +1,14 @@
 import { Button, Text, Textarea, View } from "@tarojs/components";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "@tarojs/taro";
 
 import { getActivity } from "../../services/activityService";
-import { getFeedbackCompletionState, submitFeedback } from "../../services/feedbackService";
+import {
+  createFeedbackAdapter,
+  runGetFeedbackCompletionState,
+  runSubmitFeedback,
+  type FeedbackCompletionState,
+} from "../../services/feedbackService";
 import { DEFAULT_CURRENT_USER_ID, getUserDisplayName } from "../../services/mockData";
 
 import "../signup/index.css";
@@ -14,11 +19,30 @@ export default function FeedbackPage() {
   const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
   const activity = getActivity(activityId);
   const candidateUserId = activity?.participantIds.find((userId) => userId !== DEFAULT_CURRENT_USER_ID) ?? "u-lin";
+  const adapter = useMemo(() => createFeedbackAdapter(), []);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [abnormalText, setAbnormalText] = useState("");
-  const [completionState, setCompletionState] = useState(() =>
-    getFeedbackCompletionState(activityId, DEFAULT_CURRENT_USER_ID, candidateUserId),
-  );
+  const [completionState, setCompletionState] = useState<FeedbackCompletionState>({
+    hasSubmitted: false,
+    isMutual: false,
+    contactStateLabel: "等待反馈",
+  });
+  const [submitMessage, setSubmitMessage] = useState("正在同步反馈状态...");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function refreshCompletionState(nextMessage?: string) {
+    const result = await runGetFeedbackCompletionState(adapter, activityId, candidateUserId);
+    if (result.status === "ready") {
+      setCompletionState(result.completionState);
+      setSubmitMessage(nextMessage ?? "");
+      return;
+    }
+    setSubmitMessage(result.message);
+  }
+
+  useEffect(() => {
+    void refreshCompletionState();
+  }, [activityId, candidateUserId, adapter]);
 
   function toggleSelection(userId: string) {
     setSelectedUserIds((current) =>
@@ -26,18 +50,21 @@ export default function FeedbackPage() {
     );
   }
 
-  function handleSubmit() {
-    submitFeedback(activityId, {
+  async function handleSubmit() {
+    setIsSubmitting(true);
+    const result = await runSubmitFeedback(adapter, activityId, {
       selectedUserIds,
       abnormalText,
     });
-    setCompletionState(getFeedbackCompletionState(activityId, DEFAULT_CURRENT_USER_ID, candidateUserId));
+    await refreshCompletionState(result.status === "ready" ? "反馈已提交，系统会同步互选状态。" : result.message);
+    setIsSubmitting(false);
   }
 
   return (
     <View className="flow-page">
       <Text className="flow-eyebrow">活动后反馈</Text>
       <Text className="flow-title">{activity?.title ?? "活动后互选"}</Text>
+      {submitMessage ? <Text className="flow-message">{submitMessage}</Text> : null}
 
       <View className="flow-card">
         <Text className="card-title">活动后互选</Text>
@@ -66,8 +93,8 @@ export default function FeedbackPage() {
         />
       </View>
 
-      <Button className="primary-button" onClick={handleSubmit}>
-        提交反馈
+      <Button className="primary-button" disabled={isSubmitting} onClick={() => void handleSubmit()}>
+        {isSubmitting ? "提交中" : "提交反馈"}
       </Button>
 
       <View className="result-card">
