@@ -17,6 +17,7 @@ export const cloudFunctionNames = [
   "loginOrCreateUser",
   "listActivities",
   "getActivityDetail",
+  "listMyRegistrations",
   "signupActivity",
   "cancelRegistration",
   "joinWaitlist",

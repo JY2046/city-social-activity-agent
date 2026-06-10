@@ -124,6 +124,46 @@ describe("cloud database adapter", () => {
     });
   });
 
+  it("reactivates a cancelled registration when the user signs up again", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+    await adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: false }, "u-current");
+    await adapter.cancelRegistration({ activityId: "a-coffee" }, "u-current");
+
+    await expect(
+      adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: true }, "u-current"),
+    ).resolves.toMatchObject({
+      activityId: "a-coffee",
+      userId: "u-current",
+      status: "confirmed",
+      willingToBeJuZhang: true,
+    });
+    expect(db.dump().activities["a-coffee"]).toMatchObject({
+      participantIds: expect.arrayContaining(["u-current"]),
+    });
+  });
+
+  it("lists only the current user's non-cancelled registrations", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+    await adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: false }, "u-current");
+    await adapter.signupActivity({ activityId: "a-bar", willingToBeJuZhang: false }, "u-current");
+    await adapter.signupActivity({ activityId: "a-walk", willingToBeJuZhang: false }, "u-current");
+    await adapter.cancelRegistration({ activityId: "a-walk" }, "u-current");
+
+    await expect(adapter.listMyRegistrations("u-current")).resolves.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ activityId: "a-coffee", status: "confirmed" }),
+        expect.objectContaining({ activityId: "a-bar", status: "waitlisted" }),
+      ]),
+    );
+    await expect(adapter.listMyRegistrations("u-current")).resolves.not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ activityId: "a-walk" })]),
+    );
+  });
+
   it("waitlists full activities and keeps waitlist entries idempotent", async () => {
     const db = createFakeDatabase();
     await seedCloudDatabase(db, createCloudSeedData());

@@ -11,6 +11,7 @@ import {
   cloudGetFeedbackCompletionState,
   cloudGetJuZhangWorkspace,
   cloudJoinWaitlist,
+  cloudListMyRegistrations,
   cloudListActivities,
   cloudSignupActivity,
   cloudSubmitFeedback,
@@ -47,10 +48,12 @@ describe("cloud service wrappers", () => {
     };
     const { adapter, calls } = createCapturingAdapter({
       listActivities: [],
+      listMyRegistrations: [registration],
       signupActivity: registration,
     });
 
     await expect(cloudListActivities(adapter, { city: "上海", type: "dinner" })).resolves.toEqual([]);
+    await expect(cloudListMyRegistrations(adapter)).resolves.toEqual([registration]);
     await expect(
       cloudSignupActivity(adapter, "a-sushi", {
         willingToBeJuZhang: true,
@@ -59,6 +62,7 @@ describe("cloud service wrappers", () => {
 
     expect(calls).toEqual([
       { name: "listActivities", data: { city: "上海", type: "dinner" } },
+      { name: "listMyRegistrations", data: {} },
       { name: "signupActivity", data: { activityId: "a-sushi", willingToBeJuZhang: true } },
     ]);
   });

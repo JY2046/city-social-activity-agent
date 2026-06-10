@@ -14,6 +14,7 @@ import {
   runCancelSignupAndRefreshActivity,
   runSignupAndRefreshActivity,
 } from "../../services/registrationWriteService";
+import { createUserActivityReadAdapter, loadMyRegistrationForActivity } from "../../services/userActivityService";
 import type { MiniProgramActivity } from "../../services/mockData";
 
 import "./index.css";
@@ -22,6 +23,7 @@ export default function SignupPage() {
   const router = useRouter();
   const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
   const activityReadAdapter = useMemo(() => createActivityReadAdapter(), []);
+  const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
   const [activity, setActivity] = useState<MiniProgramActivity | undefined>(() => getActivity(activityId));
   const [rulesAccepted, setRulesAccepted] = useState(false);
   const [willingToBeJuZhang, setWillingToBeJuZhang] = useState(false);
@@ -35,26 +37,37 @@ export default function SignupPage() {
     let isMounted = true;
 
     async function loadActivity() {
-      const result = await loadActivityDetail(activityId, activityReadAdapter);
+      const [activityResult, registrationResult] = await Promise.all([
+        loadActivityDetail(activityId, activityReadAdapter),
+        loadMyRegistrationForActivity(activityId, userActivityReadAdapter),
+      ]);
 
       if (!isMounted) {
         return;
       }
 
-      if (result.status === "ready") {
-        setActivity(result.activity);
+      if (activityResult.status === "ready") {
+        setActivity(activityResult.activity);
+        if (registrationResult.status === "ready") {
+          setRegistration(registrationResult.registration);
+        }
         setSubmitMessage("");
         return;
       }
 
-      if (result.status === "empty") {
+      if (activityResult.status === "empty") {
         setActivity(undefined);
         setSubmitMessage("活动不存在或暂不可报名");
         return;
       }
 
-      if (result.status === "error") {
-        setSubmitMessage(result.message);
+      if (activityResult.status === "error") {
+        setSubmitMessage(activityResult.message);
+        return;
+      }
+
+      if (registrationResult.status === "error") {
+        setSubmitMessage(registrationResult.message);
       }
     }
 
@@ -63,7 +76,7 @@ export default function SignupPage() {
     return () => {
       isMounted = false;
     };
-  }, [activityId, activityReadAdapter]);
+  }, [activityId, activityReadAdapter, userActivityReadAdapter]);
 
   async function handleSignup() {
     if (!rulesAccepted || !activity || primaryActionState.isCompleted) {

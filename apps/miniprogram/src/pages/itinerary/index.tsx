@@ -1,10 +1,11 @@
 import { Button, Text, View } from "@tarojs/components";
+import type { Registration } from "@city-social/domain";
 import { useEffect, useMemo, useState } from "react";
 import { navigateTo, useRouter } from "@tarojs/taro";
 
 import { getActivity } from "../../services/activityService";
 import { createActivityReadAdapter, loadActivityDetail } from "../../services/activityReadService";
-import { DEFAULT_CURRENT_USER_ID, getSettlementByActivityId } from "../../services/mockData";
+import { getSettlementByActivityId } from "../../services/mockData";
 import { formatActivityDateTime, getCostLabel } from "../../services/activityPresentation";
 import { getArrivalOptions, getPaymentActionLabel } from "../../services/flowViewModels";
 import type { MiniProgramActivity } from "../../services/mockData";
@@ -14,71 +15,160 @@ import {
   runConfirmArrival,
   runConfirmPayment,
   runJoinWaitlistAndRefreshActivity,
-  runSignup,
 } from "../../services/registrationWriteService";
+import {
+  createUserActivityReadAdapter,
+  loadMyActivityFeed,
+  loadMyRegistrationForActivity,
+  type UserActivityItem,
+} from "../../services/userActivityService";
 
 import "../signup/index.css";
 import "./index.css";
 
+function getRegistrationStatusLabel(registration: Registration): string {
+  if (registration.status === "waitlisted") {
+    return "排队中";
+  }
+
+  if (registration.status === "arrived") {
+    return "已到场";
+  }
+
+  if (registration.status === "noShow") {
+    return "无法到场";
+  }
+
+  return "已报名";
+}
+
 export default function ItineraryPage() {
   const router = useRouter();
-  const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-coffee";
+  const initialActivityId = typeof router.params.activityId === "string" ? router.params.activityId : undefined;
   const activityReadAdapter = useMemo(() => createActivityReadAdapter(), []);
-  const [activity, setActivity] = useState<MiniProgramActivity | undefined>(() => getActivity(activityId));
+  const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
+  const [selectedActivityId, setSelectedActivityId] = useState<string | undefined>(initialActivityId);
+  const [myItems, setMyItems] = useState<UserActivityItem[]>([]);
+  const [activity, setActivity] = useState<MiniProgramActivity | undefined>(() =>
+    initialActivityId ? getActivity(initialActivityId) : undefined,
+  );
+  const [registration, setRegistration] = useState<Registration | undefined>();
   const [arrivalStatus, setArrivalStatus] = useState<ArrivalStatus>("confirmed");
   const [isJuZhangQueued, setIsJuZhangQueued] = useState(false);
-  const [settlement, setSettlement] = useState(() => getSettlementByActivityId(activityId));
+  const [settlement, setSettlement] = useState(() =>
+    initialActivityId ? getSettlementByActivityId(initialActivityId) : undefined,
+  );
   const [pendingAction, setPendingAction] = useState<string | undefined>();
   const [actionMessage, setActionMessage] = useState("");
 
   useEffect(() => {
     let isMounted = true;
 
-    async function loadActivity() {
-      const result = await loadActivityDetail(activityId, activityReadAdapter);
+    async function loadMyItems() {
+      const result = await loadMyActivityFeed(userActivityReadAdapter);
 
       if (!isMounted) {
         return;
       }
 
       if (result.status === "ready") {
-        setActivity(result.activity);
+        setMyItems(result.items);
         setActionMessage("");
         return;
       }
 
       if (result.status === "empty") {
-        setActivity(undefined);
-        setActionMessage("活动不存在或暂不可查看");
+        setMyItems([]);
+        setActionMessage("");
         return;
       }
 
-      if (result.status === "error") {
-        setActionMessage(result.message);
-      }
+      setMyItems([]);
+      setActionMessage(result.message);
     }
 
-    void loadActivity();
+    void loadMyItems();
 
     return () => {
       isMounted = false;
     };
-  }, [activityId, activityReadAdapter]);
+  }, [userActivityReadAdapter]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadSelectedActivity() {
+      if (!selectedActivityId) {
+        setActivity(undefined);
+        setRegistration(undefined);
+        setSettlement(undefined);
+        return;
+      }
+
+      const [activityResult, registrationResult] = await Promise.all([
+        loadActivityDetail(selectedActivityId, activityReadAdapter),
+        loadMyRegistrationForActivity(selectedActivityId, userActivityReadAdapter),
+      ]);
+
+      if (!isMounted) {
+        return;
+      }
+
+      if (activityResult.status === "ready") {
+        setActivity(activityResult.activity);
+        if (registrationResult.status === "ready") {
+          setRegistration(registrationResult.registration);
+          if (
+            registrationResult.registration?.status === "confirmed" ||
+            registrationResult.registration?.status === "arrived" ||
+            registrationResult.registration?.status === "noShow"
+          ) {
+            setArrivalStatus(registrationResult.registration.status);
+          }
+        }
+        setSettlement(getSettlementByActivityId(selectedActivityId));
+        setActionMessage("");
+        return;
+      }
+
+      if (activityResult.status === "empty") {
+        setActivity(undefined);
+        setRegistration(undefined);
+        setActionMessage("活动不存在或暂不可查看");
+        return;
+      }
+
+      if (activityResult.status === "error") {
+        setActionMessage(activityResult.message);
+        return;
+      }
+
+      if (registrationResult.status === "error") {
+        setActionMessage(registrationResult.message);
+      }
+    }
+
+    void loadSelectedActivity();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activityReadAdapter, selectedActivityId, userActivityReadAdapter]);
 
   async function handleArrival(status: ArrivalStatus) {
-    if (!activity) {
+    if (!activity || !registration || registration.status === "waitlisted") {
+      setActionMessage("只有已报名的活动可以同步到场状态。");
       return;
     }
 
     const adapter = createRegistrationWriteAdapter();
     setPendingAction(`arrival-${status}`);
     setActionMessage("");
-    const signupResult = await runSignup(adapter, activity.id, { willingToBeJuZhang: false });
-    const arrivalResult =
-      signupResult.status === "ready" ? await runConfirmArrival(adapter, activity.id, status) : signupResult;
+    const arrivalResult = await runConfirmArrival(adapter, activity.id, status);
     setPendingAction(undefined);
 
     if (arrivalResult.status === "ready") {
+      setRegistration(arrivalResult.registration);
       setArrivalStatus(status);
       return;
     }
@@ -87,14 +177,14 @@ export default function ItineraryPage() {
   }
 
   async function handlePayment() {
-    if (!activity) {
+    if (!activity || !registration || registration.status === "waitlisted") {
+      setActionMessage("只有已报名的活动可以确认费用。");
       return;
     }
 
     const adapter = createRegistrationWriteAdapter();
     setPendingAction("payment");
     setActionMessage("");
-    await runSignup(adapter, activity.id, { willingToBeJuZhang: false });
     const paymentResult = await runConfirmPayment(adapter, activity.id);
     setPendingAction(undefined);
 
@@ -107,7 +197,8 @@ export default function ItineraryPage() {
   }
 
   async function handleJuZhangQueue() {
-    if (!activity) {
+    if (!activity || !registration || registration.status === "waitlisted") {
+      setActionMessage("只有已报名的活动可以申请局长。");
       return;
     }
 
@@ -135,6 +226,39 @@ export default function ItineraryPage() {
     setActionMessage(result.message);
   }
 
+  if (!selectedActivityId) {
+    return (
+      <View className="flow-page">
+        <Text className="flow-eyebrow">我的行程</Text>
+        <Text className="flow-title">已报名的小局</Text>
+
+        {myItems.length > 0 ? (
+          myItems.map((item) => (
+            <View className="flow-card itinerary-list-card" key={item.registration.id}>
+              <Text className="card-title">{item.activity.title}</Text>
+              <Text className="card-copy">
+                {formatActivityDateTime(item.activity.startsAt)} · {item.activity.area}
+              </Text>
+              <Text className="card-copy">
+                {item.activity.venue} · {getRegistrationStatusLabel(item.registration)}
+              </Text>
+              <Button className="outline-button" onClick={() => setSelectedActivityId(item.activity.id)}>
+                查看行程
+              </Button>
+            </View>
+          ))
+        ) : (
+          <View className="flow-card">
+            <Text className="card-title">还没有报名的小局</Text>
+            <Text className="card-copy">去发现页挑一个感兴趣的活动，报名后会出现在这里。</Text>
+          </View>
+        )}
+
+        {actionMessage ? <Text className="flow-message">{actionMessage}</Text> : null}
+      </View>
+    );
+  }
+
   return (
     <View className="flow-page">
       <Text className="flow-eyebrow">我的行程</Text>
@@ -147,6 +271,7 @@ export default function ItineraryPage() {
             {activity.area} · {activity.venue}
           </Text>
           <Text className="card-copy">{getCostLabel(activity)}</Text>
+          {registration ? <Text className="card-copy">{getRegistrationStatusLabel(registration)}</Text> : null}
         </View>
       ) : null}
 
@@ -178,7 +303,7 @@ export default function ItineraryPage() {
         <Text className="card-title">费用确认</Text>
         <Text className="card-copy">普通参与者确认自己的费用和支付状态，局长再统一核准。</Text>
         <Button className="outline-button" disabled={pendingAction !== undefined} onClick={handlePayment}>
-          {pendingAction === "payment" ? "确认中" : getPaymentActionLabel(settlement, DEFAULT_CURRENT_USER_ID)}
+          {pendingAction === "payment" ? "确认中" : getPaymentActionLabel(settlement, registration?.userId ?? "")}
         </Button>
       </View>
 
@@ -187,7 +312,16 @@ export default function ItineraryPage() {
       <View className="bottom-link-row">
         <Text
           className="bottom-link"
-          onClick={() => void navigateTo({ url: `/pages/activity-detail/index?activityId=${activityId}` })}
+          onClick={() => setSelectedActivityId(undefined)}
+        >
+          返回行程列表
+        </Text>
+      </View>
+
+      <View className="bottom-link-row">
+        <Text
+          className="bottom-link"
+          onClick={() => void navigateTo({ url: `/pages/activity-detail/index?activityId=${selectedActivityId}` })}
         >
           返回活动详情页
         </Text>

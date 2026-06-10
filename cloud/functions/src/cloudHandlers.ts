@@ -139,6 +139,16 @@ export function createCloudHandlers(store: CloudStore) {
       return ok({ activity: copy(activity) });
     },
 
+    async listMyRegistrations(_input: Record<string, never>, context: CloudRequestContext) {
+      return ok(
+        copy(
+          store.registrations.filter(
+            (registration) => registration.userId === context.userId && registration.status !== "cancelled",
+          ),
+        ),
+      );
+    },
+
     async signupActivity(input: SignupActivityInput, context: CloudRequestContext) {
       const activity = store.activities.find((item) => item.id === input.activityId && item.reviewStatus === "approved");
 
@@ -148,7 +158,7 @@ export function createCloudHandlers(store: CloudStore) {
 
       const existingRegistration = getRegistration(store, input.activityId, context.userId);
 
-      if (existingRegistration) {
+      if (existingRegistration && existingRegistration.status !== "cancelled") {
         return ok(copy(existingRegistration));
       }
 

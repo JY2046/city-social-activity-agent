@@ -43,8 +43,10 @@ export function signup(activityId: string, options: SignupOptions): Registration
     throw new Error(`Activity not found: ${activityId}`);
   }
 
-  if (getRegistration(activityId, userId)) {
-    return clone(getRegistration(activityId, userId)!);
+  const existingRegistration = getRegistration(activityId, userId);
+
+  if (existingRegistration && existingRegistration.status !== "cancelled") {
+    return clone(existingRegistration);
   }
 
   if (activity.currentParticipantCount >= activity.capacity) {

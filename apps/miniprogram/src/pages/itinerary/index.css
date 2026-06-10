@@ -38,6 +38,10 @@
   border: 2px solid rgba(36, 69, 47, 0.28);
 }
 
+.itinerary-list-card .outline-button {
+  margin-top: 24px;
+}
+
 .bottom-link-row {
   margin-top: 28px;
   text-align: center;

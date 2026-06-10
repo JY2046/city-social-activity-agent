@@ -12,6 +12,7 @@ const requiredDeployFiles = ["index.js", "runtime.js", "package.json", "config.j
 const deployFunctionNames = [
   "listActivities",
   "getActivityDetail",
+  "listMyRegistrations",
   "signupActivity",
   "cancelRegistration",
   "joinWaitlist",

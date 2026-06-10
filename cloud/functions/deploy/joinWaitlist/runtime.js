@@ -151,6 +151,14 @@ async function getActivityDetail(input) {
   return { activity };
 }
 
+async function listMyRegistrations() {
+  const db = getDb();
+  const userId = await resolveUserId(db);
+  const result = await db.collection("registrations").where({ userId }).get();
+
+  return result.data.filter((registration) => registration.status !== "cancelled");
+}
+
 async function signupActivity(input) {
   const db = getDb();
   const userId = await resolveUserId(db);
@@ -161,7 +169,7 @@ async function signupActivity(input) {
   }
 
   const existingRegistration = await findRegistration(db, input.activityId, userId);
-  if (existingRegistration) return existingRegistration;
+  if (existingRegistration && existingRegistration.status !== "cancelled") return existingRegistration;
 
   const timestamp = now();
   const registration = {
@@ -373,6 +381,7 @@ async function getFeedbackCompletionState(input) {
 const handlers = {
   listActivities,
   getActivityDetail,
+  listMyRegistrations,
   signupActivity,
   cancelRegistration,
   joinWaitlist,

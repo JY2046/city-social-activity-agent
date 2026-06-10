@@ -35,6 +35,10 @@ export async function cloudGetActivity(adapter: CloudCallAdapter, activityId: st
   return result.activity;
 }
 
+export function cloudListMyRegistrations(adapter: CloudCallAdapter): Promise<Registration[]> {
+  return callCloudFunction<Registration[]>(adapter, "listMyRegistrations", {});
+}
+
 export function cloudSignupActivity(
   adapter: CloudCallAdapter,
   activityId: string,

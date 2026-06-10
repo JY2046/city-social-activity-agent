@@ -16,6 +16,7 @@ describe("wechat cloud deploy helper", () => {
     expect(getDeployFunctionNames()).toEqual([
       "listActivities",
       "getActivityDetail",
+      "listMyRegistrations",
       "signupActivity",
       "cancelRegistration",
       "joinWaitlist",
@@ -49,6 +50,7 @@ describe("wechat cloud deploy helper", () => {
       "--paths",
       "/repo/cloud/functions/deploy/listActivities",
       "/repo/cloud/functions/deploy/getActivityDetail",
+      "/repo/cloud/functions/deploy/listMyRegistrations",
       "/repo/cloud/functions/deploy/signupActivity",
       "/repo/cloud/functions/deploy/cancelRegistration",
       "/repo/cloud/functions/deploy/joinWaitlist",

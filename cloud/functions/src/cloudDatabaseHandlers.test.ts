@@ -63,6 +63,10 @@ describe("cloud database handlers", () => {
       ok: true,
       data: { activityId: "a-coffee", userId: "u-current", status: "confirmed" },
     });
+    await expect(dispatch("listMyRegistrations", {}, { userId: "u-current" })).resolves.toMatchObject({
+      ok: true,
+      data: expect.arrayContaining([expect.objectContaining({ activityId: "a-coffee", userId: "u-current" })]),
+    });
     await expect(dispatch("cancelRegistration", { activityId: "a-coffee" }, { userId: "u-current" })).resolves
       .toMatchObject({
         ok: true,

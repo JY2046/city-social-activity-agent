@@ -213,7 +213,7 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
 
       const existingRegistration = await findRegistration(db, input.activityId, userId);
 
-      if (existingRegistration) {
+      if (existingRegistration && existingRegistration.status !== "cancelled") {
         return existingRegistration;
       }
 
@@ -259,6 +259,14 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
       }
 
       return registration;
+    },
+
+    async listMyRegistrations(userId: string): Promise<CloudRegistrationDocument[]> {
+      const result = await db.collection("registrations").where({ userId }).get();
+
+      return (result.data as CloudRegistrationDocument[]).filter(
+        (registration) => registration.status !== "cancelled",
+      );
     },
 
     async cancelRegistration(input: CancelRegistrationInput, userId: string): Promise<CloudRegistrationDocument> {

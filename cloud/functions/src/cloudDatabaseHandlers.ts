@@ -71,6 +71,10 @@ export function createCloudDatabaseHandlers(adapter: CloudDatabaseAdapter) {
       return activity ? ok({ activity }) : fail("ACTIVITY_NOT_FOUND", "Activity not found");
     },
 
+    listMyRegistrations(_input: Record<string, never>, context: CloudRequestContext) {
+      return run(() => adapter.listMyRegistrations(context.userId));
+    },
+
     signupActivity(input: SignupActivityInput, context: CloudRequestContext) {
       return run(() => adapter.signupActivity(input, context.userId));
     },

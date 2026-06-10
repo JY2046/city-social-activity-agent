@@ -62,6 +62,21 @@ describe("mini program registration service", () => {
     expect(getSettlementByActivityId("a-coffee")?.paymentStatusByUser).not.toHaveProperty(DEFAULT_CURRENT_USER_ID);
   });
 
+  it("lets the current user sign up again after cancelling", () => {
+    signup("a-coffee", { willingToBeJuZhang: false });
+    cancelSignup("a-coffee");
+
+    const registration = signup("a-coffee", { willingToBeJuZhang: true });
+
+    expect(registration).toMatchObject({
+      activityId: "a-coffee",
+      userId: DEFAULT_CURRENT_USER_ID,
+      status: "confirmed",
+      willingToBeJuZhang: true,
+    });
+    expect(getActivity("a-coffee")?.participantIds).toContain(DEFAULT_CURRENT_USER_ID);
+  });
+
   it("puts full activities into the activity waitlist instead of overbooking", () => {
     const registration = signup("a-bar", { willingToBeJuZhang: false });
 
