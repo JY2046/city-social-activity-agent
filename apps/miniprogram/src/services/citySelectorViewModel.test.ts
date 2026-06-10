@@ -4,7 +4,7 @@ import { cityOptions, getCityFromPickerIndex, getCityPickerIndex } from "./cityS
 
 describe("city selector view model", () => {
   it("provides stable city picker options", () => {
-    expect(cityOptions).toEqual(["上海", "北京", "杭州", "成都"]);
+    expect(cityOptions).toEqual(["上海", "北京", "杭州", "成都", "深圳", "广州"]);
   });
 
   it("maps picker indexes to city names", () => {
@@ -15,6 +15,7 @@ describe("city selector view model", () => {
 
   it("maps selected city names back to picker indexes", () => {
     expect(getCityPickerIndex("成都")).toBe(3);
-    expect(getCityPickerIndex("深圳")).toBe(0);
+    expect(getCityPickerIndex("深圳")).toBe(4);
+    expect(getCityPickerIndex("未开通城市")).toBe(0);
   });
 });

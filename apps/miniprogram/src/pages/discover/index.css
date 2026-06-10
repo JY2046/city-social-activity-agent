@@ -24,9 +24,9 @@
 
 .home-hero {
   position: relative;
-  min-height: 254px;
-  margin: -48px -30px 12px;
-  padding: 38px 30px 10px;
+  min-height: 222px;
+  margin: -48px -30px 0;
+  padding: 34px 30px 0;
   overflow: hidden;
 }
 
@@ -45,7 +45,7 @@
   right: -136px;
   bottom: 0;
   width: 560px;
-  height: 254px;
+  height: 226px;
   opacity: 0.46;
 }
 
@@ -59,7 +59,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   transform: translateY(-6px);
 }
 
@@ -78,7 +78,7 @@
   color: #24452f;
   font-size: 24px;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 9px;
 }
 
 .title {
@@ -93,7 +93,7 @@
 }
 
 .subtitle {
-  margin-top: 10px;
+  margin-top: 8px;
   color: #4b514d;
   font-size: 24px;
   line-height: 1.45;
@@ -103,6 +103,7 @@
   display: flex;
   align-items: center;
   gap: 18px;
+  margin-top: -4px;
   margin-bottom: 26px;
 }
 

@@ -1,4 +1,4 @@
-export const cityOptions = ["上海", "北京", "杭州", "成都"];
+export const cityOptions = ["上海", "北京", "杭州", "成都", "深圳", "广州"];
 
 export function getCityFromPickerIndex(index: number | string): string {
   const numericIndex = typeof index === "number" ? index : Number.parseInt(index, 10);
