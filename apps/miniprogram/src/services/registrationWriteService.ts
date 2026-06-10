@@ -56,6 +56,10 @@ export type WaitlistWriteState =
   | { status: "ready"; waitlistEntry: WaitlistEntry }
   | { status: "error"; message: string };
 
+export type WaitlistWriteRefreshState =
+  | { status: "ready"; waitlistEntry: WaitlistEntry; activity?: MiniProgramActivity; refreshMessage?: string }
+  | { status: "error"; message: string };
+
 export type ArrivalWriteState =
   | { status: "ready"; registration: Registration }
   | { status: "error"; message: string };
@@ -221,6 +225,24 @@ export async function runJoinWaitlist(
       message: toErrorMessage(error),
     };
   }
+}
+
+export async function runJoinWaitlistAndRefreshActivity(
+  writeAdapter: RegistrationWriteAdapter,
+  readAdapter: ActivityReadAdapter,
+  activityId: string,
+  type: WaitlistType,
+): Promise<WaitlistWriteRefreshState> {
+  const waitlistResult = await runJoinWaitlist(writeAdapter, activityId, type);
+
+  if (waitlistResult.status === "error") {
+    return waitlistResult;
+  }
+
+  return {
+    ...waitlistResult,
+    ...(await refreshActivity(readAdapter, activityId)),
+  };
 }
 
 export async function runConfirmArrival(

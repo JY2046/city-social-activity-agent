@@ -13,7 +13,7 @@ import {
   createRegistrationWriteAdapter,
   runConfirmArrival,
   runConfirmPayment,
-  runJoinWaitlist,
+  runJoinWaitlistAndRefreshActivity,
   runSignup,
 } from "../../services/registrationWriteService";
 
@@ -113,11 +113,22 @@ export default function ItineraryPage() {
 
     setPendingAction("juZhangQueue");
     setActionMessage("");
-    const result = await runJoinWaitlist(createRegistrationWriteAdapter(), activity.id, "juZhang");
+    const result = await runJoinWaitlistAndRefreshActivity(
+      createRegistrationWriteAdapter(),
+      activityReadAdapter,
+      activity.id,
+      "juZhang",
+    );
     setPendingAction(undefined);
 
     if (result.status === "ready") {
       setIsJuZhangQueued(true);
+      if (result.activity) {
+        setActivity(result.activity);
+      }
+      if (result.refreshMessage) {
+        setActionMessage(result.refreshMessage);
+      }
       return;
     }
 

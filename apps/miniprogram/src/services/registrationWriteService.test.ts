@@ -12,6 +12,7 @@ import {
   runConfirmArrival,
   runConfirmPayment,
   runJoinWaitlist,
+  runJoinWaitlistAndRefreshActivity,
   runSignup,
   runSignupAndRefreshActivity,
   type RegistrationWriteAdapter,
@@ -121,6 +122,70 @@ describe("registration write service", () => {
       },
     });
     expect(listWaitlistEntries()).toHaveLength(1);
+  });
+
+  it("refreshes activity detail after joining a waitlist succeeds", async () => {
+    const activityReadAdapter: ActivityReadAdapter = {
+      listActivities: vi.fn(async () => []),
+      getActivity: vi.fn(async () => ({
+        id: "a-sushi",
+        title: "周五下班日料小局",
+        type: "dinner",
+        area: "静安寺",
+        venue: "若竹日料",
+        startsAt: "2026-06-05T19:30:00+08:00",
+        capacity: 6,
+        currentParticipantCount: 6,
+        costPerPerson: 168,
+        budgetType: "paid",
+        formationStatus: "formed",
+        aiRecommendationReason: "适合想下班后轻松吃饭的人。",
+        organizerAlias: "乔一",
+        participantIds: ["u-a", "u-b", "u-c", "u-d", "u-e", "u-f"],
+        imagePath: "images/activity-sushi.jpg",
+        gallery: [],
+        attractionSummary: "小红书热门日料店。",
+        experienceHighlights: [],
+        locationGuide: "静安寺附近。",
+        aaRule: "人均约 168 元。",
+      })),
+    };
+
+    await expect(
+      runJoinWaitlistAndRefreshActivity(
+        createMockRegistrationWriteAdapter(),
+        activityReadAdapter,
+        "a-sushi",
+        "juZhang",
+      ),
+    ).resolves.toMatchObject({
+      status: "ready",
+      waitlistEntry: { activityId: "a-sushi", type: "juZhang", order: 1 },
+      activity: { id: "a-sushi", currentParticipantCount: 6 },
+    });
+    expect(activityReadAdapter.getActivity).toHaveBeenCalledWith("a-sushi");
+  });
+
+  it("keeps waitlist ready even when the activity refresh fails", async () => {
+    const activityReadAdapter: ActivityReadAdapter = {
+      listActivities: vi.fn(async () => []),
+      getActivity: vi.fn(async () => {
+        throw new Error("云端活动刷新失败");
+      }),
+    };
+
+    await expect(
+      runJoinWaitlistAndRefreshActivity(
+        createMockRegistrationWriteAdapter(),
+        activityReadAdapter,
+        "a-sushi",
+        "activity",
+      ),
+    ).resolves.toMatchObject({
+      status: "ready",
+      waitlistEntry: { activityId: "a-sushi", type: "activity", order: 1 },
+      refreshMessage: "云端活动刷新失败",
+    });
   });
 
   it("confirms arrival and payment through the async write boundary", async () => {

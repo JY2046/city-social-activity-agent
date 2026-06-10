@@ -5,7 +5,7 @@ import { useRouter } from "@tarojs/taro";
 import { getActivity } from "../../services/activityService";
 import { createActivityReadAdapter, loadActivityDetail } from "../../services/activityReadService";
 import { getWaitlistDescription, getWaitlistTitle } from "../../services/flowViewModels";
-import { createRegistrationWriteAdapter, runJoinWaitlist } from "../../services/registrationWriteService";
+import { createRegistrationWriteAdapter, runJoinWaitlistAndRefreshActivity } from "../../services/registrationWriteService";
 import type { MiniProgramActivity, WaitlistType } from "../../services/mockData";
 
 import "../signup/index.css";
@@ -62,11 +62,22 @@ export default function WaitlistPage() {
 
     setIsSubmitting(true);
     setSubmitMessage("");
-    const result = await runJoinWaitlist(createRegistrationWriteAdapter(), activity.id, waitlistType);
+    const result = await runJoinWaitlistAndRefreshActivity(
+      createRegistrationWriteAdapter(),
+      activityReadAdapter,
+      activity.id,
+      waitlistType,
+    );
     setIsSubmitting(false);
 
     if (result.status === "ready") {
       setOrder(result.waitlistEntry.order);
+      if (result.activity) {
+        setActivity(result.activity);
+      }
+      if (result.refreshMessage) {
+        setSubmitMessage(result.refreshMessage);
+      }
       return;
     }
 
