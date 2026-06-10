@@ -40,6 +40,22 @@ describe("cloud function handlers", () => {
     });
   });
 
+  it("cancels the current user's active registration", async () => {
+    await handlers.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: true }, { userId: "u-current" });
+
+    await expect(handlers.cancelRegistration({ activityId: "a-coffee" }, { userId: "u-current" })).resolves
+      .toMatchObject({
+        ok: true,
+        data: { activityId: "a-coffee", userId: "u-current", status: "cancelled" },
+      });
+
+    await expect(handlers.confirmArrival({ activityId: "a-coffee", status: "arrived" }, { userId: "u-current" }))
+      .resolves.toMatchObject({
+        ok: false,
+        code: "REGISTRATION_NOT_FOUND",
+      });
+  });
+
   it("joins waitlists idempotently", async () => {
     const first = await handlers.joinWaitlist({ activityId: "a-sushi", type: "juZhang" }, { userId: "u-current" });
     const second = await handlers.joinWaitlist({ activityId: "a-sushi", type: "juZhang" }, { userId: "u-current" });

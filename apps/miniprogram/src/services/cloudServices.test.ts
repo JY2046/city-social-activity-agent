@@ -5,6 +5,7 @@ import type { Registration, Settlement } from "@city-social/domain";
 import type { CloudCallAdapter, CloudFunctionName } from "./cloudFunctionClient";
 import {
   cloudAcceptJuZhang,
+  cloudCancelSignup,
   cloudConfirmArrival,
   cloudConfirmSettlement,
   cloudGetFeedbackCompletionState,
@@ -60,6 +61,23 @@ describe("cloud service wrappers", () => {
       { name: "listActivities", data: { city: "上海", type: "dinner" } },
       { name: "signupActivity", data: { activityId: "a-sushi", willingToBeJuZhang: true } },
     ]);
+  });
+
+  it("maps cancellation to the deployed cancel registration cloud function", async () => {
+    const registration: Registration = {
+      id: "r-a-sushi-u-current",
+      activityId: "a-sushi",
+      userId: "u-current",
+      status: "cancelled",
+      willingToBeJuZhang: false,
+    };
+    const { adapter, calls } = createCapturingAdapter({
+      cancelRegistration: registration,
+    });
+
+    await expect(cloudCancelSignup(adapter, "a-sushi")).resolves.toEqual(registration);
+
+    expect(calls).toEqual([{ name: "cancelRegistration", data: { activityId: "a-sushi" } }]);
   });
 
   it("maps itinerary operations to cloud functions", async () => {

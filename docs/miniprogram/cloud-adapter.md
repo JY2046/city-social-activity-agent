@@ -31,7 +31,7 @@ npm --workspace apps/miniprogram run build:weapp
 Cloud mode:
 
 ```bash
-CITY_SOCIAL_DATA_SOURCE=cloud WECHAT_CLOUD_ENV_ID=<your-env-id> npm --workspace apps/miniprogram run build:weapp
+WECHAT_CLOUD_ENV_ID=<your-env-id> npm --workspace apps/miniprogram run build:weapp:cloud
 ```
 
 Rules:
@@ -92,6 +92,7 @@ Activity:
 Signup and itinerary:
 
 - `cloudSignupActivity`
+- `cloudCancelSignup`
 - `cloudJoinWaitlist`
 - `cloudConfirmArrival`
 - `cloudConfirmSettlement`
@@ -121,7 +122,7 @@ Remaining cloud hardening work:
 
 1. Deploy the generated cloud function folders in WeChat Developer Tools.
 2. Create and import the `cloud/seed/*.json` collections in the selected Cloud Development environment.
-3. Build with `CITY_SOCIAL_DATA_SOURCE=cloud` and `WECHAT_CLOUD_ENV_ID=<your-env-id>` for cloud-mode QA.
+3. Build with `WECHAT_CLOUD_ENV_ID=<your-env-id> npm --workspace apps/miniprogram run build:weapp:cloud` for cloud-mode QA.
 4. Keep mock mode as the default visual prototype path until cloud database transaction boundaries are added.
 
 This keeps the existing mock prototype stable while cloud mode is introduced page by page.

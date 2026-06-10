@@ -1,0 +1,9 @@
+{
+  "name": "kaigexiaoju-get-ju-zhang-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

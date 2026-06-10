@@ -36,6 +36,10 @@ export interface SignupActivityInput {
   willingToBeJuZhang: boolean;
 }
 
+export interface CancelRegistrationInput {
+  activityId: string;
+}
+
 export interface JoinWaitlistInput {
   activityId: string;
   type: WaitlistType;
@@ -192,6 +196,50 @@ export function createCloudHandlers(store: CloudStore) {
       }
 
       return ok(registration);
+    },
+
+    async cancelRegistration(input: CancelRegistrationInput, context: CloudRequestContext) {
+      const activity = store.activities.find((item) => item.id === input.activityId && item.reviewStatus === "approved");
+
+      if (!activity) {
+        return fail("ACTIVITY_NOT_FOUND", "Activity not found");
+      }
+
+      const registration = getRegistration(store, input.activityId, context.userId);
+
+      if (!registration || registration.status === "cancelled") {
+        return fail("REGISTRATION_NOT_FOUND", "Active registration not found");
+      }
+
+      const wasActive = registration.status !== "waitlisted";
+      const cancelledRegistration = upsertRegistration(store, {
+        ...registration,
+        status: "cancelled",
+      });
+
+      if (wasActive) {
+        updateActivity(store, {
+          ...activity,
+          currentParticipantCount: Math.max(activity.currentParticipantCount - 1, 0),
+          participantIds: activity.participantIds.filter((participantId) => participantId !== context.userId),
+          formationStatus: activity.currentParticipantCount - 1 >= activity.capacity ? activity.formationStatus : "forming",
+        });
+      }
+
+      const settlement = store.settlements.find((item) => item.activityId === input.activityId);
+
+      if (settlement && settlement.type === "paid" && settlement.paymentStatusByUser[context.userId] !== undefined) {
+        const nextPaymentStatusByUser = { ...settlement.paymentStatusByUser };
+        delete nextPaymentStatusByUser[context.userId];
+
+        updateSettlement(store, {
+          ...settlement,
+          participantCount: Math.max(settlement.participantCount - 1, 0),
+          paymentStatusByUser: nextPaymentStatusByUser,
+        });
+      }
+
+      return ok(cancelledRegistration);
     },
 
     async joinWaitlist(input: JoinWaitlistInput, context: CloudRequestContext) {

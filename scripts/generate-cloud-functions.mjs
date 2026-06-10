@@ -1,11 +1,12 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const outputRoot = resolve("cloud/functions/deploy");
+const outputRoots = [resolve("cloud/functions/deploy"), resolve("apps/miniprogram/cloudfunctions")];
 const functionNames = [
   "listActivities",
   "getActivityDetail",
   "signupActivity",
+  "cancelRegistration",
   "joinWaitlist",
   "confirmArrival",
   "confirmSettlement",
@@ -217,6 +218,56 @@ async function signupActivity(input) {
   return registration;
 }
 
+async function cancelRegistration(input) {
+  const db = getDb();
+  const userId = await resolveUserId(db);
+  const activity = await getDocument(db, "activities", input.activityId);
+
+  if (!activity || activity.reviewStatus !== "approved") {
+    throw new Error("Activity not found");
+  }
+
+  const registration = await findRegistration(db, input.activityId, userId);
+
+  if (!registration || registration.status === "cancelled") {
+    throw new Error("Active registration not found");
+  }
+
+  const timestamp = now();
+  const wasActive = registration.status !== "waitlisted";
+  const cancelledRegistration = await setDocument(db, "registrations", {
+    ...registration,
+    status: "cancelled",
+    updatedAt: timestamp,
+  });
+
+  if (wasActive) {
+    await setDocument(db, "activities", {
+      ...activity,
+      currentParticipantCount: Math.max(activity.currentParticipantCount - 1, 0),
+      participantIds: activity.participantIds.filter((participantId) => participantId !== userId),
+      formationStatus: activity.currentParticipantCount - 1 >= activity.capacity ? activity.formationStatus : "forming",
+      updatedAt: timestamp,
+    });
+  }
+
+  const settlement = await getDocument(db, "settlements", input.activityId);
+
+  if (settlement && settlement.type === "paid" && settlement.paymentStatusByUser[userId] !== undefined) {
+    const nextPaymentStatusByUser = { ...settlement.paymentStatusByUser };
+    delete nextPaymentStatusByUser[userId];
+
+    await setDocument(db, "settlements", {
+      ...settlement,
+      participantCount: Math.max(settlement.participantCount - 1, 0),
+      paymentStatusByUser: nextPaymentStatusByUser,
+      updatedAt: timestamp,
+    });
+  }
+
+  return cancelledRegistration;
+}
+
 async function joinWaitlist(input) {
   const db = getDb();
   const userId = await resolveUserId(db);
@@ -339,6 +390,7 @@ const handlers = {
   listActivities,
   getActivityDetail,
   signupActivity,
+  cancelRegistration,
   joinWaitlist,
   confirmArrival,
   confirmSettlement,
@@ -399,16 +451,20 @@ function createConfigJson() {
 }
 
 await Promise.all(
-  functionNames.map(async (functionName) => {
-    const functionDir = resolve(outputRoot, functionName);
-    await mkdir(functionDir, { recursive: true });
-    await Promise.all([
-      writeFile(resolve(functionDir, "index.js"), createIndexSource(functionName)),
-      writeFile(resolve(functionDir, "runtime.js"), runtimeSource),
-      writeFile(resolve(functionDir, "package.json"), createPackageJson(functionName)),
-      writeFile(resolve(functionDir, "config.json"), createConfigJson()),
-    ]);
-  }),
+  outputRoots.flatMap((outputRoot) =>
+    functionNames.map(async (functionName) => {
+      const functionDir = resolve(outputRoot, functionName);
+      await mkdir(functionDir, { recursive: true });
+      await Promise.all([
+        writeFile(resolve(functionDir, "index.js"), createIndexSource(functionName)),
+        writeFile(resolve(functionDir, "runtime.js"), runtimeSource),
+        writeFile(resolve(functionDir, "package.json"), createPackageJson(functionName)),
+        writeFile(resolve(functionDir, "config.json"), createConfigJson()),
+      ]);
+    }),
+  ),
 );
 
-console.log(`Wrote ${functionNames.length} deployable cloud functions to ${outputRoot}`);
+console.log(
+  `Wrote ${functionNames.length} deployable cloud functions to ${outputRoots.map((outputRoot) => outputRoot).join(", ")}`,
+);

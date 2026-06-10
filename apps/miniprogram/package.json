@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "prebuild:weapp": "npm --workspace @city-social/domain run build",
+    "prebuild:weapp:cloud": "npm --workspace @city-social/domain run build",
     "build:weapp": "taro build --type weapp --no-check",
+    "build:weapp:cloud": "CITY_SOCIAL_DATA_SOURCE=cloud taro build --type weapp --no-check",
     "dev:weapp": "taro build --type weapp --watch --no-check"
   },
   "dependencies": {

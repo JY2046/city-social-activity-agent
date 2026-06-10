@@ -3,10 +3,12 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const deployRoot = resolve("cloud/functions/deploy");
+const miniProgramCloudfunctionRoot = resolve("apps/miniprogram/cloudfunctions");
 const functionNames = [
   "listActivities",
   "getActivityDetail",
   "signupActivity",
+  "cancelRegistration",
   "joinWaitlist",
   "confirmArrival",
   "confirmSettlement",
@@ -22,8 +24,9 @@ function toPackageName(functionName: string) {
 
 describe("WeChat cloud function deploy folders", () => {
   it("contains self-contained deploy packages for the first cloud functions", () => {
-    for (const functionName of functionNames) {
-      const functionDir = resolve(deployRoot, functionName);
+    for (const root of [deployRoot, miniProgramCloudfunctionRoot]) {
+      for (const functionName of functionNames) {
+        const functionDir = resolve(root, functionName);
       const indexPath = resolve(functionDir, "index.js");
       const runtimePath = resolve(functionDir, "runtime.js");
       const packagePath = resolve(functionDir, "package.json");
@@ -46,6 +49,7 @@ describe("WeChat cloud function deploy folders", () => {
         timeout: expect.any(Number),
       });
       expect(JSON.parse(readFileSync(configPath, "utf8")).timeout).toBeGreaterThanOrEqual(20);
+      }
     }
   });
 });

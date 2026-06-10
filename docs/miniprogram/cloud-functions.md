@@ -120,6 +120,7 @@ The command writes these deployable packages:
 - `cloud/functions/deploy/listActivities`
 - `cloud/functions/deploy/getActivityDetail`
 - `cloud/functions/deploy/signupActivity`
+- `cloud/functions/deploy/cancelRegistration`
 - `cloud/functions/deploy/joinWaitlist`
 - `cloud/functions/deploy/confirmArrival`
 - `cloud/functions/deploy/confirmSettlement`
@@ -160,7 +161,7 @@ The dry-run command first verifies every generated cloud function folder has `in
   --env <your-env-id> \
   --project apps/miniprogram \
   --remote-npm-install \
-  --paths cloud/functions/deploy/listActivities cloud/functions/deploy/getActivityDetail cloud/functions/deploy/signupActivity cloud/functions/deploy/joinWaitlist cloud/functions/deploy/confirmArrival cloud/functions/deploy/confirmSettlement cloud/functions/deploy/getJuZhangWorkspace cloud/functions/deploy/respondJuZhangAssignment cloud/functions/deploy/submitFeedback cloud/functions/deploy/getFeedbackCompletionState
+  --paths cloud/functions/deploy/listActivities cloud/functions/deploy/getActivityDetail cloud/functions/deploy/signupActivity cloud/functions/deploy/cancelRegistration cloud/functions/deploy/joinWaitlist cloud/functions/deploy/confirmArrival cloud/functions/deploy/confirmSettlement cloud/functions/deploy/getJuZhangWorkspace cloud/functions/deploy/respondJuZhangAssignment cloud/functions/deploy/submitFeedback cloud/functions/deploy/getFeedbackCompletionState
 ```
 
 Notes:

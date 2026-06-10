@@ -1,6 +1,6 @@
 {
   "miniprogramRoot": "dist/",
-  "cloudfunctionRoot": "../../cloud/functions/deploy/",
+  "cloudfunctionRoot": "cloudfunctions/",
   "projectname": "开个小局",
   "description": "开个小局 WeChat Mini Program MVP",
   "appid": "touristappid",
@@ -17,7 +17,30 @@
         "packageJsonPath": "./package.json",
         "miniprogramNpmDistDir": "./dist"
       }
-    ]
+    ],
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "minifyWXSS": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
   },
-  "compileType": "miniprogram"
+  "compileType": "miniprogram",
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
+  "libVersion": "3.16.1",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {}
 }

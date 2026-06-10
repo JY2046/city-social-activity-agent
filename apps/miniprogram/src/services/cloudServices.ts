@@ -47,7 +47,7 @@ export function cloudSignupActivity(
 }
 
 export function cloudCancelSignup(adapter: CloudCallAdapter, activityId: string): Promise<Registration> {
-  return callCloudFunction<Registration>(adapter, "cancelSignup", {
+  return callCloudFunction<Registration>(adapter, "cancelRegistration", {
     activityId,
   });
 }

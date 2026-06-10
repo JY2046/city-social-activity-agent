@@ -99,6 +99,27 @@ describe("cloud database adapter", () => {
     });
   });
 
+  it("cancels active registrations and updates participant state", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+    await adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: true }, "u-current");
+
+    await expect(adapter.cancelRegistration({ activityId: "a-coffee" }, "u-current")).resolves.toMatchObject({
+      activityId: "a-coffee",
+      userId: "u-current",
+      status: "cancelled",
+    });
+    expect(db.dump().activities["a-coffee"]).toMatchObject({
+      currentParticipantCount: 2,
+      participantIds: expect.not.arrayContaining(["u-current"]),
+    });
+    expect(db.dump().settlements["a-coffee"]).toMatchObject({
+      participantCount: 2,
+      paymentStatusByUser: expect.not.objectContaining({ "u-current": expect.any(Boolean) }),
+    });
+  });
+
   it("waitlists full activities and keeps waitlist entries idempotent", async () => {
     const db = createFakeDatabase();
     await seedCloudDatabase(db, createCloudSeedData());

@@ -63,6 +63,11 @@ describe("cloud database handlers", () => {
       ok: true,
       data: { activityId: "a-coffee", userId: "u-current", status: "confirmed" },
     });
+    await expect(dispatch("cancelRegistration", { activityId: "a-coffee" }, { userId: "u-current" })).resolves
+      .toMatchObject({
+        ok: true,
+        data: { activityId: "a-coffee", userId: "u-current", status: "cancelled" },
+      });
   });
 
   it("converts database adapter failures to failure envelopes", async () => {

@@ -1,6 +1,7 @@
 import type {
   ActivityFeedQuery,
   ArrivalStatus,
+  CancelRegistrationInput,
   ConfirmArrivalInput,
   ConfirmSettlementInput,
   GetFeedbackCompletionStateInput,
@@ -254,6 +255,55 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
       }
 
       return registration;
+    },
+
+    async cancelRegistration(input: CancelRegistrationInput, userId: string): Promise<CloudRegistrationDocument> {
+      const activity = await getDocument<CloudActivityDocument>(db, "activities", input.activityId);
+
+      if (!activity || activity.reviewStatus !== "approved") {
+        throw new Error("Activity not found");
+      }
+
+      const registration = await findRegistration(db, input.activityId, userId);
+
+      if (!registration || registration.status === "cancelled") {
+        throw new Error("Active registration not found");
+      }
+
+      const timestamp = now();
+      const wasActive = registration.status !== "waitlisted";
+      const cancelledRegistration = await setDocument(db, "registrations", {
+        ...registration,
+        status: "cancelled",
+        updatedAt: timestamp,
+      });
+
+      if (wasActive) {
+        await setDocument(db, "activities", {
+          ...activity,
+          currentParticipantCount: Math.max(activity.currentParticipantCount - 1, 0),
+          participantIds: activity.participantIds.filter((participantId) => participantId !== userId),
+          formationStatus:
+            activity.currentParticipantCount - 1 >= activity.capacity ? activity.formationStatus : "forming",
+          updatedAt: timestamp,
+        });
+      }
+
+      const settlement = await getDocument<CloudSettlementDocument>(db, "settlements", input.activityId);
+
+      if (settlement && settlement.type === "paid" && settlement.paymentStatusByUser[userId] !== undefined) {
+        const nextPaymentStatusByUser = { ...settlement.paymentStatusByUser };
+        delete nextPaymentStatusByUser[userId];
+
+        await setDocument(db, "settlements", {
+          ...settlement,
+          participantCount: Math.max(settlement.participantCount - 1, 0),
+          paymentStatusByUser: nextPaymentStatusByUser,
+          updatedAt: timestamp,
+        });
+      }
+
+      return cancelledRegistration;
     },
 
     async joinWaitlist(input: JoinWaitlistInput, userId: string) {
