@@ -1,10 +1,11 @@
-import { Image, View, Text } from "@tarojs/components";
+import { Image, Picker, View, Text } from "@tarojs/components";
 import { navigateTo } from "@tarojs/taro";
 import { useEffect, useState } from "react";
 import type { ActivityType, BudgetType } from "@city-social/domain";
 
 import ActivityCard from "../../components/ActivityCard";
 import { loadActivityFeed, type ActivityFeedLoadState } from "../../services/activityReadService";
+import { cityOptions, getCityFromPickerIndex, getCityPickerIndex } from "../../services/citySelectorViewModel";
 import type { MiniProgramActivity } from "../../services/mockData";
 
 import "./index.css";
@@ -23,7 +24,6 @@ interface CategoryOption {
   budgetType?: BudgetType;
 }
 
-const cityOptions = ["上海", "北京", "杭州", "成都"];
 const categoryOptions: CategoryOption[] = [
   { key: "recommended", label: "推荐" },
   { key: "dinner", label: "饭局", type: "dinner" },
@@ -64,21 +64,20 @@ export default function DiscoverPage() {
     void navigateTo({ url: `/pages/activity-detail/index?activityId=${activity.id}` });
   }
 
-  function handleCycleCity() {
-    const currentIndex = cityOptions.indexOf(selectedCity);
-    const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % cityOptions.length : 0;
-    setSelectedCity(cityOptions[nextIndex]);
-  }
-
   return (
     <View className="page page-light">
       <View className="home-hero">
         <Image className="hero-skyline" src="/assets/images/city-skyline.jpg" mode="aspectFill" />
         <View className="hero-content">
           <View className="location-line">
-            <Text className="location-city" onClick={handleCycleCity}>
-              {selectedCity}⌄
-            </Text>
+            <Picker
+              mode="selector"
+              range={cityOptions}
+              value={getCityPickerIndex(selectedCity)}
+              onChange={(event) => setSelectedCity(getCityFromPickerIndex(event.detail.value))}
+            >
+              <Text className="location-city">{selectedCity}⌄</Text>
+            </Picker>
             <Text className="eyebrow">6月5日 周四 18:40</Text>
           </View>
           <Text className="app-name">开个小局</Text>

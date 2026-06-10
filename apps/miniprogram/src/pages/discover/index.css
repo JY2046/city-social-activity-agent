@@ -24,9 +24,9 @@
 
 .home-hero {
   position: relative;
-  min-height: 342px;
-  margin: -48px -30px 24px;
-  padding: 52px 30px 30px;
+  min-height: 292px;
+  margin: -48px -30px 16px;
+  padding: 42px 30px 18px;
   overflow: hidden;
 }
 
@@ -44,8 +44,8 @@
   position: absolute;
   right: -136px;
   bottom: 0;
-  width: 580px;
-  height: 318px;
+  width: 560px;
+  height: 276px;
   opacity: 0.46;
 }
 
@@ -59,7 +59,8 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 28px;
+  margin-bottom: 18px;
+  transform: translateY(-4px);
 }
 
 .location-city {
@@ -75,14 +76,14 @@
 
 .app-name {
   color: #24452f;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
 .title {
   color: #24452f;
-  font-size: 54px;
+  font-size: 48px;
   font-weight: 800;
   line-height: 1.15;
 }
@@ -92,9 +93,9 @@
 }
 
 .subtitle {
-  margin-top: 18px;
+  margin-top: 12px;
   color: #4b514d;
-  font-size: 28px;
+  font-size: 25px;
   line-height: 1.45;
 }
 
