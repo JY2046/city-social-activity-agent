@@ -87,7 +87,9 @@ async function setDocument<T extends { _id: string }>(
   collectionName: string,
   document: T,
 ): Promise<T> {
-  await db.collection(collectionName).doc(document._id).set({ data: document });
+  const { _id, ...data } = document;
+
+  await db.collection(collectionName).doc(_id).set({ data });
 
   return document;
 }
@@ -165,7 +167,9 @@ export async function seedCloudDatabase(db: CloudDatabaseLike, seedData: CloudSe
         continue;
       }
 
-      await db.collection(collectionName).doc(document._id).set({ data: document });
+      const { _id, ...data } = document;
+
+      await db.collection(collectionName).doc(_id).set({ data });
     }
   }
 }

@@ -71,7 +71,9 @@ async function getDocument(db, collectionName, id) {
 }
 
 async function setDocument(db, collectionName, document) {
-  await db.collection(collectionName).doc(document._id).set({ data: document });
+  const { _id, ...data } = document;
+
+  await db.collection(collectionName).doc(_id).set({ data });
   return document;
 }
 

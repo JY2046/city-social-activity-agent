@@ -17,7 +17,11 @@ function createFakeDatabase(): CloudDatabaseLike & { dump: () => Record<string, 
               return { data: collections[name][id] };
             },
             async set(input) {
-              collections[name][id] = input.data;
+              if (typeof input.data === "object" && input.data !== null && "_id" in input.data) {
+                throw new Error("document.set:fail -501007 invalid parameters. 不能更新_id的值");
+              }
+
+              collections[name][id] = { _id: id, ...(input.data as Record<string, unknown>) };
               return {};
             },
             async update(input) {
