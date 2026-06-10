@@ -28,12 +28,14 @@ export default function ActivityCard({ activity, featured = false, onClick }: Ac
         <View className="featured-media">
           <Image className="featured-image" src={activity.coverImagePath} mode="aspectFill" />
           <View className="featured-overlay">
-            <Text className="status-hot">{getActivityStatusLabel(activity)}</Text>
-            <View className="featured-type-row">
-              <Text className="type-chip">{getActivityTypeLabel(activity.type)}</Text>
-              <Text className="headcount">
-                {activity.currentParticipantCount}/{activity.capacity} 人
-              </Text>
+            <View className="featured-topline">
+              <View className="featured-type-row">
+                <Text className="type-chip">{getActivityTypeLabel(activity.type)}</Text>
+                <Text className="headcount">
+                  {activity.currentParticipantCount}/{activity.capacity} 人
+                </Text>
+              </View>
+              <Text className="status-hot">{getActivityStatusLabel(activity)}</Text>
             </View>
             <Text className="featured-title">{activity.title}</Text>
             <Text className="featured-meta">
@@ -43,8 +45,8 @@ export default function ActivityCard({ activity, featured = false, onClick }: Ac
               <Text className="featured-meta featured-meta-inline">
                 {formatActivityDateTime(activity.startsAt)} · {getCostLabel(activity)}
               </Text>
+              <Text className="featured-cta">{getActivityCtaLabel(activity)}</Text>
             </View>
-            <Text className="featured-cta">{getActivityCtaLabel(activity)}</Text>
           </View>
         </View>
         <View className="ai-strip">
