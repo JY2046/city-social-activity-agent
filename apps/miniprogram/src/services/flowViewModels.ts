@@ -20,6 +20,11 @@ export interface SignupPrimaryActionState {
   isCompleted: boolean;
 }
 
+export interface ActivityDetailPrimaryActionState {
+  label: string;
+  isCompleted: boolean;
+}
+
 export interface JuZhangSettlementRow {
   userId: string;
   displayName: string;
@@ -78,6 +83,27 @@ export function getSignupPrimaryActionState(registration?: Registration): Signup
     registration?.status === "arrived" ||
     registration?.status === "waitlisted"
   ) {
+    return {
+      label: "已报名",
+      isCompleted: true,
+    };
+  }
+
+  return {
+    label: "确认报名",
+    isCompleted: false,
+  };
+}
+
+export function getActivityDetailPrimaryActionState(registration?: Registration): ActivityDetailPrimaryActionState {
+  if (registration?.status === "waitlisted") {
+    return {
+      label: "排队中",
+      isCompleted: true,
+    };
+  }
+
+  if (registration?.status === "confirmed" || registration?.status === "arrived") {
     return {
       label: "已报名",
       isCompleted: true,

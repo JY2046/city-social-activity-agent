@@ -115,3 +115,8 @@
   color: #fff;
   background: linear-gradient(90deg, #ef3f68, #ff8b2b);
 }
+
+.primary-action.completed {
+  color: #24452f;
+  background: #b8d890;
+}

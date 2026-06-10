@@ -1,6 +1,7 @@
 import { View, Text } from "@tarojs/components";
+import type { Registration } from "@city-social/domain";
 import { navigateTo, switchTab, useRouter, useShareAppMessage } from "@tarojs/taro";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DetailGallery from "../../components/DetailGallery";
 import { loadActivityDetail, type ActivityDetailLoadState } from "../../services/activityReadService";
 import {
@@ -9,6 +10,8 @@ import {
   getActivityTypeLabel,
   getCostLabel,
 } from "../../services/activityPresentation";
+import { getActivityDetailPrimaryActionState } from "../../services/flowViewModels";
+import { createUserActivityReadAdapter, loadMyRegistrationForActivity } from "../../services/userActivityService";
 
 import "./index.css";
 
@@ -20,22 +23,31 @@ const initialDetailState: ActivityDetailLoadState = {
 export default function ActivityDetailPage() {
   const router = useRouter();
   const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
+  const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
   const [detailState, setDetailState] = useState<ActivityDetailLoadState>(initialDetailState);
+  const [registration, setRegistration] = useState<Registration | undefined>();
   const activity = detailState.activity;
+  const primaryActionState = getActivityDetailPrimaryActionState(registration);
 
   useEffect(() => {
     let isMounted = true;
 
-    void loadActivityDetail(activityId).then((nextState) => {
+    void Promise.all([
+      loadActivityDetail(activityId),
+      loadMyRegistrationForActivity(activityId, userActivityReadAdapter),
+    ]).then(([nextState, registrationState]) => {
       if (isMounted) {
         setDetailState(nextState);
+        if (registrationState.status === "ready") {
+          setRegistration(registrationState.registration);
+        }
       }
     });
 
     return () => {
       isMounted = false;
     };
-  }, [activityId]);
+  }, [activityId, userActivityReadAdapter]);
 
   useShareAppMessage(() => ({
     title: activity?.title ?? "开个小局",
@@ -109,10 +121,10 @@ export default function ActivityDetailPage() {
           返回活动首页
         </Text>
         <Text
-          className="primary-action"
+          className={primaryActionState.isCompleted ? "primary-action completed" : "primary-action"}
           onClick={() => void navigateTo({ url: `/pages/signup/index?activityId=${activity.id}` })}
         >
-          确认报名
+          {primaryActionState.label}
         </Text>
       </View>
     </View>
