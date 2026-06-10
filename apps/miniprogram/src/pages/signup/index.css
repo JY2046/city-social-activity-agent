@@ -80,6 +80,18 @@
   font-weight: 800;
 }
 
+.secondary-button {
+  margin-top: 18px;
+  height: 82px;
+  line-height: 82px;
+  border-radius: 999px;
+  color: #24452f;
+  background: #fffdfa;
+  border: 2px solid rgba(36, 69, 47, 0.2);
+  font-size: 26px;
+  font-weight: 800;
+}
+
 .primary-button[disabled] {
   color: rgba(255, 255, 255, 0.82);
   background: #a7aca8;

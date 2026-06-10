@@ -64,33 +64,29 @@ export default function DiscoverPage() {
     void navigateTo({ url: `/pages/activity-detail/index?activityId=${activity.id}` });
   }
 
+  function handleCycleCity() {
+    const currentIndex = cityOptions.indexOf(selectedCity);
+    const nextIndex = currentIndex >= 0 ? (currentIndex + 1) % cityOptions.length : 0;
+    setSelectedCity(cityOptions[nextIndex]);
+  }
+
   return (
     <View className="page page-light">
       <View className="home-hero">
         <Image className="hero-skyline" src="/assets/images/city-skyline.jpg" mode="aspectFill" />
         <View className="hero-content">
-          <Text className="eyebrow">{selectedCity} · 6月5日 周四 18:40</Text>
-          <Text className="app-name">City Social Activity Agent</Text>
+          <View className="location-line">
+            <Text className="location-city" onClick={handleCycleCity}>
+              {selectedCity}⌄
+            </Text>
+            <Text className="eyebrow">6月5日 周四 18:40</Text>
+          </View>
+          <Text className="app-name">开个小局</Text>
           <Text className="title">
-            先活动，<Text className="title-accent">后关系</Text>
+            有空，<Text className="title-accent">开个小局</Text>
           </Text>
-          <Text className="subtitle">在真实的城市里，认识有趣的人</Text>
+          <Text className="subtitle">饭局、咖啡、散步，和陌生人轻松见一面</Text>
         </View>
-      </View>
-
-      <View className="city-row">
-        <Text className="locate-pill" onClick={() => setSelectedCity("上海")}>
-          定位上海
-        </Text>
-        {cityOptions.map((city) => (
-          <Text
-            className={selectedCity === city ? "city-pill active" : "city-pill"}
-            key={city}
-            onClick={() => setSelectedCity(city)}
-          >
-            {city}
-          </Text>
-        ))}
       </View>
 
       <View className="search-row">

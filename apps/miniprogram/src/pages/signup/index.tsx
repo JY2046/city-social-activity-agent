@@ -9,7 +9,7 @@ import {
   loadActivityDetail,
 } from "../../services/activityReadService";
 import { getSignupViewState } from "../../services/flowViewModels";
-import { createRegistrationWriteAdapter, runSignup } from "../../services/registrationWriteService";
+import { createRegistrationWriteAdapter, runCancelSignup, runSignup } from "../../services/registrationWriteService";
 import type { MiniProgramActivity } from "../../services/mockData";
 
 import "./index.css";
@@ -61,7 +61,7 @@ export default function SignupPage() {
   }, [activityId, activityReadAdapter]);
 
   async function handleSignup() {
-    if (!rulesAccepted || !activity) {
+    if (!rulesAccepted || !activity || registration?.status === "confirmed") {
       return;
     }
 
@@ -77,6 +77,27 @@ export default function SignupPage() {
 
     setSubmitMessage(result.message);
   }
+
+  async function handleCancelSignup() {
+    if (!activity || !registration) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitMessage("");
+    const result = await runCancelSignup(createRegistrationWriteAdapter(), activity.id);
+    setIsSubmitting(false);
+
+    if (result.status === "ready") {
+      setRegistration(result.registration);
+      setSubmitMessage("已取消报名，想再加入时可以重新确认。");
+      return;
+    }
+
+    setSubmitMessage(result.message);
+  }
+
+  const isRegistered = registration?.status === "confirmed" || registration?.status === "arrived";
 
   return (
     <View className="flow-page">
@@ -106,9 +127,14 @@ export default function SignupPage() {
         </View>
       </View>
 
-      <Button className="primary-button" disabled={!rulesAccepted || !activity || isSubmitting} onClick={handleSignup}>
-        {isSubmitting ? "提交中" : "确认报名"}
+      <Button className="primary-button" disabled={!rulesAccepted || !activity || isSubmitting || isRegistered} onClick={handleSignup}>
+        {isSubmitting ? "提交中" : isRegistered ? "已报名" : "确认报名"}
       </Button>
+      {isRegistered ? (
+        <Button className="secondary-button" disabled={isSubmitting} onClick={handleCancelSignup}>
+          取消报名
+        </Button>
+      ) : null}
       {submitMessage ? <Text className="flow-message">{submitMessage}</Text> : null}
 
       <View className="result-card">

@@ -32,8 +32,9 @@ export default function JuZhangPage() {
   const [pageMessage, setPageMessage] = useState("正在同步局长工作台...");
   const [pendingAction, setPendingAction] = useState<string | undefined>();
   const [topicDeck, setTopicDeck] = useState<TopicDeck | undefined>();
+  const [confirmedPaymentUserIds, setConfirmedPaymentUserIds] = useState<string[]>([]);
   const settlementSummary = workspace?.settlement ? getSettlementSummary(workspace.settlement) : undefined;
-  const settlementRows = getJuZhangSettlementRows(workspace?.settlement, getUserDisplayName);
+  const settlementRows = getJuZhangSettlementRows(workspace?.settlement, getUserDisplayName, confirmedPaymentUserIds);
 
   async function refreshWorkspace(nextMessage?: string) {
     const result = await runLoadJuZhangWorkspace(adapter, activityId);
@@ -77,6 +78,9 @@ export default function JuZhangPage() {
     setPendingAction(`payment-${userId}`);
     const result = await runConfirmParticipantPayment(adapter, activityId, userId);
     await refreshWorkspace(result.status === "ready" ? "已确认该成员完成支付。" : result.message);
+    if (result.status === "ready") {
+      setConfirmedPaymentUserIds((userIds) => (userIds.includes(userId) ? userIds : [...userIds, userId]));
+    }
     setPendingAction(undefined);
   }
 
@@ -116,7 +120,7 @@ export default function JuZhangPage() {
       <View className="section topic-section">
         <View className="section-heading-row">
           <Text className="section-title">AI 话题卡</Text>
-          <Button className="topic-action" onClick={() => setTopicDeck((deck) => (deck ? rotateTopicDeck(deck) : deck))}>
+          <Button className="topic-action top-right" onClick={() => setTopicDeck((deck) => (deck ? rotateTopicDeck(deck) : deck))}>
             换一张
           </Button>
         </View>

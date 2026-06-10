@@ -48,7 +48,6 @@ export default function ActivityCard({ activity, featured = false, onClick }: Ac
           </View>
         </View>
         <View className="ai-strip">
-          <Text className="ai-label">AI 推荐</Text>
           <Text className="ai-copy">{activity.aiRecommendationReason}</Text>
         </View>
       </View>

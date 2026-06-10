@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import {
+  cancelSignup,
   confirmArrival,
   confirmPayment,
   joinWaitlist,
@@ -43,6 +44,22 @@ describe("mini program registration service", () => {
       willingToBeJuZhang: true,
     });
     expect(getActivity("a-coffee")?.currentParticipantCount).toBe(3);
+  });
+
+  it("cancels the current user's signup and rolls back activity and settlement state", () => {
+    signup("a-coffee", { willingToBeJuZhang: false });
+
+    const cancelled = cancelSignup("a-coffee");
+
+    expect(cancelled).toMatchObject({
+      activityId: "a-coffee",
+      userId: DEFAULT_CURRENT_USER_ID,
+      status: "cancelled",
+    });
+    expect(getActivity("a-coffee")?.currentParticipantCount).toBe(2);
+    expect(getActivity("a-coffee")?.participantIds).not.toContain(DEFAULT_CURRENT_USER_ID);
+    expect(getSettlementByActivityId("a-coffee")?.participantCount).toBe(2);
+    expect(getSettlementByActivityId("a-coffee")?.paymentStatusByUser).not.toHaveProperty(DEFAULT_CURRENT_USER_ID);
   });
 
   it("puts full activities into the activity waitlist instead of overbooking", () => {

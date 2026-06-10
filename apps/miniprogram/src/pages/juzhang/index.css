@@ -85,6 +85,7 @@
 }
 
 .topic-section {
+  position: relative;
   background: linear-gradient(135deg, rgba(121, 91, 221, 0.22), rgba(255, 255, 255, 0.08));
 }
 
@@ -106,6 +107,12 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
   font-size: 21px;
   font-weight: 800;
+}
+
+.topic-action.top-right {
+  position: absolute;
+  top: 22px;
+  right: 22px;
 }
 
 .topic-history {

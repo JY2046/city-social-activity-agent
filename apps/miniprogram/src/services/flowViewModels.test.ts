@@ -38,6 +38,13 @@ describe("mini program flow view models", () => {
     expect(getSignupViewState(willingRegistration).showJuZhangTaskEntry).toBe(true);
   });
 
+  it("shows cancelled signup state without ju zhang task entry", () => {
+    expect(getSignupViewState({ ...registration, status: "cancelled" })).toMatchObject({
+      title: "已取消报名",
+      showJuZhangTaskEntry: false,
+    });
+  });
+
   it("uses short one-line arrival option labels", () => {
     expect(getArrivalOptions().map((option) => option.label)).toEqual(["我会准时到", "可能迟到", "无法到场"]);
   });
@@ -83,18 +90,42 @@ describe("mini program flow view models", () => {
       },
     };
 
-    expect(getJuZhangSettlementRows(settlement, (userId) => (userId === "u-current" ? "Lily" : "Momo"))).toEqual([
+    expect(
+      getJuZhangSettlementRows(settlement, (userId) => (userId === "u-current" ? "Lily" : "Momo"), ["u-current"]),
+    ).toEqual([
       {
         userId: "u-current",
         displayName: "Lily",
         participantPaymentLabel: "用户已支付",
-        juZhangActionLabel: "已确认",
+        juZhangActionLabel: "局长已确认",
         canConfirm: false,
       },
       {
         userId: "u-momo",
         displayName: "Momo",
         participantPaymentLabel: "用户未支付",
+        juZhangActionLabel: "等待支付",
+        canConfirm: false,
+      },
+    ]);
+  });
+
+  it("does not treat user payment as ju zhang confirmation automatically", () => {
+    const settlement: Settlement = {
+      activityId: "a-sushi",
+      type: "paid",
+      totalAmount: 168,
+      participantCount: 1,
+      paymentStatusByUser: {
+        "u-current": true,
+      },
+    };
+
+    expect(getJuZhangSettlementRows(settlement)).toEqual([
+      {
+        userId: "u-current",
+        displayName: "u-current",
+        participantPaymentLabel: "用户已支付",
         juZhangActionLabel: "局长确认",
         canConfirm: true,
       },

@@ -46,6 +46,12 @@ export function cloudSignupActivity(
   });
 }
 
+export function cloudCancelSignup(adapter: CloudCallAdapter, activityId: string): Promise<Registration> {
+  return callCloudFunction<Registration>(adapter, "cancelSignup", {
+    activityId,
+  });
+}
+
 export function cloudJoinWaitlist(
   adapter: CloudCallAdapter,
   activityId: string,

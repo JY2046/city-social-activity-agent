@@ -12,7 +12,7 @@
 .featured-image {
   display: block;
   width: 100%;
-  height: 300px;
+  height: 306px;
 }
 
 .featured-overlay {
@@ -20,7 +20,7 @@
   inset: 0;
   padding: 26px;
   box-sizing: border-box;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.78));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.72));
   color: #fff;
 }
 
@@ -68,7 +68,7 @@
 
 .type-chip {
   width: fit-content;
-  margin-top: 58px;
+  margin-top: 34px;
   padding: 8px 16px;
   border-radius: 999px;
   color: #fff;
@@ -77,21 +77,21 @@
 }
 
 .featured-title {
-  margin-top: 18px;
-  font-size: 39px;
+  margin-top: 14px;
+  font-size: 38px;
   font-weight: 800;
   line-height: 1.12;
 }
 
 .featured-meta {
-  margin-top: 14px;
+  margin-top: 10px;
   color: rgba(255, 255, 255, 0.9);
   font-size: 25px;
   line-height: 1.35;
 }
 
 .featured-bottom {
-  margin-top: 16px;
+  margin-top: 10px;
   gap: 16px;
 }
 
@@ -112,21 +112,14 @@
 }
 
 .ai-strip {
-  padding: 18px 22px 20px;
+  padding: 16px 22px 18px;
   background: linear-gradient(90deg, rgba(244, 249, 230, 0.98), rgba(255, 253, 247, 0.95));
 }
 
-.ai-label {
-  color: #47713c;
-  font-size: 22px;
-  font-weight: 700;
-}
-
 .ai-copy {
-  margin-top: 8px;
   color: #526458;
-  font-size: 20px;
-  line-height: 1.45;
+  font-size: 21px;
+  line-height: 1.42;
 }
 
 .activity-row-card {

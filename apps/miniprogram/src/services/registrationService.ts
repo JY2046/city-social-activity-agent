@@ -91,6 +91,52 @@ export function signup(activityId: string, options: SignupOptions): Registration
   return registration;
 }
 
+export function cancelSignup(activityId: string, userId?: string): Registration {
+  const store = getMockStore();
+  const activity = store.activities.find((item) => item.id === activityId);
+  const targetUserId = getUserId(userId);
+  const registration = getRegistration(activityId, targetUserId);
+
+  if (!activity) {
+    throw new Error(`Activity not found: ${activityId}`);
+  }
+
+  if (!registration || registration.status === "cancelled") {
+    throw new Error(`Active registration not found for ${activityId}`);
+  }
+
+  const wasActive = registration.status !== "waitlisted";
+  const cancelledRegistration = upsertRegistration({
+    ...registration,
+    status: "cancelled",
+  });
+
+  if (wasActive) {
+    updateActivity({
+      ...activity,
+      currentParticipantCount: Math.max(activity.currentParticipantCount - 1, 0),
+      participantIds: activity.participantIds.filter((participantId) => participantId !== targetUserId),
+      formationStatus:
+        activity.currentParticipantCount - 1 >= activity.capacity ? activity.formationStatus : "forming",
+    });
+  }
+
+  const settlement = store.settlements.find((item) => item.activityId === activityId);
+
+  if (settlement && settlement.type === "paid" && settlement.paymentStatusByUser[targetUserId] !== undefined) {
+    const nextPaymentStatusByUser = { ...settlement.paymentStatusByUser };
+    delete nextPaymentStatusByUser[targetUserId];
+
+    updateSettlement({
+      ...settlement,
+      participantCount: Math.max(settlement.participantCount - 1, 0),
+      paymentStatusByUser: nextPaymentStatusByUser,
+    });
+  }
+
+  return cancelledRegistration;
+}
+
 export function joinWaitlist(activityId: string, type: WaitlistType, userId?: string): WaitlistEntry {
   const activity = getMockStore().activities.find((item) => item.id === activityId);
 

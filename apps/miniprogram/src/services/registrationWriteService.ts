@@ -5,6 +5,7 @@ import {
   cloudConfirmSettlement,
   cloudJoinWaitlist,
   cloudSignupActivity,
+  cloudCancelSignup,
   type SettlementConfirmationInput,
 } from "./cloudServices";
 import {
@@ -18,6 +19,7 @@ import type { WaitlistEntry, WaitlistType } from "./mockData";
 import {
   confirmArrival,
   confirmPayment,
+  cancelSignup as cancelMockSignup,
   joinWaitlist,
   signup,
   type ArrivalStatus,
@@ -26,12 +28,17 @@ import {
 
 export interface RegistrationWriteAdapter {
   signupActivity: (activityId: string, options: SignupOptions) => Promise<Registration>;
+  cancelSignup: (activityId: string) => Promise<Registration>;
   joinWaitlist: (activityId: string, type: WaitlistType) => Promise<WaitlistEntry>;
   confirmArrival: (activityId: string, status: ArrivalStatus) => Promise<Registration>;
   confirmPayment: (activityId: string, mode?: SettlementConfirmationInput["mode"]) => Promise<Settlement>;
 }
 
 export type SignupWriteState =
+  | { status: "ready"; registration: Registration }
+  | { status: "error"; message: string };
+
+export type CancelSignupWriteState =
   | { status: "ready"; registration: Registration }
   | { status: "error"; message: string };
 
@@ -56,6 +63,9 @@ export function createMockRegistrationWriteAdapter(): RegistrationWriteAdapter {
     async signupActivity(activityId, options) {
       return signup(activityId, options);
     },
+    async cancelSignup(activityId) {
+      return cancelMockSignup(activityId);
+    },
     async joinWaitlist(activityId, type) {
       return joinWaitlist(activityId, type);
     },
@@ -78,6 +88,9 @@ export function createCloudRegistrationWriteAdapter(
   return {
     signupActivity(activityId, options) {
       return cloudSignupActivity(cloudAdapter, activityId, options);
+    },
+    cancelSignup(activityId) {
+      return cloudCancelSignup(cloudAdapter, activityId);
     },
     joinWaitlist(activityId, type) {
       return cloudJoinWaitlist(cloudAdapter, activityId, type);
@@ -104,6 +117,23 @@ export async function runSignup(
     return {
       status: "ready",
       registration: await adapter.signupActivity(activityId, options),
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: toErrorMessage(error),
+    };
+  }
+}
+
+export async function runCancelSignup(
+  adapter: RegistrationWriteAdapter,
+  activityId: string,
+): Promise<CancelSignupWriteState> {
+  try {
+    return {
+      status: "ready",
+      registration: await adapter.cancelSignup(activityId),
     };
   } catch (error) {
     return {

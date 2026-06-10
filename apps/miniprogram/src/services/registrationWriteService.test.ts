@@ -6,6 +6,7 @@ import { DEFAULT_CURRENT_USER_ID, listWaitlistEntries, type WaitlistEntry } from
 import { resetMockServices, signup } from "./registrationService";
 import {
   createMockRegistrationWriteAdapter,
+  runCancelSignup,
   runConfirmArrival,
   runConfirmPayment,
   runJoinWaitlist,
@@ -28,6 +29,19 @@ describe("registration write service", () => {
         userId: DEFAULT_CURRENT_USER_ID,
         status: "confirmed",
         willingToBeJuZhang: true,
+      },
+    });
+  });
+
+  it("cancels signup through the async write boundary", async () => {
+    signup("a-coffee", { willingToBeJuZhang: false });
+
+    await expect(runCancelSignup(createMockRegistrationWriteAdapter(), "a-coffee")).resolves.toMatchObject({
+      status: "ready",
+      registration: {
+        activityId: "a-coffee",
+        userId: DEFAULT_CURRENT_USER_ID,
+        status: "cancelled",
       },
     });
   });
@@ -96,6 +110,7 @@ describe("registration write service", () => {
       }),
       confirmArrival: vi.fn(async () => ({}) as Promise<Registration>),
       confirmPayment: vi.fn(async () => ({}) as Promise<Settlement>),
+      cancelSignup: vi.fn(async () => ({}) as Promise<Registration>),
     };
 
     await expect(runSignup(adapter, "a-sushi", { willingToBeJuZhang: false })).resolves.toEqual({

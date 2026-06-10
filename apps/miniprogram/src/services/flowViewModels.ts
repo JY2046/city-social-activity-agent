@@ -50,6 +50,14 @@ export function getSignupViewState(registration?: Registration): SignupViewState
     };
   }
 
+  if (registration.status === "cancelled") {
+    return {
+      title: "已取消报名",
+      message: "你已退出这个小局，想再加入时可以重新确认报名。",
+      showJuZhangTaskEntry: false,
+    };
+  }
+
   return {
     title: "报名成功",
     message: registration.willingToBeJuZhang
@@ -74,17 +82,20 @@ export function getPaymentActionLabel(settlement: Settlement | undefined, userId
 export function getJuZhangSettlementRows(
   settlement: Settlement | undefined,
   getDisplayName: (userId: string) => string = (userId) => userId,
+  confirmedUserIds: string[] = [],
 ): JuZhangSettlementRow[] {
   if (!settlement || settlement.type === "free" || settlement.totalAmount === 0) {
     return [];
   }
 
+  const confirmedUserIdSet = new Set(confirmedUserIds);
+
   return Object.entries(settlement.paymentStatusByUser).map(([userId, hasPaid]) => ({
     userId,
     displayName: getDisplayName(userId),
     participantPaymentLabel: hasPaid ? "用户已支付" : "用户未支付",
-    juZhangActionLabel: hasPaid ? "已确认" : "局长确认",
-    canConfirm: !hasPaid,
+    juZhangActionLabel: confirmedUserIdSet.has(userId) ? "局长已确认" : hasPaid ? "局长确认" : "等待支付",
+    canConfirm: hasPaid && !confirmedUserIdSet.has(userId),
   }));
 }
 
