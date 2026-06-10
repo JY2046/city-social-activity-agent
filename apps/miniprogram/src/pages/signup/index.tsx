@@ -8,7 +8,7 @@ import {
   createActivityReadAdapter,
   loadActivityDetail,
 } from "../../services/activityReadService";
-import { getSignupViewState } from "../../services/flowViewModels";
+import { getSignupPrimaryActionState, getSignupViewState } from "../../services/flowViewModels";
 import {
   createRegistrationWriteAdapter,
   runCancelSignupAndRefreshActivity,
@@ -29,6 +29,7 @@ export default function SignupPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
   const viewState = getSignupViewState(registration);
+  const primaryActionState = getSignupPrimaryActionState(registration);
 
   useEffect(() => {
     let isMounted = true;
@@ -65,7 +66,7 @@ export default function SignupPage() {
   }, [activityId, activityReadAdapter]);
 
   async function handleSignup() {
-    if (!rulesAccepted || !activity || registration?.status === "confirmed") {
+    if (!rulesAccepted || !activity || primaryActionState.isCompleted) {
       return;
     }
 
@@ -115,8 +116,6 @@ export default function SignupPage() {
     setSubmitMessage(result.message);
   }
 
-  const isRegistered = registration?.status === "confirmed" || registration?.status === "arrived";
-
   return (
     <View className="flow-page">
       <Text className="flow-eyebrow">确认报名</Text>
@@ -145,10 +144,14 @@ export default function SignupPage() {
         </View>
       </View>
 
-      <Button className="primary-button" disabled={!rulesAccepted || !activity || isSubmitting || isRegistered} onClick={handleSignup}>
-        {isSubmitting ? "提交中" : isRegistered ? "已报名" : "确认报名"}
+      <Button
+        className="primary-button"
+        disabled={!rulesAccepted || !activity || isSubmitting || primaryActionState.isCompleted}
+        onClick={handleSignup}
+      >
+        {isSubmitting ? "提交中" : primaryActionState.label}
       </Button>
-      {isRegistered ? (
+      {primaryActionState.isCompleted ? (
         <Button className="secondary-button" disabled={isSubmitting} onClick={handleCancelSignup}>
           取消报名
         </Button>

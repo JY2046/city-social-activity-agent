@@ -1,7 +1,7 @@
 .arrival-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
   margin-top: 24px;
 }
 
@@ -16,7 +16,10 @@
 }
 
 .arrival-button {
-  padding: 0 8px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0 12px;
   color: #24452f;
   background: #edf5e7;
   border: 2px solid rgba(36, 69, 47, 0.18);

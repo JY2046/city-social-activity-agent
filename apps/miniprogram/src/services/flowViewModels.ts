@@ -15,6 +15,11 @@ export interface SignupViewState {
   showJuZhangTaskEntry: boolean;
 }
 
+export interface SignupPrimaryActionState {
+  label: string;
+  isCompleted: boolean;
+}
+
 export interface JuZhangSettlementRow {
   userId: string;
   displayName: string;
@@ -64,6 +69,24 @@ export function getSignupViewState(registration?: Registration): SignupViewState
       ? "已勾选愿意担任局长，系统会在活动前 24 小时内确认。"
       : "你已完成普通报名，不会显示局长任务。",
     showJuZhangTaskEntry: shouldShowJuZhangTasks(registration),
+  };
+}
+
+export function getSignupPrimaryActionState(registration?: Registration): SignupPrimaryActionState {
+  if (
+    registration?.status === "confirmed" ||
+    registration?.status === "arrived" ||
+    registration?.status === "waitlisted"
+  ) {
+    return {
+      label: "已报名",
+      isCompleted: true,
+    };
+  }
+
+  return {
+    label: "确认报名",
+    isCompleted: false,
   };
 }
 

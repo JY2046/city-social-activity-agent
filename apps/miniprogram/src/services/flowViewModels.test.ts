@@ -6,6 +6,7 @@ import {
   getArrivalOptions,
   getJuZhangSettlementRows,
   getPaymentActionLabel,
+  getSignupPrimaryActionState,
   getSignupViewState,
   getWaitlistTitle,
   shouldShowJuZhangTasks,
@@ -42,6 +43,20 @@ describe("mini program flow view models", () => {
     expect(getSignupViewState({ ...registration, status: "cancelled" })).toMatchObject({
       title: "已取消报名",
       showJuZhangTaskEntry: false,
+    });
+  });
+
+  it("treats waitlisted signup as a completed primary signup action", () => {
+    expect(getSignupPrimaryActionState({ ...registration, status: "waitlisted" })).toEqual({
+      label: "已报名",
+      isCompleted: true,
+    });
+  });
+
+  it("keeps confirmed signup as a completed primary signup action", () => {
+    expect(getSignupPrimaryActionState(registration)).toEqual({
+      label: "已报名",
+      isCompleted: true,
     });
   });
 
