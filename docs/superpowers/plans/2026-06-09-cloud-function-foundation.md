@@ -10,7 +10,7 @@
 
 ---
 
-### Task 1: Shared Cloud Handler Contract
+## Task 1: Shared Cloud Handler Contract
 
 **Files:**
 - Create: `cloud/functions/src/cloudHandlers.test.ts`
@@ -105,7 +105,7 @@ Run: `npm test -- cloud/functions/src/cloudHandlers.test.ts`
 
 Expected: PASS.
 
-### Task 2: Deployment Notes
+## Task 2: Deployment Notes
 
 **Files:**
 - Modify: `docs/miniprogram/cloud-functions.md`

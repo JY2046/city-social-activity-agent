@@ -18,6 +18,7 @@ import {
 } from "./cloudFunctionClient";
 import type { WaitlistEntry, WaitlistType } from "./mockData";
 import type { MiniProgramActivity } from "./mockData";
+import { loadMyActivityFeed, type UserActivityItem, type UserActivityReadAdapter } from "./userActivityService";
 import {
   confirmArrival,
   confirmPayment,
@@ -50,6 +51,10 @@ export type SignupWriteRefreshState =
 
 export type CancelSignupWriteRefreshState =
   | { status: "ready"; registration: Registration; activity?: MiniProgramActivity; refreshMessage?: string }
+  | { status: "error"; message: string };
+
+export type CancelSignupWriteMyActivityRefreshState =
+  | { status: "ready"; registration: Registration; items?: UserActivityItem[]; refreshMessage?: string }
   | { status: "error"; message: string };
 
 export type WaitlistWriteState =
@@ -206,6 +211,32 @@ export async function runCancelSignupAndRefreshActivity(
   return {
     ...cancelResult,
     ...(await refreshActivity(readAdapter, activityId)),
+  };
+}
+
+export async function runCancelSignupAndRefreshMyActivityFeed(
+  writeAdapter: RegistrationWriteAdapter,
+  readAdapter: UserActivityReadAdapter,
+  activityId: string,
+): Promise<CancelSignupWriteMyActivityRefreshState> {
+  const cancelResult = await runCancelSignup(writeAdapter, activityId);
+
+  if (cancelResult.status === "error") {
+    return cancelResult;
+  }
+
+  const feedResult = await loadMyActivityFeed(readAdapter);
+
+  if (feedResult.status === "error") {
+    return {
+      ...cancelResult,
+      refreshMessage: feedResult.message,
+    };
+  }
+
+  return {
+    ...cancelResult,
+    items: feedResult.items,
   };
 }
 

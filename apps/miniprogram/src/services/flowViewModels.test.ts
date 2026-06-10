@@ -63,14 +63,20 @@ describe("mini program flow view models", () => {
 
   it("labels activity detail CTA from the current user's registration state", () => {
     expect(getActivityDetailPrimaryActionState()).toEqual({ label: "确认报名", isCompleted: false });
-    expect(getActivityDetailPrimaryActionState(registration)).toEqual({ label: "已报名", isCompleted: true });
+    expect(getActivityDetailPrimaryActionState(registration)).toEqual({
+      label: "已报名",
+      isCompleted: true,
+      variant: "completed",
+    });
     expect(getActivityDetailPrimaryActionState({ ...registration, status: "arrived" })).toEqual({
       label: "已报名",
       isCompleted: true,
+      variant: "completed",
     });
     expect(getActivityDetailPrimaryActionState({ ...registration, status: "waitlisted" })).toEqual({
       label: "排队中",
-      isCompleted: true,
+      isCompleted: false,
+      variant: "queued",
     });
   });
 

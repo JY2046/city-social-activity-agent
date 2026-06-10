@@ -8,6 +8,7 @@ import {
   createDeployPlan,
   getDeployFunctionNames,
   isDirectRun,
+  readFlagValue,
   validateDeployPackages,
 } from "./wechat-cloud-deploy.mjs";
 
@@ -65,6 +66,11 @@ describe("wechat cloud deploy helper", () => {
 
   it("requires an environment id before creating an executable plan", () => {
     expect(() => createDeployPlan({ envId: "" })).toThrow("WECHAT_CLOUD_ENV_ID is required");
+  });
+
+  it("does not treat another flag as a flag value", () => {
+    expect(readFlagValue(["--env", "--execute"], "--env")).toBeUndefined();
+    expect(readFlagValue(["--env", "cloud1-dev", "--execute"], "--env")).toBe("cloud1-dev");
   });
 
   it("recognizes direct execution even when argv uses a relative path", () => {

@@ -120,3 +120,9 @@
   color: #24452f;
   background: #b8d890;
 }
+
+.primary-action.queued {
+  color: #f7f4ec;
+  background: rgba(184, 216, 144, 0.2);
+  border: 2px solid rgba(184, 216, 144, 0.45);
+}

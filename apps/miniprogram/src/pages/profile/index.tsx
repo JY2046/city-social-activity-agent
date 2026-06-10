@@ -6,9 +6,10 @@ import { getCurrentUserProfile, getProfileViewModel } from "../../services/profi
 import "./index.css";
 
 export default function ProfilePage() {
-  const [showAttendedCount, setShowAttendedCount] = useState(() => getCurrentUserProfile().showAttendedEventCount);
+  const currentUserProfile = getCurrentUserProfile();
+  const [showAttendedCount, setShowAttendedCount] = useState(() => currentUserProfile.showAttendedEventCount);
   const profile = getProfileViewModel({
-    ...getCurrentUserProfile(),
+    ...currentUserProfile,
     showAttendedEventCount: showAttendedCount,
   });
 

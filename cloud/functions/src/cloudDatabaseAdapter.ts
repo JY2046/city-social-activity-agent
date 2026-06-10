@@ -164,7 +164,7 @@ export async function seedCloudDatabase(db: CloudDatabaseLike, seedData: CloudSe
 
     for (const document of documents) {
       if (!hasDocumentId(document)) {
-        continue;
+        throw new Error(`Invalid seed document in collection "${collectionName}": missing string _id`);
       }
 
       const { _id, ...data } = document;

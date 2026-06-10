@@ -21,7 +21,10 @@ export default function FeedbackPage() {
   const activityReadAdapter = useMemo(() => createActivityReadAdapter(), []);
   const adapter = useMemo(() => createFeedbackAdapter(), []);
   const [activity, setActivity] = useState<MiniProgramActivity | undefined>(() => getActivity(activityId));
-  const candidateUserId = activity?.participantIds.find((userId) => userId !== DEFAULT_CURRENT_USER_ID) ?? "u-lin";
+  const candidateUserId = useMemo(
+    () => activity?.participantIds.find((userId) => userId !== DEFAULT_CURRENT_USER_ID) ?? "u-lin",
+    [activity],
+  );
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [abnormalText, setAbnormalText] = useState("");
   const [completionState, setCompletionState] = useState<FeedbackCompletionState>({

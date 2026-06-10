@@ -24,10 +24,16 @@ const deployFunctionNames = [
   "getFeedbackCompletionState",
 ];
 
-function readFlagValue(args, flagName) {
+export function readFlagValue(args, flagName) {
   const index = args.indexOf(flagName);
 
-  return index >= 0 ? args[index + 1] : undefined;
+  if (index < 0) {
+    return undefined;
+  }
+
+  const value = args[index + 1];
+
+  return value && !value.startsWith("--") ? value : undefined;
 }
 
 function quoteShellArg(value) {

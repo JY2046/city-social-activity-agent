@@ -1,7 +1,7 @@
 import { Button, Text, View } from "@tarojs/components";
 import type { Registration } from "@city-social/domain";
-import { useEffect, useMemo, useState } from "react";
-import { navigateTo, useRouter } from "@tarojs/taro";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { navigateTo, useDidShow, useRouter } from "@tarojs/taro";
 
 import { getActivity } from "../../services/activityService";
 import { createActivityReadAdapter, loadActivityDetail } from "../../services/activityReadService";
@@ -12,6 +12,7 @@ import type { MiniProgramActivity } from "../../services/mockData";
 import type { ArrivalStatus } from "../../services/registrationService";
 import {
   createRegistrationWriteAdapter,
+  runCancelSignupAndRefreshMyActivityFeed,
   runConfirmArrival,
   runConfirmPayment,
   runJoinWaitlistAndRefreshActivity,
@@ -61,38 +62,32 @@ export default function ItineraryPage() {
   const [pendingAction, setPendingAction] = useState<string | undefined>();
   const [actionMessage, setActionMessage] = useState("");
 
-  useEffect(() => {
-    let isMounted = true;
+  const refreshMyItems = useCallback(async () => {
+    const result = await loadMyActivityFeed(userActivityReadAdapter);
 
-    async function loadMyItems() {
-      const result = await loadMyActivityFeed(userActivityReadAdapter);
-
-      if (!isMounted) {
-        return;
-      }
-
-      if (result.status === "ready") {
-        setMyItems(result.items);
-        setActionMessage("");
-        return;
-      }
-
-      if (result.status === "empty") {
-        setMyItems([]);
-        setActionMessage("");
-        return;
-      }
-
-      setMyItems([]);
-      setActionMessage(result.message);
+    if (result.status === "ready") {
+      setMyItems(result.items);
+      setActionMessage("");
+      return;
     }
 
-    void loadMyItems();
+    if (result.status === "empty") {
+      setMyItems([]);
+      setActionMessage("");
+      return;
+    }
 
-    return () => {
-      isMounted = false;
-    };
+    setMyItems([]);
+    setActionMessage(result.message);
   }, [userActivityReadAdapter]);
+
+  useEffect(() => {
+    void refreshMyItems();
+  }, [refreshMyItems]);
+
+  useDidShow(() => {
+    void refreshMyItems();
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -226,6 +221,37 @@ export default function ItineraryPage() {
     setActionMessage(result.message);
   }
 
+  async function handleCancelSignup() {
+    if (!activity || !registration) {
+      return;
+    }
+
+    setPendingAction("cancelSignup");
+    setActionMessage("");
+    const result = await runCancelSignupAndRefreshMyActivityFeed(
+      createRegistrationWriteAdapter(),
+      userActivityReadAdapter,
+      activity.id,
+    );
+    setPendingAction(undefined);
+
+    if (result.status === "ready") {
+      if (result.items) {
+        setMyItems(result.items);
+      } else {
+        setMyItems((current) => current.filter((item) => item.activity.id !== activity.id));
+      }
+      setSelectedActivityId(undefined);
+      setActivity(undefined);
+      setRegistration(undefined);
+      setSettlement(undefined);
+      setActionMessage(result.refreshMessage ?? "已取消报名，行程已更新。");
+      return;
+    }
+
+    setActionMessage(result.message);
+  }
+
   if (!selectedActivityId) {
     return (
       <View className="flow-page">
@@ -272,6 +298,11 @@ export default function ItineraryPage() {
           </Text>
           <Text className="card-copy">{getCostLabel(activity)}</Text>
           {registration ? <Text className="card-copy">{getRegistrationStatusLabel(registration)}</Text> : null}
+          {registration ? (
+            <Button className="secondary-button itinerary-cancel-button" disabled={pendingAction !== undefined} onClick={handleCancelSignup}>
+              {pendingAction === "cancelSignup" ? "取消中" : "取消报名"}
+            </Button>
+          ) : null}
         </View>
       ) : null}
 

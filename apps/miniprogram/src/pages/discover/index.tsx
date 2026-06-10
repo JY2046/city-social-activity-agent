@@ -61,7 +61,7 @@ export default function DiscoverPage() {
   }, [selectedCategory, selectedCity]);
 
   function handleOpenActivity(activity: MiniProgramActivity) {
-    void navigateTo({ url: `/pages/activity-detail/index?activityId=${activity.id}` });
+    void navigateTo({ url: `/pages/activity-detail/index?activityId=${encodeURIComponent(activity.id)}` });
   }
 
   return (

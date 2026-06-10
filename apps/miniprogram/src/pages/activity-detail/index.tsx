@@ -28,10 +28,14 @@ export default function ActivityDetailPage() {
   const [registration, setRegistration] = useState<Registration | undefined>();
   const activity = detailState.activity;
   const primaryActionState = getActivityDetailPrimaryActionState(registration);
+  const primaryActionClassName = primaryActionState.variant
+    ? `primary-action ${primaryActionState.variant}`
+    : "primary-action";
 
   useEffect(() => {
     let isMounted = true;
 
+    setRegistration(undefined);
     void Promise.all([
       loadActivityDetail(activityId),
       loadMyRegistrationForActivity(activityId, userActivityReadAdapter),
@@ -40,7 +44,10 @@ export default function ActivityDetailPage() {
         setDetailState(nextState);
         if (registrationState.status === "ready") {
           setRegistration(registrationState.registration);
+          return;
         }
+
+        setRegistration(undefined);
       }
     });
 
@@ -121,7 +128,7 @@ export default function ActivityDetailPage() {
           返回活动首页
         </Text>
         <Text
-          className={primaryActionState.isCompleted ? "primary-action completed" : "primary-action"}
+          className={primaryActionClassName}
           onClick={() => void navigateTo({ url: `/pages/signup/index?activityId=${activity.id}` })}
         >
           {primaryActionState.label}

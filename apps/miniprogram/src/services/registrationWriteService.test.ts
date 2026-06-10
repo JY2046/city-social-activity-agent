@@ -5,10 +5,12 @@ import type { Registration, Settlement } from "@city-social/domain";
 import type { ActivityReadAdapter } from "./activityReadService";
 import { DEFAULT_CURRENT_USER_ID, listWaitlistEntries, type WaitlistEntry } from "./mockData";
 import { resetMockServices, signup } from "./registrationService";
+import { createMockUserActivityReadAdapter } from "./userActivityService";
 import {
   createMockRegistrationWriteAdapter,
   runCancelSignup,
   runCancelSignupAndRefreshActivity,
+  runCancelSignupAndRefreshMyActivityFeed,
   runConfirmArrival,
   runConfirmPayment,
   runJoinWaitlist,
@@ -107,6 +109,28 @@ describe("registration write service", () => {
       status: "ready",
       registration: { activityId: "a-coffee", status: "cancelled" },
       refreshMessage: "云端活动刷新失败",
+    });
+  });
+
+  it("refreshes my activity feed after cancellation succeeds", async () => {
+    signup("a-coffee", { willingToBeJuZhang: false });
+    signup("a-bar", { willingToBeJuZhang: false });
+
+    await expect(
+      runCancelSignupAndRefreshMyActivityFeed(
+        createMockRegistrationWriteAdapter(),
+        createMockUserActivityReadAdapter(),
+        "a-coffee",
+      ),
+    ).resolves.toMatchObject({
+      status: "ready",
+      registration: { activityId: "a-coffee", status: "cancelled" },
+      items: [
+        {
+          registration: { activityId: "a-bar", status: "waitlisted" },
+          activity: { id: "a-bar" },
+        },
+      ],
     });
   });
 

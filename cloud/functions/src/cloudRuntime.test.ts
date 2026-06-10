@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { createCloudHandlers } from "./cloudHandlers";
-import { createCloudFunctionDispatcher } from "./cloudRuntime";
+import { createCloudFunctionDispatcher, type CloudHandlers } from "./cloudRuntime";
 import { createInMemoryCloudStore } from "./cloudStore";
 
 describe("cloud function runtime dispatcher", () => {
@@ -21,6 +21,23 @@ describe("cloud function runtime dispatcher", () => {
       ok: false,
       code: "FUNCTION_NOT_FOUND",
       message: "Cloud function not found",
+      data: null,
+    });
+  });
+
+  it("keeps the envelope contract when a handler throws", async () => {
+    const handlers = {
+      ...createCloudHandlers(createInMemoryCloudStore()),
+      listActivities: async () => {
+        throw new Error("database unavailable");
+      },
+    } satisfies CloudHandlers;
+    const dispatch = createCloudFunctionDispatcher(handlers);
+
+    await expect(dispatch("listActivities", {}, { userId: "u-current" })).resolves.toEqual({
+      ok: false,
+      code: "INTERNAL_ERROR",
+      message: "Cloud function execution failed",
       data: null,
     });
   });

@@ -18,6 +18,7 @@ describe("cloud seed data", () => {
         }),
       ]),
     );
+    expect(seed.registrations.length).toBeGreaterThan(0);
     expect(seed.registrations.every((item) => item._id && item.activityId && item.userId)).toBe(true);
     expect(seed.settlements).toEqual(expect.arrayContaining([expect.objectContaining({ _id: "a-coffee" })]));
     expect(seed.waitlists).toEqual([]);

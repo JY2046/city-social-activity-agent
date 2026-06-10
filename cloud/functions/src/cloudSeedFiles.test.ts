@@ -5,7 +5,13 @@ import { resolve } from "node:path";
 const seedDir = resolve("cloud/seed");
 
 function readSeedFile(name: string): unknown[] {
-  return JSON.parse(readFileSync(resolve(seedDir, `${name}.json`), "utf8")) as unknown[];
+  const parsed = JSON.parse(readFileSync(resolve(seedDir, `${name}.json`), "utf8"));
+
+  if (!Array.isArray(parsed)) {
+    throw new Error(`Seed file ${name}.json must contain a JSON array`);
+  }
+
+  return parsed;
 }
 
 describe("cloud seed JSON files", () => {
@@ -27,6 +33,7 @@ describe("cloud seed JSON files", () => {
         }),
       ]),
     );
+    expect(registrations.length).toBeGreaterThan(0);
     expect(registrations.every((item) => typeof (item as { _id?: unknown })._id === "string")).toBe(true);
     expect(settlements).toEqual(expect.arrayContaining([expect.objectContaining({ _id: "a-coffee" })]));
     expect(waitlists).toEqual([]);

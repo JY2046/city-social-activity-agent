@@ -62,6 +62,18 @@ describe("cloud database adapter", () => {
     expect(db.dump().users["u-current"]).toMatchObject({ _id: "u-current" });
   });
 
+  it("fails fast when a seed document is missing an _id", async () => {
+    const db = createFakeDatabase();
+    const seed = createCloudSeedData();
+
+    await expect(
+      seedCloudDatabase(db, {
+        ...seed,
+        users: [{ ...seed.users[0], _id: undefined as unknown as string }],
+      }),
+    ).rejects.toThrow('Invalid seed document in collection "users": missing string _id');
+  });
+
   it("reads approved activities through the database adapter", async () => {
     const db = createFakeDatabase();
     await seedCloudDatabase(db, createCloudSeedData());

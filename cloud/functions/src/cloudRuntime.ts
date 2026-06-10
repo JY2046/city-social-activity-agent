@@ -20,6 +20,17 @@ export function createCloudFunctionDispatcher(handlers: CloudHandlers) {
       };
     }
 
-    return handler(data as never, context);
+    try {
+      return await handler(data as never, context);
+    } catch (error) {
+      console.error("Cloud function execution failed", error);
+
+      return {
+        ok: false,
+        code: "INTERNAL_ERROR",
+        message: "Cloud function execution failed",
+        data: null,
+      };
+    }
   };
 }
