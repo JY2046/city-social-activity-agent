@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 const defaultCliPath = "/Applications/wechatwebdevtools.app/Contents/MacOS/cli";
 const defaultProjectPath = resolve("apps/miniprogram");
 const defaultDeployRoot = resolve("cloud/functions/deploy");
-const requiredDeployFiles = ["index.js", "runtime.js", "package.json"];
+const requiredDeployFiles = ["index.js", "runtime.js", "package.json", "config.json"];
 const deployFunctionNames = [
   "listActivities",
   "getActivityDetail",

@@ -1,5 +1,6 @@
 import type { Registration } from "@city-social/domain";
 
+import { clone } from "./clone";
 import {
   createWaitlistEntry,
   DEFAULT_CURRENT_USER_ID,
@@ -18,10 +19,6 @@ export interface SignupOptions {
 }
 
 export type ArrivalStatus = "confirmed" | "arrived" | "noShow";
-
-function clone<T>(value: T): T {
-  return structuredClone(value);
-}
 
 function getUserId(userId?: string): string {
   return userId ?? DEFAULT_CURRENT_USER_ID;

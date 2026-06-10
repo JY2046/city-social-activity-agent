@@ -7,6 +7,7 @@ import {
   cloudDeclineJuZhang,
   cloudGetJuZhangWorkspace,
 } from "./cloudServices";
+import { clone } from "./clone";
 import {
   createWeChatCloudAdapter,
   DEFAULT_DATA_SOURCE_MODE,
@@ -67,10 +68,6 @@ const tasks: JuZhangTask[] = [
   { title: "活动中协调", description: "关注大家体验，必要时协助沟通" },
   { title: "AA 结算确认", description: "活动后确认每个人的支付状态" },
 ];
-
-function clone<T>(value: T): T {
-  return structuredClone(value);
-}
 
 function toErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "局长操作失败，请稍后再试";

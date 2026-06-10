@@ -14,6 +14,8 @@ import {
   type User,
 } from "@city-social/domain";
 
+import { clone } from "./clone";
+
 export const DEFAULT_CURRENT_USER_ID = "u-current";
 
 export type WaitlistType = "activity" | "juZhang";
@@ -64,10 +66,6 @@ const currentUser: User = {
   badges: ["准时到场"],
   canBeJuZhang: true,
 };
-
-function clone<T>(value: T): T {
-  return structuredClone(value);
-}
 
 function toMiniProgramImagePath(imagePath: string): string {
   return `/assets/${imagePath}`;

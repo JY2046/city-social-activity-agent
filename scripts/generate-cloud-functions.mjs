@@ -388,6 +388,16 @@ function createPackageJson(functionName) {
   )}\n`;
 }
 
+function createConfigJson() {
+  return `${JSON.stringify(
+    {
+      timeout: 20,
+    },
+    null,
+    2,
+  )}\n`;
+}
+
 await Promise.all(
   functionNames.map(async (functionName) => {
     const functionDir = resolve(outputRoot, functionName);
@@ -396,6 +406,7 @@ await Promise.all(
       writeFile(resolve(functionDir, "index.js"), createIndexSource(functionName)),
       writeFile(resolve(functionDir, "runtime.js"), runtimeSource),
       writeFile(resolve(functionDir, "package.json"), createPackageJson(functionName)),
+      writeFile(resolve(functionDir, "config.json"), createConfigJson()),
     ]);
   }),
 );

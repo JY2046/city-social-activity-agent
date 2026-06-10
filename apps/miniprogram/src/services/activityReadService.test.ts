@@ -21,6 +21,29 @@ describe("activity read service", () => {
     });
   });
 
+  it("loads mock activity feed when structuredClone is unavailable in the mini program runtime", async () => {
+    const originalStructuredClone = globalThis.structuredClone;
+
+    try {
+      Object.defineProperty(globalThis, "structuredClone", {
+        configurable: true,
+        value: undefined,
+      });
+
+      resetMockServices();
+
+      await expect(loadActivityFeed(createMockActivityReadAdapter())).resolves.toMatchObject({
+        status: "ready",
+        activities: expect.arrayContaining([expect.objectContaining({ id: "a-sushi" })]),
+      });
+    } finally {
+      Object.defineProperty(globalThis, "structuredClone", {
+        configurable: true,
+        value: originalStructuredClone,
+      });
+    }
+  });
+
   it("loads activity detail through the async read boundary", async () => {
     await expect(loadActivityDetail("a-sushi", createMockActivityReadAdapter())).resolves.toMatchObject({
       status: "ready",

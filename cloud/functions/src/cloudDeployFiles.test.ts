@@ -27,10 +27,12 @@ describe("WeChat cloud function deploy folders", () => {
       const indexPath = resolve(functionDir, "index.js");
       const runtimePath = resolve(functionDir, "runtime.js");
       const packagePath = resolve(functionDir, "package.json");
+      const configPath = resolve(functionDir, "config.json");
 
       expect(existsSync(indexPath), `${functionName} index.js`).toBe(true);
       expect(existsSync(runtimePath), `${functionName} runtime.js`).toBe(true);
       expect(existsSync(packagePath), `${functionName} package.json`).toBe(true);
+      expect(existsSync(configPath), `${functionName} config.json`).toBe(true);
 
       expect(readFileSync(indexPath, "utf8")).toContain(`createMain("${functionName}")`);
       expect(JSON.parse(readFileSync(packagePath, "utf8"))).toMatchObject({
@@ -40,6 +42,10 @@ describe("WeChat cloud function deploy folders", () => {
           "wx-server-sdk": "latest",
         },
       });
+      expect(JSON.parse(readFileSync(configPath, "utf8"))).toMatchObject({
+        timeout: expect.any(Number),
+      });
+      expect(JSON.parse(readFileSync(configPath, "utf8")).timeout).toBeGreaterThanOrEqual(20);
     }
   });
 });
