@@ -9,7 +9,11 @@ import {
   loadActivityDetail,
 } from "../../services/activityReadService";
 import { getSignupViewState } from "../../services/flowViewModels";
-import { createRegistrationWriteAdapter, runCancelSignup, runSignup } from "../../services/registrationWriteService";
+import {
+  createRegistrationWriteAdapter,
+  runCancelSignupAndRefreshActivity,
+  runSignupAndRefreshActivity,
+} from "../../services/registrationWriteService";
 import type { MiniProgramActivity } from "../../services/mockData";
 
 import "./index.css";
@@ -67,11 +71,22 @@ export default function SignupPage() {
 
     setIsSubmitting(true);
     setSubmitMessage("");
-    const result = await runSignup(createRegistrationWriteAdapter(), activity.id, { willingToBeJuZhang });
+    const result = await runSignupAndRefreshActivity(
+      createRegistrationWriteAdapter(),
+      activityReadAdapter,
+      activity.id,
+      { willingToBeJuZhang },
+    );
     setIsSubmitting(false);
 
     if (result.status === "ready") {
       setRegistration(result.registration);
+      if (result.activity) {
+        setActivity(result.activity);
+      }
+      if (result.refreshMessage) {
+        setSubmitMessage(result.refreshMessage);
+      }
       return;
     }
 
@@ -85,12 +100,15 @@ export default function SignupPage() {
 
     setIsSubmitting(true);
     setSubmitMessage("");
-    const result = await runCancelSignup(createRegistrationWriteAdapter(), activity.id);
+    const result = await runCancelSignupAndRefreshActivity(createRegistrationWriteAdapter(), activityReadAdapter, activity.id);
     setIsSubmitting(false);
 
     if (result.status === "ready") {
       setRegistration(result.registration);
-      setSubmitMessage("已取消报名，想再加入时可以重新确认。");
+      if (result.activity) {
+        setActivity(result.activity);
+      }
+      setSubmitMessage(result.refreshMessage ?? "已取消报名，想再加入时可以重新确认。");
       return;
     }
 

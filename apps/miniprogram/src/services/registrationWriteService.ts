@@ -1,5 +1,6 @@
 import type { Registration, Settlement } from "@city-social/domain";
 
+import { loadActivityDetail, type ActivityReadAdapter } from "./activityReadService";
 import {
   cloudConfirmArrival,
   cloudConfirmSettlement,
@@ -16,6 +17,7 @@ import {
   type DataSourceMode,
 } from "./cloudFunctionClient";
 import type { WaitlistEntry, WaitlistType } from "./mockData";
+import type { MiniProgramActivity } from "./mockData";
 import {
   confirmArrival,
   confirmPayment,
@@ -40,6 +42,14 @@ export type SignupWriteState =
 
 export type CancelSignupWriteState =
   | { status: "ready"; registration: Registration }
+  | { status: "error"; message: string };
+
+export type SignupWriteRefreshState =
+  | { status: "ready"; registration: Registration; activity?: MiniProgramActivity; refreshMessage?: string }
+  | { status: "error"; message: string };
+
+export type CancelSignupWriteRefreshState =
+  | { status: "ready"; registration: Registration; activity?: MiniProgramActivity; refreshMessage?: string }
   | { status: "error"; message: string };
 
 export type WaitlistWriteState =
@@ -141,6 +151,58 @@ export async function runCancelSignup(
       message: toErrorMessage(error),
     };
   }
+}
+
+async function refreshActivity(
+  adapter: ActivityReadAdapter,
+  activityId: string,
+): Promise<{ activity?: MiniProgramActivity; refreshMessage?: string }> {
+  const result = await loadActivityDetail(activityId, adapter);
+
+  if (result.status === "ready") {
+    return { activity: result.activity };
+  }
+
+  if (result.status === "error") {
+    return { refreshMessage: result.message };
+  }
+
+  return { activity: undefined };
+}
+
+export async function runSignupAndRefreshActivity(
+  writeAdapter: RegistrationWriteAdapter,
+  readAdapter: ActivityReadAdapter,
+  activityId: string,
+  options: SignupOptions,
+): Promise<SignupWriteRefreshState> {
+  const signupResult = await runSignup(writeAdapter, activityId, options);
+
+  if (signupResult.status === "error") {
+    return signupResult;
+  }
+
+  return {
+    ...signupResult,
+    ...(await refreshActivity(readAdapter, activityId)),
+  };
+}
+
+export async function runCancelSignupAndRefreshActivity(
+  writeAdapter: RegistrationWriteAdapter,
+  readAdapter: ActivityReadAdapter,
+  activityId: string,
+): Promise<CancelSignupWriteRefreshState> {
+  const cancelResult = await runCancelSignup(writeAdapter, activityId);
+
+  if (cancelResult.status === "error") {
+    return cancelResult;
+  }
+
+  return {
+    ...cancelResult,
+    ...(await refreshActivity(readAdapter, activityId)),
+  };
 }
 
 export async function runJoinWaitlist(

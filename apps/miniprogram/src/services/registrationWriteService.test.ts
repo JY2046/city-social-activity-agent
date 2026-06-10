@@ -2,15 +2,18 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { Registration, Settlement } from "@city-social/domain";
 
+import type { ActivityReadAdapter } from "./activityReadService";
 import { DEFAULT_CURRENT_USER_ID, listWaitlistEntries, type WaitlistEntry } from "./mockData";
 import { resetMockServices, signup } from "./registrationService";
 import {
   createMockRegistrationWriteAdapter,
   runCancelSignup,
+  runCancelSignupAndRefreshActivity,
   runConfirmArrival,
   runConfirmPayment,
   runJoinWaitlist,
   runSignup,
+  runSignupAndRefreshActivity,
   type RegistrationWriteAdapter,
 } from "./registrationWriteService";
 
@@ -33,6 +36,48 @@ describe("registration write service", () => {
     });
   });
 
+  it("refreshes activity detail after signup succeeds", async () => {
+    const activityReadAdapter: ActivityReadAdapter = {
+      listActivities: vi.fn(async () => []),
+      getActivity: vi.fn(async () => ({
+        id: "a-coffee",
+        title: "周末咖啡聊天局",
+        type: "coffee",
+        area: "武康路",
+        venue: "梧桐边咖啡",
+        startsAt: "2026-06-06T15:00:00+08:00",
+        capacity: 5,
+        currentParticipantCount: 3,
+        costPerPerson: 58,
+        budgetType: "paid",
+        formationStatus: "forming",
+        aiRecommendationReason: "人数少，适合第一次尝试陌生人轻社交。",
+        organizerAlias: "乔一",
+        participantIds: ["u-a", "u-b", DEFAULT_CURRENT_USER_ID],
+        imagePath: "images/activity-coffee.jpg",
+        gallery: [],
+        attractionSummary: "适合轻松聊天。",
+        experienceHighlights: [],
+        locationGuide: "武康路附近。",
+        aaRule: "人均约 58 元。",
+      })),
+    };
+
+    await expect(
+      runSignupAndRefreshActivity(
+        createMockRegistrationWriteAdapter(),
+        activityReadAdapter,
+        "a-coffee",
+        { willingToBeJuZhang: true },
+      ),
+    ).resolves.toMatchObject({
+      status: "ready",
+      registration: { activityId: "a-coffee", status: "confirmed" },
+      activity: { id: "a-coffee", currentParticipantCount: 3 },
+    });
+    expect(activityReadAdapter.getActivity).toHaveBeenCalledWith("a-coffee");
+  });
+
   it("cancels signup through the async write boundary", async () => {
     signup("a-coffee", { willingToBeJuZhang: false });
 
@@ -43,6 +88,24 @@ describe("registration write service", () => {
         userId: DEFAULT_CURRENT_USER_ID,
         status: "cancelled",
       },
+    });
+  });
+
+  it("keeps cancellation ready even when the activity refresh fails", async () => {
+    signup("a-coffee", { willingToBeJuZhang: false });
+    const activityReadAdapter: ActivityReadAdapter = {
+      listActivities: vi.fn(async () => []),
+      getActivity: vi.fn(async () => {
+        throw new Error("云端活动刷新失败");
+      }),
+    };
+
+    await expect(
+      runCancelSignupAndRefreshActivity(createMockRegistrationWriteAdapter(), activityReadAdapter, "a-coffee"),
+    ).resolves.toMatchObject({
+      status: "ready",
+      registration: { activityId: "a-coffee", status: "cancelled" },
+      refreshMessage: "云端活动刷新失败",
     });
   });
 
