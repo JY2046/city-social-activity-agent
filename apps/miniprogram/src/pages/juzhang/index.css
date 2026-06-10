@@ -11,7 +11,8 @@
 .tiny-chip,
 .participant-name,
 .participant-status,
-.topic-copy {
+.topic-copy,
+.history-chip {
   display: block;
 }
 
@@ -95,6 +96,41 @@
   line-height: 1.45;
 }
 
+.topic-action {
+  width: 138px;
+  height: 58px;
+  line-height: 58px;
+  border-radius: 999px;
+  color: #f7f4ec;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.topic-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.history-chip {
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: rgba(247, 244, 236, 0.72);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.history-chip.active {
+  color: #17251d;
+  background: #b8d890;
+  border-color: #b8d890;
+}
+
 .participant-row {
   justify-content: space-between;
   margin-top: 18px;
@@ -115,10 +151,23 @@
   font-size: 22px;
 }
 
+.participant-status.paid {
+  color: #b8d890;
+}
+
+.participant-status.waiting {
+  color: #f2c48c;
+}
+
 .mini-action {
   flex: 0 0 auto;
   width: 150px;
   color: #17251d;
   background: #b8d890;
   font-size: 21px;
+}
+
+.mini-action.confirmed {
+  color: rgba(247, 244, 236, 0.72);
+  background: rgba(255, 255, 255, 0.12);
 }

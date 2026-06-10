@@ -4,6 +4,7 @@ import type { Registration, Settlement } from "@city-social/domain";
 
 import {
   getArrivalOptions,
+  getJuZhangSettlementRows,
   getPaymentActionLabel,
   getSignupViewState,
   getWaitlistTitle,
@@ -68,6 +69,36 @@ describe("mini program flow view models", () => {
     expect(getPaymentActionLabel(unpaidPaidSettlement, "u-current")).toBe("确认已支付");
     expect(getPaymentActionLabel(paidSettlement, "u-current")).toBe("已完成支付");
     expect(getPaymentActionLabel(freeSettlement, "u-current")).toBe("本活动免费");
+  });
+
+  it("separates participant payment state from ju zhang confirmation copy", () => {
+    const settlement: Settlement = {
+      activityId: "a-sushi",
+      type: "paid",
+      totalAmount: 1008,
+      participantCount: 2,
+      paymentStatusByUser: {
+        "u-current": true,
+        "u-momo": false,
+      },
+    };
+
+    expect(getJuZhangSettlementRows(settlement, (userId) => (userId === "u-current" ? "Lily" : "Momo"))).toEqual([
+      {
+        userId: "u-current",
+        displayName: "Lily",
+        participantPaymentLabel: "用户已支付",
+        juZhangActionLabel: "已确认",
+        canConfirm: false,
+      },
+      {
+        userId: "u-momo",
+        displayName: "Momo",
+        participantPaymentLabel: "用户未支付",
+        juZhangActionLabel: "局长确认",
+        canConfirm: true,
+      },
+    ]);
   });
 
   it("separates activity and ju zhang waitlist titles", () => {

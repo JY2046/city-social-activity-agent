@@ -1,5 +1,5 @@
 import { View, Text } from "@tarojs/components";
-import { useRouter, useShareAppMessage } from "@tarojs/taro";
+import { navigateTo, switchTab, useRouter, useShareAppMessage } from "@tarojs/taro";
 import { useEffect, useState } from "react";
 import DetailGallery from "../../components/DetailGallery";
 import { loadActivityDetail, type ActivityDetailLoadState } from "../../services/activityReadService";
@@ -105,8 +105,15 @@ export default function ActivityDetailPage() {
       </View>
 
       <View className="bottom-actions">
-        <Text className="secondary-action">返回活动首页</Text>
-        <Text className="primary-action">确认报名</Text>
+        <Text className="secondary-action" onClick={() => void switchTab({ url: "/pages/discover/index" })}>
+          返回活动首页
+        </Text>
+        <Text
+          className="primary-action"
+          onClick={() => void navigateTo({ url: `/pages/signup/index?activityId=${activity.id}` })}
+        >
+          确认报名
+        </Text>
       </View>
     </View>
   );

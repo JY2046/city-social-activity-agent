@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "@tarojs/taro";
 
 import { getSettlementSummary } from "@city-social/domain";
+import { getJuZhangSettlementRows } from "../../services/flowViewModels";
+import { getUserDisplayName } from "../../services/mockData";
 import {
   createJuZhangAdapter,
   runAcceptJuZhang,
@@ -12,6 +14,12 @@ import {
   runLoadJuZhangWorkspace,
   type JuZhangWorkspace,
 } from "../../services/juZhangService";
+import {
+  createTopicDeck,
+  rotateTopicDeck,
+  selectTopicFromHistory,
+  type TopicDeck,
+} from "../../services/topicDeckViewModel";
 
 import "../activity-detail/index.css";
 import "./index.css";
@@ -23,12 +31,17 @@ export default function JuZhangPage() {
   const [workspace, setWorkspace] = useState<JuZhangWorkspace | undefined>();
   const [pageMessage, setPageMessage] = useState("正在同步局长工作台...");
   const [pendingAction, setPendingAction] = useState<string | undefined>();
+  const [topicDeck, setTopicDeck] = useState<TopicDeck | undefined>();
   const settlementSummary = workspace?.settlement ? getSettlementSummary(workspace.settlement) : undefined;
+  const settlementRows = getJuZhangSettlementRows(workspace?.settlement, getUserDisplayName);
 
   async function refreshWorkspace(nextMessage?: string) {
     const result = await runLoadJuZhangWorkspace(adapter, activityId);
     if (result.status === "ready") {
       setWorkspace(result.workspace);
+      if (result.workspace.activity) {
+        setTopicDeck((deck) => deck ?? createTopicDeck(result.workspace.activity, result.workspace.topicCard));
+      }
       setPageMessage(nextMessage ?? "");
       return;
     }
@@ -101,9 +114,27 @@ export default function JuZhangPage() {
       </View>
 
       <View className="section topic-section">
-        <Text className="section-title">AI 话题卡</Text>
-        <Text className="topic-copy">{workspace?.topicCard?.visibleText ?? "聊聊最近最想推荐给朋友的城市角落。"}</Text>
+        <View className="section-heading-row">
+          <Text className="section-title">AI 话题卡</Text>
+          <Button className="topic-action" onClick={() => setTopicDeck((deck) => (deck ? rotateTopicDeck(deck) : deck))}>
+            换一张
+          </Button>
+        </View>
+        <Text className="topic-copy">
+          {topicDeck?.current.visibleText ?? workspace?.topicCard?.visibleText ?? "聊聊最近最想推荐给朋友的城市角落。"}
+        </Text>
         <Text className="section-copy">这是开放式话题，活动中也可以换成大家自然聊起来的话题。</Text>
+        <View className="topic-history">
+          {(topicDeck?.history ?? []).map((topic, index) => (
+            <Text
+              className={topic.id === topicDeck?.current.id ? "history-chip active" : "history-chip"}
+              key={topic.id}
+              onClick={() => setTopicDeck((deck) => (deck ? selectTopicFromHistory(deck, topic.id) : deck))}
+            >
+              话题 {index + 1}
+            </Text>
+          ))}
+        </View>
       </View>
 
       <View className="section">
@@ -128,16 +159,18 @@ export default function JuZhangPage() {
           <Text className="section-title">AA 确认</Text>
           <Text className="tiny-chip">{settlementSummary?.label ?? "无费用"}</Text>
         </View>
-        {Object.entries(workspace?.settlement?.paymentStatusByUser ?? {}).map(([userId, hasPaid]) => (
-          <View className="participant-row" key={userId}>
-            <Text className="participant-name">{userId}</Text>
-            <Text className="participant-status">{hasPaid ? "已支付" : "待确认"}</Text>
+        {settlementRows.map((row) => (
+          <View className="participant-row" key={row.userId}>
+            <Text className="participant-name">{row.displayName}</Text>
+            <Text className={row.canConfirm ? "participant-status waiting" : "participant-status paid"}>
+              {row.participantPaymentLabel}
+            </Text>
             <Button
-              className="mini-action"
-              disabled={pendingAction === `payment-${userId}`}
-              onClick={() => void handlePayment(userId)}
+              className={row.canConfirm ? "mini-action" : "mini-action confirmed"}
+              disabled={!row.canConfirm || pendingAction === `payment-${row.userId}`}
+              onClick={() => void handlePayment(row.userId)}
             >
-              {pendingAction === `payment-${userId}` ? "同步中" : "确认支付"}
+              {pendingAction === `payment-${row.userId}` ? "同步中" : row.juZhangActionLabel}
             </Button>
           </View>
         ))}

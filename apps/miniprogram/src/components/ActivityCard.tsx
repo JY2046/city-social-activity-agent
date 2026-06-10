@@ -14,30 +14,37 @@ import "./ActivityCard.css";
 interface ActivityCardProps {
   activity: MiniProgramActivity;
   featured?: boolean;
+  onClick?: (activity: MiniProgramActivity) => void;
 }
 
-export default function ActivityCard({ activity, featured = false }: ActivityCardProps) {
+export default function ActivityCard({ activity, featured = false, onClick }: ActivityCardProps) {
+  const handleClick = () => {
+    onClick?.(activity);
+  };
+
   if (featured) {
     return (
-      <View className="featured-activity">
-        <Image className="featured-image" src={activity.coverImagePath} mode="aspectFill" />
-        <View className="featured-overlay">
-          <View className="featured-topline">
-            <Text className="status-hot">{getActivityStatusLabel(activity)}</Text>
-            <Text className="headcount">
-              {activity.currentParticipantCount}/{activity.capacity} 人
-            </Text>
-          </View>
-          <Text className="type-chip">{getActivityTypeLabel(activity.type)}</Text>
-          <Text className="featured-title">{activity.title}</Text>
-          <Text className="featured-meta">
-            {activity.area} · {activity.venue}
-          </Text>
-          <View className="featured-bottom">
+      <View className="featured-activity" onClick={handleClick}>
+        <View className="featured-media">
+          <Image className="featured-image" src={activity.coverImagePath} mode="aspectFill" />
+          <View className="featured-overlay">
+            <View className="featured-topline">
+              <Text className="status-hot">{getActivityStatusLabel(activity)}</Text>
+              <Text className="headcount">
+                {activity.currentParticipantCount}/{activity.capacity} 人
+              </Text>
+            </View>
+            <Text className="type-chip">{getActivityTypeLabel(activity.type)}</Text>
+            <Text className="featured-title">{activity.title}</Text>
             <Text className="featured-meta">
-              {formatActivityDateTime(activity.startsAt)} · {getCostLabel(activity)}
+              {activity.area} · {activity.venue}
             </Text>
-            <Text className="featured-cta">{getActivityCtaLabel(activity)}</Text>
+            <View className="featured-bottom">
+              <Text className="featured-meta featured-meta-inline">
+                {formatActivityDateTime(activity.startsAt)} · {getCostLabel(activity)}
+              </Text>
+              <Text className="featured-cta">{getActivityCtaLabel(activity)}</Text>
+            </View>
           </View>
         </View>
         <View className="ai-strip">
@@ -49,7 +56,7 @@ export default function ActivityCard({ activity, featured = false }: ActivityCar
   }
 
   return (
-    <View className="activity-row-card">
+    <View className="activity-row-card" onClick={handleClick}>
       <Image className="row-image" src={activity.coverImagePath} mode="aspectFill" />
       <View className="row-content">
         <View className="row-topline">

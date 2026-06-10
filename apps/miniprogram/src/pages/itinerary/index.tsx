@@ -1,6 +1,6 @@
 import { Button, Text, View } from "@tarojs/components";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "@tarojs/taro";
+import { navigateTo, useRouter } from "@tarojs/taro";
 
 import { getActivity } from "../../services/activityService";
 import { createActivityReadAdapter, loadActivityDetail } from "../../services/activityReadService";
@@ -174,7 +174,12 @@ export default function ItineraryPage() {
       {actionMessage ? <Text className="flow-message">{actionMessage}</Text> : null}
 
       <View className="bottom-link-row">
-        <Text className="bottom-link">返回活动详情页</Text>
+        <Text
+          className="bottom-link"
+          onClick={() => void navigateTo({ url: `/pages/activity-detail/index?activityId=${activityId}` })}
+        >
+          返回活动详情页
+        </Text>
       </View>
     </View>
   );

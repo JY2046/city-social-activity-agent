@@ -21,6 +21,20 @@ describe("activity read service", () => {
     });
   });
 
+  it("filters the mock activity feed by activity type", async () => {
+    const result = await loadActivityFeed(createMockActivityReadAdapter(), { type: "coffee" });
+
+    expect(result).toMatchObject({ status: "ready" });
+    expect(result.activities.map((activity) => activity.id)).toEqual(["a-coffee"]);
+  });
+
+  it("filters the mock activity feed by free budget type", async () => {
+    const result = await loadActivityFeed(createMockActivityReadAdapter(), { budgetType: "free" });
+
+    expect(result).toMatchObject({ status: "ready" });
+    expect(result.activities.map((activity) => activity.id)).toEqual(["a-walk"]);
+  });
+
   it("loads mock activity feed when structuredClone is unavailable in the mini program runtime", async () => {
     const originalStructuredClone = globalThis.structuredClone;
 

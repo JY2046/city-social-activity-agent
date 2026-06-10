@@ -32,8 +32,22 @@ function toErrorMessage(error: unknown): string {
 
 export function createMockActivityReadAdapter(): ActivityReadAdapter {
   return {
-    async listActivities() {
-      return listActivities();
+    async listActivities(query = {}) {
+      const keyword = query.keyword?.trim().toLowerCase();
+
+      return listActivities().filter((activity) => {
+        const matchesCity = !query.city || query.city === "上海";
+        const matchesType = !query.type || activity.type === query.type;
+        const matchesBudget = !query.budgetType || activity.budgetType === query.budgetType;
+        const matchesKeyword =
+          !keyword ||
+          [activity.title, activity.area, activity.venue, activity.aiRecommendationReason]
+            .join(" ")
+            .toLowerCase()
+            .includes(keyword);
+
+        return matchesCity && matchesType && matchesBudget && matchesKeyword;
+      });
     },
     async getActivity(activityId) {
       return getActivity(activityId);

@@ -1,15 +1,76 @@
 import { View, Text } from "@tarojs/components";
+import { useState } from "react";
 
-import "../discover/index.css";
+import { getCurrentUserProfile, getProfileViewModel } from "../../services/profileViewModel";
+
+import "./index.css";
 
 export default function ProfilePage() {
+  const [showAttendedCount, setShowAttendedCount] = useState(() => getCurrentUserProfile().showAttendedEventCount);
+  const profile = getProfileViewModel({
+    ...getCurrentUserProfile(),
+    showAttendedEventCount: showAttendedCount,
+  });
+
   return (
-    <View className="page page-light">
-      <Text className="eyebrow">我的</Text>
-      <Text className="title">活动经历可显示，也可隐藏</Text>
-      <View className="activity-card">
-        <Text className="activity-title">可信参与者</Text>
-        <Text className="reason">对外展示等级与参加过几场活动，不展示原始分数。</Text>
+    <View className="profile-page">
+      <View className="profile-card">
+        <View className="profile-top">
+          <Text className="profile-avatar">{profile.avatar}</Text>
+          <View className="profile-main">
+            <Text className="profile-name">{profile.nickname}</Text>
+            <Text className="profile-bio">{profile.bio}</Text>
+          </View>
+        </View>
+        <View className="profile-stats">
+          <View className="profile-stat">
+            <Text className="stat-value">{profile.reputationLevel}</Text>
+            <Text className="stat-label">当前等级</Text>
+          </View>
+          <View className="profile-stat">
+            <Text className="stat-value">{profile.attendedSummary}</Text>
+            <Text className="stat-label">{profile.attendedVisibilityLabel}</Text>
+          </View>
+        </View>
+      </View>
+
+      <View className="profile-section">
+        <View className="section-row">
+          <Text className="profile-section-title">展示设置</Text>
+          <Text className="toggle-pill" onClick={() => setShowAttendedCount((value) => !value)}>
+            {showAttendedCount ? "隐藏场次" : "展示场次"}
+          </Text>
+        </View>
+        <Text className="profile-copy">对外只显示等级和你选择公开的活动场次，不展示原始分数。</Text>
+      </View>
+
+      <View className="profile-section">
+        <Text className="profile-section-title">小局身份</Text>
+        <View className="badge-row">
+          <Text className="profile-badge">{profile.juZhangEligibilityLabel}</Text>
+          {profile.badges.map((badge) => (
+            <Text className="profile-badge" key={badge}>
+              {badge}
+            </Text>
+          ))}
+        </View>
+      </View>
+
+      <View className="profile-section">
+        <Text className="profile-section-title">最近想参加</Text>
+        <View className="interest-row">
+          {profile.interests.map((interest) => (
+            <Text className="interest-chip" key={interest}>
+              {interest}
+            </Text>
+          ))}
+        </View>
+      </View>
+
+      <View className="profile-section safety-section">
+        <Text className="profile-section-title">平台规则</Text>
+        <Text className="profile-copy">普通参与者活动前 12 小时内退出会影响等级；局长接受后 24 小时内退出会触发替换。</Text>
+        <Text className="profile-copy">活动前不开放联系方式，活动后双方互选才开放联系。</Text>
       </View>
     </View>
   );

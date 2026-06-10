@@ -10,26 +10,29 @@
   height: 74px;
   line-height: 74px;
   border-radius: 999px;
-  font-size: 23px;
+  font-size: 21px;
   font-weight: 800;
+  box-sizing: border-box;
 }
 
 .arrival-button {
   padding: 0 8px;
   color: #24452f;
   background: #edf5e7;
+  border: 2px solid rgba(36, 69, 47, 0.18);
 }
 
 .arrival-button.active {
   color: #fff;
   background: #24452f;
+  border-color: #24452f;
 }
 
 .outline-button {
   margin-top: 22px;
   color: #24452f;
   background: #fffdfa;
-  border: 1px solid rgba(36, 69, 47, 0.18);
+  border: 2px solid rgba(36, 69, 47, 0.28);
 }
 
 .bottom-link-row {

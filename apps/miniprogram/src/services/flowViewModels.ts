@@ -15,6 +15,14 @@ export interface SignupViewState {
   showJuZhangTaskEntry: boolean;
 }
 
+export interface JuZhangSettlementRow {
+  userId: string;
+  displayName: string;
+  participantPaymentLabel: string;
+  juZhangActionLabel: string;
+  canConfirm: boolean;
+}
+
 const arrivalOptions: ArrivalOption[] = [
   { status: "arrived", label: "我会准时到", description: "活动前 30 分钟同步给局长" },
   { status: "confirmed", label: "可能迟到", description: "局长会看到你的状态" },
@@ -61,6 +69,23 @@ export function getPaymentActionLabel(settlement: Settlement | undefined, userId
   }
 
   return settlement.paymentStatusByUser[userId] ? "已完成支付" : "确认已支付";
+}
+
+export function getJuZhangSettlementRows(
+  settlement: Settlement | undefined,
+  getDisplayName: (userId: string) => string = (userId) => userId,
+): JuZhangSettlementRow[] {
+  if (!settlement || settlement.type === "free" || settlement.totalAmount === 0) {
+    return [];
+  }
+
+  return Object.entries(settlement.paymentStatusByUser).map(([userId, hasPaid]) => ({
+    userId,
+    displayName: getDisplayName(userId),
+    participantPaymentLabel: hasPaid ? "用户已支付" : "用户未支付",
+    juZhangActionLabel: hasPaid ? "已确认" : "局长确认",
+    canConfirm: !hasPaid,
+  }));
 }
 
 export function getWaitlistTitle(type: WaitlistType): string {
