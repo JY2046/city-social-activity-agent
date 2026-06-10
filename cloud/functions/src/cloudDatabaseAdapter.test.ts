@@ -212,6 +212,51 @@ describe("cloud database adapter", () => {
     });
   });
 
+  it("rejects invalid arrival and ju zhang response states", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+    await adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: false }, "u-current");
+
+    await expect(adapter.confirmArrival({ activityId: "a-coffee", status: "admin" as never }, "u-current")).rejects
+      .toThrow("Invalid arrival status");
+    await expect(
+      adapter.respondJuZhangAssignment({ activityId: "a-sushi", response: "maybe" as never }, "u-current"),
+    ).rejects.toThrow("Invalid ju zhang response");
+  });
+
+  it("prevents ordinary users from updating other participants while allowing the assigned ju zhang", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+
+    await expect(
+      adapter.confirmArrival({ activityId: "a-sushi", userId: "u-momo", status: "arrived" }, "u-current"),
+    ).rejects.toThrow("Forbidden");
+    await expect(
+      adapter.confirmSettlement(
+        { activityId: "a-sushi", mode: "juZhangCollects", participantPaymentStates: { "u-momo": true } },
+        "u-current",
+      ),
+    ).rejects.toThrow("Forbidden");
+
+    await expect(adapter.confirmArrival({ activityId: "a-sushi", userId: "u-momo", status: "arrived" }, "u-qiao"))
+      .resolves.toMatchObject({
+        activityId: "a-sushi",
+        userId: "u-momo",
+        status: "arrived",
+      });
+    await expect(
+      adapter.confirmSettlement(
+        { activityId: "a-sushi", mode: "juZhangCollects", participantPaymentStates: { "u-momo": true } },
+        "u-qiao",
+      ),
+    ).resolves.toMatchObject({
+      activityId: "a-sushi",
+      paymentStatusByUser: expect.objectContaining({ "u-momo": true }),
+    });
+  });
+
   it("supports ju zhang workspace and post-activity feedback state", async () => {
     const db = createFakeDatabase();
     await seedCloudDatabase(db, createCloudSeedData());

@@ -89,6 +89,25 @@ describe("cloud database handlers", () => {
     });
   });
 
+  it("maps forbidden and invalid input adapter errors to explicit envelopes", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const dispatch = createCloudFunctionDispatcher(createCloudDatabaseHandlers(createCloudDatabaseAdapter(db)));
+
+    await expect(
+      dispatch("confirmArrival", { activityId: "a-sushi", userId: "u-momo", status: "arrived" }, { userId: "u-current" }),
+    ).resolves.toMatchObject({
+      ok: false,
+      code: "FORBIDDEN",
+    });
+    await expect(
+      dispatch("respondJuZhangAssignment", { activityId: "a-sushi", response: "maybe" }, { userId: "u-current" }),
+    ).resolves.toMatchObject({
+      ok: false,
+      code: "INVALID_INPUT",
+    });
+  });
+
   it("dispatches ju zhang and feedback database-backed functions", async () => {
     const db = createFakeDatabase();
     await seedCloudDatabase(db, createCloudSeedData());

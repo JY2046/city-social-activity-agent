@@ -82,6 +82,41 @@ describe("cloud function handlers", () => {
     });
   });
 
+  it("rejects invalid or cross-user arrival updates", async () => {
+    await handlers.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: false }, { userId: "u-current" });
+
+    await expect(
+      handlers.confirmArrival({ activityId: "a-coffee", userId: "u-chen", status: "arrived" }, { userId: "u-current" }),
+    ).resolves.toMatchObject({
+      ok: false,
+      code: "FORBIDDEN",
+    });
+    await expect(
+      handlers.confirmArrival({ activityId: "a-coffee", status: "admin" as never }, { userId: "u-current" }),
+    ).resolves.toMatchObject({
+      ok: false,
+      code: "INVALID_INPUT",
+    });
+  });
+
+  it("rejects participant payment updates for other users", async () => {
+    await handlers.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: false }, { userId: "u-current" });
+
+    await expect(
+      handlers.confirmSettlement(
+        {
+          activityId: "a-coffee",
+          mode: "juZhangCollects",
+          participantPaymentStates: { "u-chen": true },
+        },
+        { userId: "u-current" },
+      ),
+    ).resolves.toMatchObject({
+      ok: false,
+      code: "FORBIDDEN",
+    });
+  });
+
   it("returns failure envelopes for missing activities", async () => {
     await expect(handlers.getActivityDetail({ activityId: "missing" }, { userId: "u-current" })).resolves.toEqual({
       ok: false,

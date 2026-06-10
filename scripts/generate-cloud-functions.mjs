@@ -35,6 +35,8 @@ function toFailureEnvelope(error) {
   if (message === "Activity not found") return fail("ACTIVITY_NOT_FOUND", message);
   if (message === "Active registration not found") return fail("REGISTRATION_NOT_FOUND", message);
   if (message === "Settlement not found") return fail("SETTLEMENT_NOT_FOUND", message);
+  if (message === "Forbidden") return fail("FORBIDDEN", message);
+  if (message.startsWith("Invalid ")) return fail("INVALID_INPUT", message);
 
   return fail("DATABASE_OPERATION_FAILED", message);
 }
@@ -66,6 +68,8 @@ const juZhangTasks = [
 ];
 
 const activeRegistrationStatuses = new Set(["confirmed", "arrived"]);
+const arrivalStatusValues = new Set(["confirmed", "arrived", "noShow"]);
+const juZhangResponseValues = new Set(["accepted", "declined"]);
 
 async function resolveUserId(db) {
   const wxContext = cloud.getWXContext();
@@ -104,6 +108,20 @@ async function findRegistration(db, activityId, userId) {
 async function findJuZhangAssignment(db, activityId, userId) {
   const result = await db.collection("juZhangAssignments").where({ activityId, candidateUserId: userId }).get();
   return result.data[0];
+}
+
+async function isAcceptedJuZhang(db, activityId, userId) {
+  const assignment = await findJuZhangAssignment(db, activityId, userId);
+
+  return assignment?.status === "accepted";
+}
+
+function isValidArrivalStatus(status) {
+  return typeof status === "string" && arrivalStatusValues.has(status);
+}
+
+function isValidJuZhangResponse(response) {
+  return typeof response === "string" && juZhangResponseValues.has(response);
 }
 
 function isMutualContact(firstUserId, secondUserId, selections) {
@@ -294,7 +312,15 @@ async function joinWaitlist(input) {
 async function confirmArrival(input) {
   const db = getDb();
   const currentUserId = await resolveUserId(db);
+  if (!isValidArrivalStatus(input.status)) {
+    throw new Error("Invalid arrival status");
+  }
+
   const targetUserId = input.userId || currentUserId;
+  if (targetUserId !== currentUserId && !(await isAcceptedJuZhang(db, input.activityId, currentUserId))) {
+    throw new Error("Forbidden");
+  }
+
   const registration = await findRegistration(db, input.activityId, targetUserId);
 
   if (!registration || registration.status === "waitlisted" || registration.status === "cancelled") {
@@ -311,6 +337,17 @@ async function confirmSettlement(input) {
 
   if (!settlement) throw new Error("Settlement not found");
   if (settlement.type === "free" || settlement.totalAmount === 0 || input.mode === "free") return settlement;
+
+  const acceptedJuZhang = await isAcceptedJuZhang(db, input.activityId, userId);
+  const participantPaymentUserIds = Object.keys(input.participantPaymentStates || {});
+
+  if ((input.totalAmount !== undefined || input.mode === "juZhangCollects") && !acceptedJuZhang) {
+    throw new Error("Forbidden");
+  }
+
+  if (participantPaymentUserIds.some((targetUserId) => targetUserId !== userId) && !acceptedJuZhang) {
+    throw new Error("Forbidden");
+  }
 
   return setDocument(db, "settlements", {
     ...settlement,
@@ -344,6 +381,10 @@ async function getJuZhangWorkspace(input) {
 async function respondJuZhangAssignment(input) {
   const db = getDb();
   const userId = await resolveUserId(db);
+  if (!isValidJuZhangResponse(input.response)) {
+    throw new Error("Invalid ju zhang response");
+  }
+
   const existingAssignment = await findJuZhangAssignment(db, input.activityId, userId);
   const timestamp = now();
   const assignment = {

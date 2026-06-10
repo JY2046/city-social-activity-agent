@@ -48,6 +48,14 @@ function toFailureEnvelope(error: unknown): CloudFunctionEnvelope<null> {
     return fail("SETTLEMENT_NOT_FOUND", message);
   }
 
+  if (message === "Forbidden") {
+    return fail("FORBIDDEN", message);
+  }
+
+  if (message.startsWith("Invalid ")) {
+    return fail("INVALID_INPUT", message);
+  }
+
   return fail("DATABASE_OPERATION_FAILED", message);
 }
 

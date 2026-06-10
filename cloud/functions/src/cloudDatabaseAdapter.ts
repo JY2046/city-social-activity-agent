@@ -58,6 +58,8 @@ const juZhangTasks = [
 ];
 
 const activeRegistrationStatuses = new Set(["confirmed", "arrived"]);
+const arrivalStatusValues = new Set<ArrivalStatus>(["confirmed", "arrived", "noShow"]);
+const juZhangResponseValues = new Set(["accepted", "declined"]);
 
 function compactQuery(query: Record<string, unknown>): Record<string, unknown> {
   return Object.fromEntries(Object.entries(query).filter(([, value]) => value !== undefined && value !== ""));
@@ -123,6 +125,20 @@ async function findJuZhangAssignment(
   const result = await db.collection("juZhangAssignments").where({ activityId, candidateUserId: userId }).get();
 
   return result.data[0] as CloudJuZhangAssignmentDocument | undefined;
+}
+
+async function isAcceptedJuZhang(db: CloudDatabaseLike, activityId: string, userId: string): Promise<boolean> {
+  const assignment = await findJuZhangAssignment(db, activityId, userId);
+
+  return assignment?.status === "accepted";
+}
+
+function isValidArrivalStatus(status: unknown): status is ArrivalStatus {
+  return typeof status === "string" && arrivalStatusValues.has(status as ArrivalStatus);
+}
+
+function isValidJuZhangResponse(response: unknown): response is RespondJuZhangAssignmentInput["response"] {
+  return typeof response === "string" && juZhangResponseValues.has(response);
 }
 
 async function createOrGetWaitlistEntry(
@@ -329,7 +345,16 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
     },
 
     async confirmArrival(input: ConfirmArrivalInput, userId: string): Promise<CloudRegistrationDocument> {
+      if (!isValidArrivalStatus(input.status)) {
+        throw new Error("Invalid arrival status");
+      }
+
       const targetUserId = input.userId ?? userId;
+
+      if (targetUserId !== userId && !(await isAcceptedJuZhang(db, input.activityId, userId))) {
+        throw new Error("Forbidden");
+      }
+
       const registration = await findRegistration(db, input.activityId, targetUserId);
 
       if (!registration || registration.status === "waitlisted" || registration.status === "cancelled") {
@@ -352,6 +377,17 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
 
       if (settlement.type === "free" || settlement.totalAmount === 0 || input.mode === "free") {
         return settlement;
+      }
+
+      const isJuZhang = await isAcceptedJuZhang(db, input.activityId, userId);
+      const participantPaymentUserIds = Object.keys(input.participantPaymentStates ?? {});
+
+      if ((input.totalAmount !== undefined || input.mode === "juZhangCollects") && !isJuZhang) {
+        throw new Error("Forbidden");
+      }
+
+      if (participantPaymentUserIds.some((targetUserId) => targetUserId !== userId) && !isJuZhang) {
+        throw new Error("Forbidden");
       }
 
       return setDocument(db, "settlements", {
@@ -388,6 +424,10 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
       input: RespondJuZhangAssignmentInput,
       userId: string,
     ): Promise<CloudJuZhangAssignmentDocument> {
+      if (!isValidJuZhangResponse(input.response)) {
+        throw new Error("Invalid ju zhang response");
+      }
+
       const existingAssignment = await findJuZhangAssignment(db, input.activityId, userId);
       const timestamp = now();
       const assignment: CloudJuZhangAssignmentDocument = {

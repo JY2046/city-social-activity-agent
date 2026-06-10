@@ -7,6 +7,7 @@ const miniProgramCloudfunctionRoot = resolve("apps/miniprogram/cloudfunctions");
 const functionNames = [
   "listActivities",
   "getActivityDetail",
+  "listMyRegistrations",
   "signupActivity",
   "cancelRegistration",
   "joinWaitlist",
@@ -49,6 +50,9 @@ describe("WeChat cloud function deploy folders", () => {
         timeout: expect.any(Number),
       });
       expect(JSON.parse(readFileSync(configPath, "utf8")).timeout).toBeGreaterThanOrEqual(20);
+      expect(readFileSync(runtimePath, "utf8")).toContain("Invalid arrival status");
+      expect(readFileSync(runtimePath, "utf8")).toContain("isAcceptedJuZhang");
+      expect(readFileSync(runtimePath, "utf8")).toContain("Invalid ju zhang response");
       }
     }
   });

@@ -75,6 +75,7 @@ export interface GetFeedbackCompletionStateInput {
 }
 
 const fixedNow = "2026-06-09T12:00:00.000Z";
+const arrivalStatusValues = new Set<ArrivalStatus>(["confirmed", "arrived", "noShow"]);
 
 function ok<T>(data: T): CloudFunctionEnvelope<T> {
   return {
@@ -96,6 +97,10 @@ function fail(code: string, message: string): CloudFunctionEnvelope<null> {
 
 function getRegistration(store: CloudStore, activityId: string, userId: string): Registration | undefined {
   return store.registrations.find((item) => item.activityId === activityId && item.userId === userId);
+}
+
+function isValidArrivalStatus(status: unknown): status is ArrivalStatus {
+  return typeof status === "string" && arrivalStatusValues.has(status as ArrivalStatus);
 }
 
 export function createCloudHandlers(store: CloudStore) {
@@ -263,7 +268,16 @@ export function createCloudHandlers(store: CloudStore) {
     },
 
     async confirmArrival(input: ConfirmArrivalInput, context: CloudRequestContext) {
+      if (!isValidArrivalStatus(input.status)) {
+        return fail("INVALID_INPUT", "Invalid arrival status");
+      }
+
       const targetUserId = input.userId ?? context.userId;
+
+      if (targetUserId !== context.userId) {
+        return fail("FORBIDDEN", "Forbidden");
+      }
+
       const registration = getRegistration(store, input.activityId, targetUserId);
 
       if (!registration || registration.status === "waitlisted" || registration.status === "cancelled") {
@@ -287,6 +301,13 @@ export function createCloudHandlers(store: CloudStore) {
 
       if (settlement.type === "free" || settlement.totalAmount === 0 || input.mode === "free") {
         return ok(copy(settlement));
+      }
+
+      if (
+        input.participantPaymentStates &&
+        Object.keys(input.participantPaymentStates).some((targetUserId) => targetUserId !== context.userId)
+      ) {
+        return fail("FORBIDDEN", "Forbidden");
       }
 
       const totalAmount = input.totalAmount ?? settlement.totalAmount;
