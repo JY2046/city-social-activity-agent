@@ -87,8 +87,32 @@ function getOrCreateAssignment(activityId: string, userId = DEFAULT_CURRENT_USER
   );
 }
 
+function hasActiveCurrentUserRegistration(activityId: string, userId = DEFAULT_CURRENT_USER_ID): boolean {
+  return getMockStore().registrations.some(
+    (registration) =>
+      registration.activityId === activityId &&
+      registration.userId === userId &&
+      (registration.status === "confirmed" || registration.status === "arrived"),
+  );
+}
+
+function emptyWorkspace(): JuZhangWorkspace {
+  return {
+    activity: undefined,
+    assignment: undefined,
+    topicCard: undefined,
+    settlement: undefined,
+    activeRegistrations: [],
+    tasks: [],
+  };
+}
+
 export function getJuZhangWorkspace(activityId: string): JuZhangWorkspace {
   const store = getMockStore();
+
+  if (!hasActiveCurrentUserRegistration(activityId)) {
+    return emptyWorkspace();
+  }
 
   return {
     activity: clone(store.activities.find((activity) => activity.id === activityId)),

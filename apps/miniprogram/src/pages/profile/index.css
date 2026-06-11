@@ -155,6 +155,12 @@
   border: 1px solid rgba(220, 169, 48, 0.28);
 }
 
+.interest-chip.active {
+  color: #fffdfa;
+  background: #24452f;
+  border-color: #24452f;
+}
+
 .safety-section {
   background: linear-gradient(135deg, #fffdfa, #fff3ef);
   border-color: rgba(217, 92, 77, 0.18);

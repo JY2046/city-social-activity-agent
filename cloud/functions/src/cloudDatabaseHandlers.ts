@@ -103,8 +103,8 @@ export function createCloudDatabaseHandlers(adapter: CloudDatabaseAdapter) {
       return run(() => adapter.confirmSettlement(input, context.userId));
     },
 
-    getJuZhangWorkspace(input: { activityId: string }, _context: CloudRequestContext) {
-      return run(() => adapter.getJuZhangWorkspace(input.activityId));
+    getJuZhangWorkspace(input: { activityId: string }, context: CloudRequestContext) {
+      return run(() => adapter.getJuZhangWorkspace(input.activityId, context.userId));
     },
 
     respondJuZhangAssignment(input: RespondJuZhangAssignmentInput, context: CloudRequestContext) {

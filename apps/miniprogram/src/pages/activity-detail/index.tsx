@@ -3,6 +3,7 @@ import type { Registration } from "@city-social/domain";
 import { navigateTo, switchTab, useRouter, useShareAppMessage } from "@tarojs/taro";
 import { useEffect, useMemo, useState } from "react";
 import DetailGallery from "../../components/DetailGallery";
+import { buildSignupUrl, readActivityIdParam } from "../../services/activityRouteService";
 import { loadActivityDetail, type ActivityDetailLoadState } from "../../services/activityReadService";
 import {
   formatActivityDateTime,
@@ -22,7 +23,7 @@ const initialDetailState: ActivityDetailLoadState = {
 
 export default function ActivityDetailPage() {
   const router = useRouter();
-  const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
+  const activityId = readActivityIdParam(router.params.activityId);
   const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
   const [detailState, setDetailState] = useState<ActivityDetailLoadState>(initialDetailState);
   const [registration, setRegistration] = useState<Registration | undefined>();
@@ -58,7 +59,7 @@ export default function ActivityDetailPage() {
 
   useShareAppMessage(() => ({
     title: activity?.title ?? "开个小局",
-    path: `/pages/activity-detail/index?activityId=${activity?.id ?? activityId}`,
+    path: `/pages/activity-detail/index?activityId=${encodeURIComponent(activity?.id ?? activityId)}`,
   }));
 
   if (detailState.status === "loading") {
@@ -129,7 +130,7 @@ export default function ActivityDetailPage() {
         </Text>
         <Text
           className={primaryActionClassName}
-          onClick={() => void navigateTo({ url: `/pages/signup/index?activityId=${activity.id}` })}
+          onClick={() => void navigateTo({ url: buildSignupUrl(activity.id) })}
         >
           {primaryActionState.label}
         </Text>

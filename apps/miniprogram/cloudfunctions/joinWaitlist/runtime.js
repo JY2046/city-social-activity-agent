@@ -86,6 +86,12 @@ async function findRegistration(db, activityId, userId) {
   return result.data[0];
 }
 
+async function hasActiveRegistration(db, activityId, userId) {
+  const registration = await findRegistration(db, activityId, userId);
+
+  return registration ? activeRegistrationStatuses.has(registration.status) : false;
+}
+
 async function findJuZhangAssignment(db, activityId, userId) {
   const result = await db.collection("juZhangAssignments").where({ activityId, candidateUserId: userId }).get();
   return result.data[0];
@@ -343,6 +349,19 @@ async function confirmSettlement(input) {
 
 async function getJuZhangWorkspace(input) {
   const db = getDb();
+  const userId = await resolveUserId(db);
+
+  if (!(await hasActiveRegistration(db, input.activityId, userId))) {
+    return {
+      activity: undefined,
+      assignment: undefined,
+      topicCard: undefined,
+      settlement: undefined,
+      activeRegistrations: [],
+      tasks: [],
+    };
+  }
+
   const activity = await getDocument(db, "activities", input.activityId);
   const assignments = await db.collection("juZhangAssignments").where({ activityId: input.activityId }).get();
   const topicCards = await db.collection("topicCards").where({ activityId: input.activityId }).get();

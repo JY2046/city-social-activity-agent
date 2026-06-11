@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { navigateTo, useDidShow, useRouter } from "@tarojs/taro";
 
 import { getActivity } from "../../services/activityService";
+import { buildActivityDetailUrl, readActivityIdParam } from "../../services/activityRouteService";
 import { createActivityReadAdapter, loadActivityDetail } from "../../services/activityReadService";
 import { getSettlementByActivityId } from "../../services/mockData";
 import { formatActivityDateTime, getCostLabel } from "../../services/activityPresentation";
@@ -45,7 +46,7 @@ function getRegistrationStatusLabel(registration: Registration): string {
 
 export default function ItineraryPage() {
   const router = useRouter();
-  const initialActivityId = typeof router.params.activityId === "string" ? router.params.activityId : undefined;
+  const initialActivityId = router.params.activityId ? readActivityIdParam(router.params.activityId) : undefined;
   const activityReadAdapter = useMemo(() => createActivityReadAdapter(), []);
   const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
   const [selectedActivityId, setSelectedActivityId] = useState<string | undefined>(initialActivityId);
@@ -352,7 +353,7 @@ export default function ItineraryPage() {
       <View className="bottom-link-row">
         <Text
           className="bottom-link"
-          onClick={() => void navigateTo({ url: `/pages/activity-detail/index?activityId=${selectedActivityId}` })}
+          onClick={() => void navigateTo({ url: buildActivityDetailUrl(selectedActivityId) })}
         >
           返回活动详情页
         </Text>

@@ -262,11 +262,13 @@ describe("cloud database adapter", () => {
     await seedCloudDatabase(db, createCloudSeedData());
     const adapter = createCloudDatabaseAdapter(db);
 
-    await expect(adapter.getJuZhangWorkspace("a-sushi")).resolves.toMatchObject({
-      activity: { id: "a-sushi" },
-      topicCard: { activityId: "a-sushi" },
-      settlement: { activityId: "a-sushi" },
-      activeRegistrations: expect.arrayContaining([expect.objectContaining({ activityId: "a-sushi" })]),
+    await adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: true }, "u-current");
+
+    await expect(adapter.getJuZhangWorkspace("a-coffee", "u-current")).resolves.toMatchObject({
+      activity: { id: "a-coffee" },
+      topicCard: { activityId: "a-coffee" },
+      settlement: { activityId: "a-coffee" },
+      activeRegistrations: expect.arrayContaining([expect.objectContaining({ activityId: "a-coffee" })]),
       tasks: expect.arrayContaining([expect.objectContaining({ title: "开场 & 破冰" })]),
     });
 
@@ -289,5 +291,27 @@ describe("cloud database adapter", () => {
         isMutual: true,
         contactStateLabel: "已互选，可开放联系",
       });
+  });
+
+  it("hides ju zhang workspace after the current user cancels registration", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+    await adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: true }, "u-current");
+    await adapter.respondJuZhangAssignment({ activityId: "a-coffee", response: "accepted" }, "u-current");
+
+    await expect(adapter.getJuZhangWorkspace("a-coffee", "u-current")).resolves.toMatchObject({
+      activity: { id: "a-coffee" },
+      assignment: { status: "accepted" },
+    });
+
+    await adapter.cancelRegistration({ activityId: "a-coffee" }, "u-current");
+
+    await expect(adapter.getJuZhangWorkspace("a-coffee", "u-current")).resolves.toMatchObject({
+      activity: undefined,
+      assignment: undefined,
+      activeRegistrations: [],
+      tasks: [],
+    });
   });
 });

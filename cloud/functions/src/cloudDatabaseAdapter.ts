@@ -106,6 +106,12 @@ async function findRegistration(
   return result.data[0] as CloudRegistrationDocument | undefined;
 }
 
+async function hasActiveRegistration(db: CloudDatabaseLike, activityId: string, userId: string): Promise<boolean> {
+  const registration = await findRegistration(db, activityId, userId);
+
+  return registration ? activeRegistrationStatuses.has(registration.status) : false;
+}
+
 function isMutualContact(
   firstUserId: string,
   secondUserId: string,
@@ -401,7 +407,18 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
       });
     },
 
-    async getJuZhangWorkspace(activityId: string) {
+    async getJuZhangWorkspace(activityId: string, userId: string) {
+      if (!(await hasActiveRegistration(db, activityId, userId))) {
+        return {
+          activity: undefined,
+          assignment: undefined,
+          topicCard: undefined,
+          settlement: undefined,
+          activeRegistrations: [],
+          tasks: [],
+        };
+      }
+
       const activity = await getDocument<CloudActivityDocument>(db, "activities", activityId);
       const assignments = await db.collection("juZhangAssignments").where({ activityId }).get();
       const topicCards = await db.collection("topicCards").where({ activityId }).get();

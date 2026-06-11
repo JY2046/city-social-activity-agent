@@ -43,7 +43,10 @@ export default function JuZhangPage() {
       if (result.workspace.activity) {
         setTopicDeck((deck) => deck ?? createTopicDeck(result.workspace.activity, result.workspace.topicCard));
       }
-      setPageMessage(nextMessage ?? "");
+      setPageMessage(
+        nextMessage ??
+          (result.workspace.activity ? "" : "你已不在该活动中，不能查看局长工作台。"),
+      );
       return;
     }
     setPageMessage(result.message);
@@ -91,7 +94,14 @@ export default function JuZhangPage() {
       <Text className="detail-meta">系统会给任务提示，但局长只是协助流程，不承担额外压力。</Text>
       {pageMessage ? <Text className="detail-meta">{pageMessage}</Text> : null}
 
-      <View className="juzhang-banner">
+      {!workspace?.activity ? (
+        <View className="section">
+          <Text className="section-title">暂无可管理的小局</Text>
+          <Text className="section-copy">取消报名后，对应活动不会继续出现在局长工作台。</Text>
+        </View>
+      ) : null}
+
+      {workspace?.activity ? <View className="juzhang-banner">
         <Text className="banner-title">当前状态：{workspace?.assignment?.status ?? "candidate"}</Text>
         <Text className="banner-copy">可接受或拒绝局长身份，拒绝不会退出活动。</Text>
         <View className="action-row">
@@ -102,9 +112,9 @@ export default function JuZhangPage() {
             {pendingAction === "decline" ? "同步中" : "拒绝"}
           </Button>
         </View>
-      </View>
+      </View> : null}
 
-      <View className="section">
+      {workspace?.activity ? <View className="section">
         <View className="section-heading-row">
           <Text className="section-title">局长任务</Text>
           <Text className="tiny-chip">系统会提供指引</Text>
@@ -115,9 +125,9 @@ export default function JuZhangPage() {
             <Text className="section-copy">{task.description}</Text>
           </View>
         ))}
-      </View>
+      </View> : null}
 
-      <View className="section topic-section">
+      {workspace?.activity ? <View className="section topic-section">
         <View className="section-heading-row">
           <Text className="section-title">AI 话题卡</Text>
           <Button className="topic-action top-right" onClick={() => setTopicDeck((deck) => (deck ? rotateTopicDeck(deck) : deck))}>
@@ -139,9 +149,9 @@ export default function JuZhangPage() {
             </Text>
           ))}
         </View>
-      </View>
+      </View> : null}
 
-      <View className="section">
+      {workspace?.activity ? <View className="section">
         <Text className="section-title">到场核准</Text>
         {(workspace?.activeRegistrations ?? []).map((registration) => (
           <View className="participant-row" key={registration.id}>
@@ -156,9 +166,9 @@ export default function JuZhangPage() {
             </Button>
           </View>
         ))}
-      </View>
+      </View> : null}
 
-      <View className="section">
+      {workspace?.activity ? <View className="section">
         <View className="section-heading-row">
           <Text className="section-title">AA 确认</Text>
           <Text className="tiny-chip">{settlementSummary?.label ?? "无费用"}</Text>
@@ -178,12 +188,12 @@ export default function JuZhangPage() {
             </Button>
           </View>
         ))}
-      </View>
+      </View> : null}
 
-      <View className="section">
+      {workspace?.activity ? <View className="section">
         <Text className="section-title">活动后</Text>
         <Text className="section-copy">活动结束后进入反馈页，完成局长反馈、异常记录和互选。</Text>
-      </View>
+      </View> : null}
     </View>
   );
 }

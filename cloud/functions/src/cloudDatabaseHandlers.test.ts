@@ -113,11 +113,13 @@ describe("cloud database handlers", () => {
     await seedCloudDatabase(db, createCloudSeedData());
     const dispatch = createCloudFunctionDispatcher(createCloudDatabaseHandlers(createCloudDatabaseAdapter(db)));
 
-    await expect(dispatch("getJuZhangWorkspace", { activityId: "a-sushi" }, { userId: "u-current" })).resolves
+    await dispatch("signupActivity", { activityId: "a-coffee", willingToBeJuZhang: true }, { userId: "u-current" });
+
+    await expect(dispatch("getJuZhangWorkspace", { activityId: "a-coffee" }, { userId: "u-current" })).resolves
       .toMatchObject({
         ok: true,
         data: {
-          activity: { id: "a-sushi" },
+          activity: { id: "a-coffee" },
           tasks: expect.arrayContaining([expect.objectContaining({ title: "AA 结算确认" })]),
         },
       });

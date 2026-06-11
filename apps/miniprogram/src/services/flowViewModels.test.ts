@@ -132,7 +132,7 @@ describe("mini program flow view models", () => {
         userId: "u-current",
         displayName: "Lily",
         participantPaymentLabel: "用户已支付",
-        juZhangActionLabel: "局长已确认",
+        juZhangActionLabel: "已支付",
         canConfirm: false,
       },
       {
@@ -163,6 +163,28 @@ describe("mini program flow view models", () => {
         participantPaymentLabel: "用户已支付",
         juZhangActionLabel: "局长确认",
         canConfirm: true,
+      },
+    ]);
+  });
+
+  it("shows paid copy after ju zhang confirms a participant payment", () => {
+    const settlement: Settlement = {
+      activityId: "a-sushi",
+      type: "paid",
+      totalAmount: 168,
+      participantCount: 1,
+      paymentStatusByUser: {
+        "u-current": true,
+      },
+    };
+
+    expect(getJuZhangSettlementRows(settlement, undefined, ["u-current"])).toEqual([
+      {
+        userId: "u-current",
+        displayName: "u-current",
+        participantPaymentLabel: "用户已支付",
+        juZhangActionLabel: "已支付",
+        canConfirm: false,
       },
     ]);
   });

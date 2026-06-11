@@ -146,7 +146,7 @@ export function getJuZhangSettlementRows(
     userId,
     displayName: getDisplayName(userId),
     participantPaymentLabel: hasPaid ? "用户已支付" : "用户未支付",
-    juZhangActionLabel: confirmedUserIdSet.has(userId) ? "局长已确认" : hasPaid ? "局长确认" : "等待支付",
+    juZhangActionLabel: confirmedUserIdSet.has(userId) ? "已支付" : hasPaid ? "局长确认" : "等待支付",
     canConfirm: hasPaid && !confirmedUserIdSet.has(userId),
   }));
 }

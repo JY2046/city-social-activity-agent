@@ -4,6 +4,7 @@ import { useRouter } from "@tarojs/taro";
 import type { Registration } from "@city-social/domain";
 
 import { getActivity } from "../../services/activityService";
+import { readActivityIdParam } from "../../services/activityRouteService";
 import {
   createActivityReadAdapter,
   loadActivityDetail,
@@ -21,7 +22,7 @@ import "./index.css";
 
 export default function SignupPage() {
   const router = useRouter();
-  const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
+  const activityId = readActivityIdParam(router.params.activityId);
   const activityReadAdapter = useMemo(() => createActivityReadAdapter(), []);
   const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
   const [activity, setActivity] = useState<MiniProgramActivity | undefined>(() => getActivity(activityId));

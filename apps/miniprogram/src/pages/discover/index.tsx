@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { ActivityType, BudgetType } from "@city-social/domain";
 
 import ActivityCard from "../../components/ActivityCard";
+import { buildActivityDetailUrl } from "../../services/activityRouteService";
 import { loadActivityFeed, type ActivityFeedLoadState } from "../../services/activityReadService";
 import { cityOptions, getCityFromPickerIndex, getCityPickerIndex } from "../../services/citySelectorViewModel";
 import type { MiniProgramActivity } from "../../services/mockData";
@@ -61,7 +62,7 @@ export default function DiscoverPage() {
   }, [selectedCategory, selectedCity]);
 
   function handleOpenActivity(activity: MiniProgramActivity) {
-    void navigateTo({ url: `/pages/activity-detail/index?activityId=${encodeURIComponent(activity.id)}` });
+    void navigateTo({ url: buildActivityDetailUrl(activity.id) });
   }
 
   return (

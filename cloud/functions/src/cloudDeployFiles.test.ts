@@ -52,6 +52,7 @@ describe("WeChat cloud function deploy folders", () => {
       expect(JSON.parse(readFileSync(configPath, "utf8")).timeout).toBeGreaterThanOrEqual(20);
       expect(readFileSync(runtimePath, "utf8")).toContain("Invalid arrival status");
       expect(readFileSync(runtimePath, "utf8")).toContain("isAcceptedJuZhang");
+      expect(readFileSync(runtimePath, "utf8")).toContain("hasActiveRegistration");
       expect(readFileSync(runtimePath, "utf8")).toContain("Invalid ju zhang response");
       }
     }

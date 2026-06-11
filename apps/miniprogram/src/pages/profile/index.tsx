@@ -1,15 +1,22 @@
 import { View, Text } from "@tarojs/components";
 import { useState } from "react";
 
-import { getCurrentUserProfile, getProfileViewModel } from "../../services/profileViewModel";
+import {
+  availableInterestOptions,
+  getCurrentUserProfile,
+  getProfileViewModel,
+  toggleInterestSelection,
+} from "../../services/profileViewModel";
 
 import "./index.css";
 
 export default function ProfilePage() {
   const currentUserProfile = getCurrentUserProfile();
   const [showAttendedCount, setShowAttendedCount] = useState(() => currentUserProfile.showAttendedEventCount);
+  const [selectedInterests, setSelectedInterests] = useState(() => currentUserProfile.interests);
   const profile = getProfileViewModel({
     ...currentUserProfile,
+    interests: selectedInterests,
     showAttendedEventCount: showAttendedCount,
   });
 
@@ -29,6 +36,10 @@ export default function ProfilePage() {
             <Text className="stat-label">当前等级</Text>
           </View>
           <View className="profile-stat">
+            <Text className="stat-value">{profile.creditScoreLabel}</Text>
+            <Text className="stat-label">仅自己可见</Text>
+          </View>
+          <View className="profile-stat">
             <Text className="stat-value">{profile.attendedSummary}</Text>
             <Text className="stat-label">{profile.attendedVisibilityLabel}</Text>
           </View>
@@ -43,6 +54,7 @@ export default function ProfilePage() {
           </Text>
         </View>
         <Text className="profile-copy">对外只显示等级和你选择公开的活动场次，不展示原始分数。</Text>
+        <Text className="profile-copy">{profile.publicReputationCopy}</Text>
       </View>
 
       <View className="profile-section">
@@ -60,8 +72,12 @@ export default function ProfilePage() {
       <View className="profile-section">
         <Text className="profile-section-title">最近想参加</Text>
         <View className="interest-row">
-          {profile.interests.map((interest) => (
-            <Text className="interest-chip" key={interest}>
+          {availableInterestOptions.map((interest) => (
+            <Text
+              className={profile.interests.includes(interest) ? "interest-chip active" : "interest-chip"}
+              key={interest}
+              onClick={() => setSelectedInterests((current) => toggleInterestSelection(current, interest))}
+            >
               {interest}
             </Text>
           ))}
