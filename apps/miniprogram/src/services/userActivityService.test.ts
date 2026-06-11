@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { resetMockServices, signup } from "./registrationService";
+import { createActivityReadAdapter } from "./activityReadService";
+import { createMockRegistrationWriteAdapter, runJoinWaitlistAndRefreshActivity } from "./registrationWriteService";
 import {
   createMockUserActivityReadAdapter,
   loadMyActivityFeed,
@@ -41,6 +43,26 @@ describe("user activity service", () => {
           activity: { id: "a-bar" },
         },
       ],
+    });
+  });
+
+  it("keeps other itinerary activities selectable after joining a ju zhang waitlist", async () => {
+    signup("a-coffee", { willingToBeJuZhang: true });
+    signup("a-walk", { willingToBeJuZhang: false });
+
+    await runJoinWaitlistAndRefreshActivity(
+      createMockRegistrationWriteAdapter(),
+      createActivityReadAdapter("mock"),
+      "a-coffee",
+      "juZhang",
+    );
+
+    await expect(loadMyActivityFeed(createMockUserActivityReadAdapter())).resolves.toMatchObject({
+      status: "ready",
+      items: expect.arrayContaining([
+        expect.objectContaining({ activity: expect.objectContaining({ id: "a-coffee" }) }),
+        expect.objectContaining({ activity: expect.objectContaining({ id: "a-walk" }) }),
+      ]),
     });
   });
 });

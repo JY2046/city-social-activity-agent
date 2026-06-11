@@ -57,6 +57,11 @@
   margin-top: 24px;
 }
 
+.itinerary-select-action {
+  display: block;
+  text-align: center;
+}
+
 .itinerary-cancel-button {
   margin-top: 24px;
 }

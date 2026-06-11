@@ -332,7 +332,11 @@ export default function ItineraryPage() {
 
         {myItems.length > 0 ? (
           myItems.map((item) => (
-            <View className="flow-card itinerary-list-card" key={item.registration.id}>
+            <View
+              className="flow-card itinerary-list-card"
+              key={item.registration.id}
+              onClick={() => handleSelectItineraryActivity(item.activity.id)}
+            >
               <Text className="card-title">{item.activity.title}</Text>
               <Text className="card-copy">
                 {formatActivityDateTime(item.activity.startsAt)} · {item.activity.area}
@@ -340,12 +344,9 @@ export default function ItineraryPage() {
               <Text className="card-copy">
                 {item.activity.venue} · {getRegistrationStatusLabel(item.registration)}
               </Text>
-              <Button
-                className="outline-button"
-                onClick={() => handleSelectItineraryActivity(item.activity.id)}
-              >
+              <Text className="outline-button itinerary-select-action">
                 查看行程
-              </Button>
+              </Text>
             </View>
           ))
         ) : (
