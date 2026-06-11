@@ -8,6 +8,7 @@ import { buildActivityDetailUrl } from "../../services/activityRouteService";
 import { loadActivityFeed, type ActivityFeedLoadState } from "../../services/activityReadService";
 import { cityOptions, getCityFromPickerIndex, getCityPickerIndex } from "../../services/citySelectorViewModel";
 import type { MiniProgramActivity } from "../../services/mockData";
+import { formatBeijingDateTime } from "../../services/homeHeroViewModel";
 import { createUserActivityReadAdapter } from "../../services/userActivityService";
 
 import "./index.css";
@@ -37,6 +38,7 @@ const categoryOptions: CategoryOption[] = [
 export default function DiscoverPage() {
   const [feedState, setFeedState] = useState<ActivityFeedLoadState>(initialFeedState);
   const [selectedCity, setSelectedCity] = useState("上海");
+  const [currentDateTime, setCurrentDateTime] = useState(() => formatBeijingDateTime());
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("recommended");
   const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
   const [registrationByActivityId, setRegistrationByActivityId] = useState<Record<string, Registration>>({});
@@ -76,6 +78,12 @@ export default function DiscoverPage() {
     refreshFeed();
   });
 
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentDateTime(formatBeijingDateTime()), 60 * 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   function handleOpenActivity(activity: MiniProgramActivity) {
     void navigateTo({ url: buildActivityDetailUrl(activity.id) });
   }
@@ -94,9 +102,8 @@ export default function DiscoverPage() {
             >
               <Text className="location-city">{selectedCity}⌄</Text>
             </Picker>
-            <Text className="eyebrow">6月5日 周四 18:40</Text>
+            <Text className="eyebrow">{currentDateTime}</Text>
           </View>
-          <Text className="app-name">开个小局</Text>
           <Text className="title">
             有空，<Text className="title-accent">开个小局</Text>
           </Text>

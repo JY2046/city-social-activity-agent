@@ -1,5 +1,6 @@
 import type { User } from "@city-social/domain";
 
+import { buildActivityDetailUrl } from "./activityRouteService";
 import { clone } from "./clone";
 import { DEFAULT_CURRENT_USER_ID, getMockStore } from "./mockData";
 
@@ -16,6 +17,15 @@ export interface ProfileViewModel {
   juZhangEligibilityLabel: string;
   badges: string[];
   interests: string[];
+}
+
+export interface ProfileActivityHistoryItem {
+  activityId: string;
+  title: string;
+  meta: string;
+  statusLabel: string;
+  detailUrl: string;
+  feedbackUrl: string;
 }
 
 export const availableInterestOptions = ["饭局", "咖啡", "酒吧", "免费散步"];
@@ -45,6 +55,17 @@ export function getProfileViewModel(user: User = getCurrentUserProfile()): Profi
     badges: user.badges.filter((badge) => badge !== "准时到场"),
     interests: user.interests,
   };
+}
+
+export function getProfileActivityHistory(): ProfileActivityHistoryItem[] {
+  return getMockStore().activities.slice(0, 2).map((activity, index) => ({
+    activityId: activity.id,
+    title: activity.title,
+    meta: `${activity.area} · ${activity.venue}`,
+    statusLabel: index === 0 ? "可查看反馈与互选" : "可查看活动详情",
+    detailUrl: buildActivityDetailUrl(activity.id),
+    feedbackUrl: `/pages/feedback/index?activityId=${encodeURIComponent(activity.id)}`,
+  }));
 }
 
 export function toggleInterestSelection(selectedInterests: string[], interest: string): string[] {

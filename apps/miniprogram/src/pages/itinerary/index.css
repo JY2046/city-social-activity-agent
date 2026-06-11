@@ -1,3 +1,15 @@
+.top-back {
+  display: inline-block;
+  margin: 0 0 18px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  color: #24452f;
+  background: rgba(255, 253, 250, 0.82);
+  border: 1px solid rgba(36, 69, 47, 0.14);
+  font-size: 22px;
+  font-weight: 800;
+}
+
 .arrival-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -47,6 +59,39 @@
 
 .itinerary-cancel-button {
   margin-top: 24px;
+}
+
+.debug-stage-card {
+  background: linear-gradient(135deg, #fffdfa, #f4f8ee);
+}
+
+.debug-stage-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.debug-stage-button {
+  width: 100%;
+  min-width: 0;
+  height: 64px;
+  line-height: 64px;
+  margin: 0;
+  padding: 0 8px;
+  border-radius: 999px;
+  color: #526458;
+  background: #fffdfa;
+  border: 2px solid rgba(36, 69, 47, 0.14);
+  font-size: 20px;
+  font-weight: 800;
+  box-sizing: border-box;
+}
+
+.debug-stage-button.active {
+  color: #fffdfa;
+  background: #24452f;
+  border-color: #24452f;
 }
 
 .bottom-link-row {

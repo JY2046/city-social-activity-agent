@@ -75,6 +75,13 @@ export interface JuZhangStageState {
   showAfterFeedback: boolean;
 }
 
+export interface JuZhangQueueActionState {
+  copy: string;
+  label: string;
+  disabled: boolean;
+  mode: "available" | "queued" | "unavailable";
+}
+
 const arrivalOptions: ArrivalOption[] = [
   { status: "arrived", label: "我会准时到", description: "活动前 30 分钟同步给局长" },
   { status: "confirmed", label: "可能迟到", description: "局长会看到你的状态" },
@@ -114,6 +121,13 @@ export function getActivityFlowPhase(activity: { formationStatus: FormationStatu
   return "before";
 }
 
+export function resolveActivityFlowPhase(
+  activity: { formationStatus: FormationStatus },
+  debugOverride?: ActivityFlowPhase,
+): ActivityFlowPhase {
+  return debugOverride ?? getActivityFlowPhase(activity);
+}
+
 export function getItineraryStageState(phase: ActivityFlowPhase): ItineraryStageState {
   return {
     showBeforeInfo: phase === "before",
@@ -132,6 +146,36 @@ export function getJuZhangStageState(phase: ActivityFlowPhase): JuZhangStageStat
     showArrivalCheck: phase === "during",
     showSettlement: phase === "during",
     showAfterFeedback: phase === "after",
+  };
+}
+
+export function getJuZhangQueueActionState(
+  registration: Registration | undefined,
+  isQueued: boolean,
+): JuZhangQueueActionState {
+  if (isQueued) {
+    return {
+      copy: "你已在局长候选队列，可随时取消排队。",
+      label: "取消局长排队",
+      disabled: false,
+      mode: "queued",
+    };
+  }
+
+  if (registration?.willingToBeJuZhang !== true) {
+    return {
+      copy: "你报名时没有勾选愿意担任局长，因此不会进入候选队列。",
+      label: "未勾选局长",
+      disabled: true,
+      mode: "unavailable",
+    };
+  }
+
+  return {
+    copy: "如果该活动已有局长，会进入候选队列。",
+    label: "申请局长",
+    disabled: false,
+    mode: "available",
   };
 }
 

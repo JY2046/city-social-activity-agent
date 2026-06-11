@@ -1,9 +1,11 @@
 import { View, Text } from "@tarojs/components";
 import { useState } from "react";
+import { navigateTo } from "@tarojs/taro";
 
 import {
   availableInterestOptions,
   getCurrentUserProfile,
+  getProfileActivityHistory,
   getProfileViewModel,
   toggleInterestSelection,
 } from "../../services/profileViewModel";
@@ -19,6 +21,7 @@ export default function ProfilePage() {
     interests: selectedInterests,
     showAttendedEventCount: showAttendedCount,
   });
+  const activityHistory = getProfileActivityHistory();
 
   return (
     <View className="profile-page">
@@ -76,6 +79,29 @@ export default function ProfilePage() {
             >
               {interest}
             </Text>
+          ))}
+        </View>
+      </View>
+
+      <View className="profile-section">
+        <Text className="profile-section-title">参与过的小局</Text>
+        <View className="history-list">
+          {activityHistory.map((item) => (
+            <View className="history-card" key={item.activityId}>
+              <View className="history-main" onClick={() => void navigateTo({ url: item.detailUrl })}>
+                <Text className="history-title">{item.title}</Text>
+                <Text className="history-meta">{item.meta}</Text>
+                <Text className="history-status">{item.statusLabel}</Text>
+              </View>
+              <View className="history-actions">
+                <Text className="history-action" onClick={() => void navigateTo({ url: item.detailUrl })}>
+                  查看详情
+                </Text>
+                <Text className="history-action strong" onClick={() => void navigateTo({ url: item.feedbackUrl })}>
+                  反馈与互选
+                </Text>
+              </View>
+            </View>
           ))}
         </View>
       </View>

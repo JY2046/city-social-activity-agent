@@ -7,6 +7,7 @@ import {
   getActivityDetailPrimaryActionState,
   getActivityFlowPhase,
   getItineraryStageState,
+  getJuZhangQueueActionState,
   getJuZhangAssignmentLabel,
   getJuZhangBannerState,
   getJuZhangStageState,
@@ -15,6 +16,7 @@ import {
   getPaymentActionLabel,
   getSignupPrimaryActionState,
   getSignupViewState,
+  resolveActivityFlowPhase,
   getWaitlistTitle,
   shouldShowJuZhangTasks,
 } from "./flowViewModels";
@@ -101,6 +103,12 @@ describe("mini program flow view models", () => {
     expect(getActivityFlowPhase({ formationStatus: "formed" })).toBe("before");
     expect(getActivityFlowPhase({ formationStatus: "ongoing" })).toBe("during");
     expect(getActivityFlowPhase({ formationStatus: "ended" })).toBe("after");
+  });
+
+  it("allows debug phase override without changing activity data", () => {
+    expect(resolveActivityFlowPhase({ formationStatus: "formed" }, undefined)).toBe("before");
+    expect(resolveActivityFlowPhase({ formationStatus: "formed" }, "during")).toBe("during");
+    expect(resolveActivityFlowPhase({ formationStatus: "formed" }, "after")).toBe("after");
   });
 
   it("keeps itinerary sections scoped to the current activity phase", () => {
@@ -206,6 +214,27 @@ describe("mini program flow view models", () => {
       title: "暂无局长权限",
       copy: "你报名时没有勾选愿意担任局长，因此不会进入局长候选队列。",
       mode: "none",
+    });
+  });
+
+  it("uses one queue action model for itinerary ju zhang application", () => {
+    expect(getJuZhangQueueActionState(registration, false)).toEqual({
+      copy: "你报名时没有勾选愿意担任局长，因此不会进入候选队列。",
+      label: "未勾选局长",
+      disabled: true,
+      mode: "unavailable",
+    });
+    expect(getJuZhangQueueActionState(registration, true)).toEqual({
+      copy: "你已在局长候选队列，可随时取消排队。",
+      label: "取消局长排队",
+      disabled: false,
+      mode: "queued",
+    });
+    expect(getJuZhangQueueActionState({ ...registration, willingToBeJuZhang: true }, false)).toEqual({
+      copy: "如果该活动已有局长，会进入候选队列。",
+      label: "申请局长",
+      disabled: false,
+      mode: "available",
     });
   });
 

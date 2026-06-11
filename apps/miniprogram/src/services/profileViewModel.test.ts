@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { User } from "@city-social/domain";
 
-import { getProfileViewModel, toggleInterestSelection } from "./profileViewModel";
+import { getProfileActivityHistory, getProfileViewModel, toggleInterestSelection } from "./profileViewModel";
 
 describe("profile view model", () => {
   const user: User = {
@@ -39,5 +39,19 @@ describe("profile view model", () => {
   it("lets interest chips be selected or cancelled locally", () => {
     expect(toggleInterestSelection(["饭局", "咖啡"], "饭局")).toEqual(["咖啡"]);
     expect(toggleInterestSelection(["饭局"], "散步")).toEqual(["饭局", "散步"]);
+  });
+
+  it("shows profile activity history with detail and feedback entry points", () => {
+    expect(getProfileActivityHistory()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          activityId: "a-sushi",
+          title: "周五下班日料小局",
+          detailUrl: "/pages/activity-detail/index?activityId=a-sushi",
+          feedbackUrl: "/pages/feedback/index?activityId=a-sushi",
+          statusLabel: "可查看反馈与互选",
+        }),
+      ]),
+    );
   });
 });

@@ -60,7 +60,7 @@
   align-items: center;
   gap: 14px;
   margin-bottom: 10px;
-  transform: translateY(-6px);
+  transform: translateY(-12px);
 }
 
 .location-city {

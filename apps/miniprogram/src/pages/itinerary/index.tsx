@@ -12,8 +12,11 @@ import {
   getActivityFlowPhase,
   getArrivalOptions,
   getItineraryStageState,
+  getJuZhangQueueActionState,
   getPaymentActionLabel,
+  resolveActivityFlowPhase,
 } from "../../services/flowViewModels";
+import type { ActivityFlowPhase } from "../../services/flowViewModels";
 import type { MiniProgramActivity } from "../../services/mockData";
 import type { ArrivalStatus } from "../../services/registrationService";
 import {
@@ -34,6 +37,8 @@ import {
 
 import "../signup/index.css";
 import "./index.css";
+
+const isStageDebugEnabled = __CITY_SOCIAL_ENABLE_STAGE_DEBUG__ !== "false";
 
 function getRegistrationStatusLabel(registration: Registration): string {
   if (registration.status === "waitlisted") {
@@ -70,8 +75,10 @@ export default function ItineraryPage() {
   );
   const [pendingAction, setPendingAction] = useState<string | undefined>();
   const [actionMessage, setActionMessage] = useState("");
-  const activityPhase = activity ? getActivityFlowPhase(activity) : undefined;
+  const [stageOverride, setStageOverride] = useState<ActivityFlowPhase | undefined>();
+  const activityPhase = activity ? resolveActivityFlowPhase(activity, stageOverride) : undefined;
   const stageState = activityPhase ? getItineraryStageState(activityPhase) : undefined;
+  const queueActionState = getJuZhangQueueActionState(registration, isJuZhangQueued);
 
   const refreshMyItems = useCallback(async () => {
     const result = await loadMyActivityFeed(userActivityReadAdapter);
@@ -108,6 +115,7 @@ export default function ItineraryPage() {
         setActivity(undefined);
         setRegistration(undefined);
         setSettlement(undefined);
+        setStageOverride(undefined);
         return;
       }
 
@@ -124,15 +132,10 @@ export default function ItineraryPage() {
         setActivity(activityResult.activity);
         if (registrationResult.status === "ready") {
           setRegistration(registrationResult.registration);
-          if (registrationResult.registration?.willingToBeJuZhang) {
-            const workspaceResult = await runLoadJuZhangWorkspace(juZhangAdapter, selectedActivityId);
-            setIsJuZhangQueued(
-              workspaceResult.status === "ready" &&
-                workspaceResult.workspace.juZhangWaitlistEntry?.status === "waiting",
-            );
-          } else {
-            setIsJuZhangQueued(false);
-          }
+          const workspaceResult = await runLoadJuZhangWorkspace(juZhangAdapter, selectedActivityId);
+          setIsJuZhangQueued(
+            workspaceResult.status === "ready" && workspaceResult.workspace.juZhangWaitlistEntry?.status === "waiting",
+          );
           if (
             registrationResult.registration?.status === "confirmed" ||
             registrationResult.registration?.status === "arrived" ||
@@ -218,7 +221,7 @@ export default function ItineraryPage() {
       return;
     }
 
-    if (!registration.willingToBeJuZhang) {
+    if (!isJuZhangQueued && !registration.willingToBeJuZhang) {
       setActionMessage("你报名时没有勾选愿意担任局长，不会进入局长候选队列。");
       return;
     }
@@ -226,17 +229,30 @@ export default function ItineraryPage() {
     setPendingAction("juZhangQueue");
     setActionMessage("");
     const writeAdapter = createRegistrationWriteAdapter();
-    const result = isJuZhangQueued
-      ? await runCancelWaitlist(writeAdapter, activity.id, "juZhang")
-      : await runJoinWaitlistAndRefreshActivity(writeAdapter, activityReadAdapter, activity.id, "juZhang");
+
+    if (isJuZhangQueued) {
+      const result = await runCancelWaitlist(writeAdapter, activity.id, "juZhang");
+      setPendingAction(undefined);
+
+      if (result.status === "ready") {
+        setIsJuZhangQueued(false);
+        setActionMessage("已取消局长候选排队。");
+        return;
+      }
+
+      setActionMessage(result.message);
+      return;
+    }
+
+    const result = await runJoinWaitlistAndRefreshActivity(writeAdapter, activityReadAdapter, activity.id, "juZhang");
     setPendingAction(undefined);
 
     if (result.status === "ready") {
-      setIsJuZhangQueued(!isJuZhangQueued);
-      if ("activity" in result && result.activity) {
+      setIsJuZhangQueued(true);
+      if (result.activity) {
         setActivity(result.activity);
       }
-      if ("refreshMessage" in result && result.refreshMessage) {
+      if (result.refreshMessage) {
         setActionMessage(result.refreshMessage);
       }
       return;
@@ -269,6 +285,8 @@ export default function ItineraryPage() {
       setActivity(undefined);
       setRegistration(undefined);
       setSettlement(undefined);
+      setIsJuZhangQueued(false);
+      setStageOverride(undefined);
       setActionMessage(result.refreshMessage ?? "已取消报名，行程已更新。");
       return;
     }
@@ -292,7 +310,13 @@ export default function ItineraryPage() {
               <Text className="card-copy">
                 {item.activity.venue} · {getRegistrationStatusLabel(item.registration)}
               </Text>
-              <Button className="outline-button" onClick={() => setSelectedActivityId(item.activity.id)}>
+              <Button
+                className="outline-button"
+                onClick={() => {
+                  setStageOverride(undefined);
+                  setSelectedActivityId(item.activity.id);
+                }}
+              >
                 查看行程
               </Button>
             </View>
@@ -311,6 +335,15 @@ export default function ItineraryPage() {
 
   return (
     <View className="flow-page">
+      <Text
+        className="top-back"
+        onClick={() => {
+          setStageOverride(undefined);
+          setSelectedActivityId(undefined);
+        }}
+      >
+        返回行程列表
+      </Text>
       <Text className="flow-eyebrow">我的行程</Text>
       <Text className="flow-title">{activity?.title ?? "活动不存在"}</Text>
 
@@ -336,6 +369,24 @@ export default function ItineraryPage() {
         <Text className="card-copy">需要变更计划时，请在规则允许时间内取消报名。</Text>
       </View> : null}
 
+      {isStageDebugEnabled && activity ? (
+        <View className="flow-card debug-stage-card">
+          <Text className="card-title">测试阶段切换</Text>
+          <Text className="card-copy">仅测试阶段显示，用于预览活动前、活动中、活动后的页面状态。</Text>
+          <View className="debug-stage-row">
+            {(["before", "during", "after"] as ActivityFlowPhase[]).map((phase) => (
+              <Button
+                className={activityPhase === phase ? "debug-stage-button active" : "debug-stage-button"}
+                key={phase}
+                onClick={() => setStageOverride(phase === getActivityFlowPhase(activity) ? undefined : phase)}
+              >
+                {phase === "before" ? "活动前" : phase === "during" ? "活动中" : "活动后"}
+              </Button>
+            ))}
+          </View>
+        </View>
+      ) : null}
+
       {stageState?.showArrivalSync ? <View className="flow-card">
         <Text className="card-title">到场同步</Text>
         <View className="arrival-grid">
@@ -354,23 +405,13 @@ export default function ItineraryPage() {
 
       {stageState?.showJuZhangApplication ? <View className="flow-card">
         <Text className="card-title">局长申请</Text>
-        <Text className="card-copy">
-          {registration?.willingToBeJuZhang
-            ? "如果该活动已有局长，会进入候选队列。"
-            : "你报名时没有勾选愿意担任局长，因此不会进入候选队列。"}
-        </Text>
+        <Text className="card-copy">{queueActionState.copy}</Text>
         <Button
           className="outline-button"
-          disabled={pendingAction !== undefined || registration?.willingToBeJuZhang !== true}
+          disabled={pendingAction !== undefined || queueActionState.disabled}
           onClick={handleJuZhangQueue}
         >
-          {pendingAction === "juZhangQueue"
-            ? "提交中"
-            : registration?.willingToBeJuZhang !== true
-              ? "未勾选局长"
-              : isJuZhangQueued
-                ? "取消局长排队"
-                : "申请局长"}
+          {pendingAction === "juZhangQueue" ? "提交中" : queueActionState.label}
         </Button>
       </View> : null}
 
@@ -394,15 +435,6 @@ export default function ItineraryPage() {
       </View> : null}
 
       {actionMessage ? <Text className="flow-message">{actionMessage}</Text> : null}
-
-      <View className="bottom-link-row">
-        <Text
-          className="bottom-link"
-          onClick={() => setSelectedActivityId(undefined)}
-        >
-          返回行程列表
-        </Text>
-      </View>
 
       <View className="bottom-link-row">
         <Text
