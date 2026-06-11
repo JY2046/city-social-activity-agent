@@ -6,6 +6,7 @@ import type { Registration } from "@city-social/domain";
 import { formatActivityDateTime } from "../../services/activityPresentation";
 import { buildItineraryDetailUrl } from "../../services/activityRouteService";
 import { createItinerarySelectionTransition } from "../../services/itinerarySelectionViewModel";
+import { getItineraryListState } from "../../services/itineraryPageViewModels";
 import {
   createUserActivityReadAdapter,
   loadMyActivityFeed,
@@ -35,9 +36,13 @@ export default function ItineraryPage() {
   const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
   const [myItems, setMyItems] = useState<UserActivityItem[]>([]);
   const [actionMessage, setActionMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const listState = getItineraryListState(isLoading, myItems);
 
   const refreshMyItems = useCallback(async () => {
+    setIsLoading(true);
     const result = await loadMyActivityFeed(userActivityReadAdapter);
+    setIsLoading(false);
 
     if (result.status === "ready") {
       setMyItems(result.items);
@@ -74,7 +79,7 @@ export default function ItineraryPage() {
       <Text className="flow-eyebrow">我的行程</Text>
       <Text className="flow-title">已报名的小局</Text>
 
-      {myItems.length > 0 ? (
+      {listState.mode === "ready" ? (
         myItems.map((item) => (
           <View
             className="flow-card itinerary-list-card"
@@ -93,8 +98,8 @@ export default function ItineraryPage() {
         ))
       ) : (
         <View className="flow-card">
-          <Text className="card-title">还没有报名的小局</Text>
-          <Text className="card-copy">去发现页挑一个感兴趣的活动，报名后会出现在这里。</Text>
+          <Text className="card-title">{listState.title}</Text>
+          <Text className="card-copy">{listState.copy}</Text>
         </View>
       )}
 

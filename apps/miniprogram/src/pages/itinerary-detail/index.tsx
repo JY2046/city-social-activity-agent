@@ -7,6 +7,7 @@ import { buildActivityDetailUrl, readActivityIdParam } from "../../services/acti
 import { createActivityReadAdapter, loadActivityDetail } from "../../services/activityReadService";
 import { getSettlementByActivityId } from "../../services/mockData";
 import { formatActivityDateTime, getCostLabel } from "../../services/activityPresentation";
+import { getItineraryDetailTitle } from "../../services/itineraryPageViewModels";
 import {
   getActivityFlowPhase,
   getArrivalOptions,
@@ -63,16 +64,19 @@ export default function ItineraryDetailPage() {
   const [settlement, setSettlement] = useState(() => getSettlementByActivityId(activityId));
   const [pendingAction, setPendingAction] = useState<string | undefined>();
   const [actionMessage, setActionMessage] = useState("");
+  const [isActivityLoading, setIsActivityLoading] = useState(true);
   const [stageOverride, setStageOverride] = useState<ActivityFlowPhase | undefined>();
   const activityPhase = activity ? resolveActivityFlowPhase(activity, stageOverride) : undefined;
   const stageState = activityPhase ? getItineraryStageState(activityPhase) : undefined;
   const queueActionState = getJuZhangQueueActionState(registration, isJuZhangQueued);
   const shouldShowActivityDetailReturn = Boolean(activity);
+  const pageTitle = getItineraryDetailTitle(activity, isActivityLoading);
 
   useEffect(() => {
     let isMounted = true;
 
     async function loadActivity() {
+      setIsActivityLoading(true);
       const [activityResult, registrationResult] = await Promise.all([
         loadActivityDetail(activityId, activityReadAdapter),
         loadMyRegistrationForActivity(activityId, userActivityReadAdapter),
@@ -87,6 +91,9 @@ export default function ItineraryDetailPage() {
         if (registrationResult.status === "ready") {
           setRegistration(registrationResult.registration);
           const workspaceResult = await runLoadJuZhangWorkspace(juZhangAdapter, activityId);
+          if (!isMounted) {
+            return;
+          }
           setIsJuZhangQueued(
             workspaceResult.status === "ready" && workspaceResult.workspace.juZhangWaitlistEntry?.status === "waiting",
           );
@@ -100,6 +107,7 @@ export default function ItineraryDetailPage() {
         }
         setSettlement(getSettlementByActivityId(activityId));
         setActionMessage("");
+        setIsActivityLoading(false);
         return;
       }
 
@@ -108,17 +116,20 @@ export default function ItineraryDetailPage() {
         setRegistration(undefined);
         setIsJuZhangQueued(false);
         setActionMessage("活动不存在或暂不可查看");
+        setIsActivityLoading(false);
         return;
       }
 
       if (activityResult.status === "error") {
         setActionMessage(activityResult.message);
+        setIsActivityLoading(false);
         return;
       }
 
       if (registrationResult.status === "error") {
         setActionMessage(registrationResult.message);
       }
+      setIsActivityLoading(false);
     }
 
     void loadActivity();
@@ -251,7 +262,7 @@ export default function ItineraryDetailPage() {
         返回行程列表
       </Text>
       <Text className="flow-eyebrow">我的行程</Text>
-      <Text className="flow-title">{activity?.title ?? "活动不存在"}</Text>
+      <Text className="flow-title">{pageTitle}</Text>
 
       {activity ? (
         <View className="flow-card">

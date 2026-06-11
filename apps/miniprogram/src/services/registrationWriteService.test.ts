@@ -162,6 +162,20 @@ describe("registration write service", () => {
     });
   });
 
+  it("reactivates a cancelled ju zhang waitlist when the user applies again", async () => {
+    await runJoinWaitlist(createMockRegistrationWriteAdapter(), "a-sushi", "juZhang");
+    await runCancelWaitlist(createMockRegistrationWriteAdapter(), "a-sushi", "juZhang");
+
+    await expect(runJoinWaitlist(createMockRegistrationWriteAdapter(), "a-sushi", "juZhang")).resolves.toMatchObject({
+      status: "ready",
+      waitlistEntry: {
+        activityId: "a-sushi",
+        type: "juZhang",
+        status: "waiting",
+      },
+    });
+  });
+
   it("refreshes activity detail after joining a waitlist succeeds", async () => {
     const activityReadAdapter: ActivityReadAdapter = {
       listActivities: vi.fn(async () => []),

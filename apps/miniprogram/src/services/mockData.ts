@@ -124,12 +124,17 @@ export function getSettlementByActivityId(activityId: string): Settlement | unde
 }
 
 export function createWaitlistEntry(activityId: string, userId: string, type: WaitlistType): WaitlistEntry {
-  const existingEntry = store.waitlistEntries.find(
+  const existingIndex = store.waitlistEntries.findIndex(
     (entry) => entry.activityId === activityId && entry.userId === userId && entry.type === type,
   );
 
-  if (existingEntry) {
-    return clone(existingEntry);
+  if (existingIndex >= 0) {
+    store.waitlistEntries[existingIndex] = {
+      ...store.waitlistEntries[existingIndex],
+      status: "waiting",
+    };
+
+    return clone(store.waitlistEntries[existingIndex]);
   }
 
   const order =

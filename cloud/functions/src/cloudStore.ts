@@ -116,12 +116,18 @@ export function createWaitlistEntry(
   type: WaitlistType,
   now: string,
 ): CloudWaitlistEntry {
-  const existingEntry = store.waitlists.find(
+  const existingIndex = store.waitlists.findIndex(
     (entry) => entry.activityId === activityId && entry.userId === userId && entry.type === type,
   );
 
-  if (existingEntry) {
-    return copy(existingEntry);
+  if (existingIndex >= 0) {
+    store.waitlists[existingIndex] = {
+      ...store.waitlists[existingIndex],
+      status: "waiting",
+      updatedAt: now,
+    };
+
+    return copy(store.waitlists[existingIndex]);
   }
 
   const order = store.waitlists.filter((entry) => entry.activityId === activityId && entry.type === type).length + 1;

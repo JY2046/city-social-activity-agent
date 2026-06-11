@@ -126,7 +126,17 @@ async function createOrGetWaitlistEntry(db, input, userId) {
   }).get();
   const existingEntry = existingResult.data[0];
 
-  if (existingEntry) return existingEntry;
+  if (existingEntry) {
+    if (existingEntry.status === "waiting") {
+      return existingEntry;
+    }
+
+    return setDocument(db, "waitlists", {
+      ...existingEntry,
+      status: "waiting",
+      updatedAt: now(),
+    });
+  }
 
   const queueResult = await db.collection("waitlists").where({ activityId: input.activityId, type: input.type }).get();
   const timestamp = now();
