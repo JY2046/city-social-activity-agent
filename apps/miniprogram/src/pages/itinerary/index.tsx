@@ -34,6 +34,7 @@ import {
   loadMyRegistrationForActivity,
   type UserActivityItem,
 } from "../../services/userActivityService";
+import { createItinerarySelectionTransition } from "../../services/itinerarySelectionViewModel";
 
 import "../signup/index.css";
 import "./index.css";
@@ -295,6 +296,34 @@ export default function ItineraryPage() {
     setActionMessage(result.message);
   }
 
+  function clearSelectedActivityDetail() {
+    setActivity(undefined);
+    setRegistration(undefined);
+    setSettlement(undefined);
+    setIsJuZhangQueued(false);
+    setStageOverride(undefined);
+    setPendingAction(undefined);
+  }
+
+  function handleSelectItineraryActivity(activityId: string) {
+    const transition = createItinerarySelectionTransition(activityId);
+
+    if (transition.shouldClearDetailState) {
+      clearSelectedActivityDetail();
+    }
+
+    if (transition.shouldClearActionMessage) {
+      setActionMessage("");
+    }
+
+    setSelectedActivityId(transition.selectedActivityId);
+  }
+
+  function handleBackToItineraryList() {
+    clearSelectedActivityDetail();
+    setSelectedActivityId(undefined);
+  }
+
   if (!selectedActivityId) {
     return (
       <View className="flow-page">
@@ -313,10 +342,7 @@ export default function ItineraryPage() {
               </Text>
               <Button
                 className="outline-button"
-                onClick={() => {
-                  setStageOverride(undefined);
-                  setSelectedActivityId(item.activity.id);
-                }}
+                onClick={() => handleSelectItineraryActivity(item.activity.id)}
               >
                 查看行程
               </Button>
@@ -338,10 +364,7 @@ export default function ItineraryPage() {
     <View className="flow-page">
       <Text
         className="top-back"
-        onClick={() => {
-          setStageOverride(undefined);
-          setSelectedActivityId(undefined);
-        }}
+        onClick={handleBackToItineraryList}
       >
         返回行程列表
       </Text>
