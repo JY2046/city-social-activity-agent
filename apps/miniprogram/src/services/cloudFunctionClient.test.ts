@@ -120,6 +120,31 @@ describe("cloud function client", () => {
     expect(init).toHaveBeenCalledWith({ env: "prod-env", traceUser: true });
   });
 
+  it("initializes wx.cloud even when no explicit cloud env id is injected", async () => {
+    let initialized = false;
+    const init = vi.fn(() => {
+      initialized = true;
+    });
+    const callFunction = vi.fn(async () => {
+      if (!initialized) {
+        throw new Error("Cloud API isn't enabled, please call wx.cloud.init first");
+      }
+
+      return {
+        result: {
+          ok: true,
+          code: "OK",
+          message: "ok",
+          data: [],
+        },
+      };
+    });
+    const adapter = createWeChatCloudAdapter({ wx: { cloud: { init, callFunction } } }, "");
+
+    await expect(callCloudFunction<string[]>(adapter, "listActivities", { city: "上海" })).resolves.toEqual([]);
+    expect(init).toHaveBeenCalledWith({ traceUser: true });
+  });
+
   it("keeps mock data as the default source until cloud mode is explicitly enabled", () => {
     expect(getDataSourceMode()).toBe("mock");
     expect(getDataSourceMode("cloud")).toBe("cloud");

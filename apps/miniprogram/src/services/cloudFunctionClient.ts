@@ -58,12 +58,12 @@ export interface CloudCallAdapter {
 
 export interface WeChatCloudRuntime {
   cloud?: {
-    init?: (options: { env: string; traceUser: boolean }) => void;
+    init?: (options: { env?: string; traceUser: boolean }) => void;
     callFunction: (input: CloudCallInput) => Promise<CloudCallResult>;
   };
   wx?: {
     cloud?: {
-      init?: (options: { env: string; traceUser: boolean }) => void;
+      init?: (options: { env?: string; traceUser: boolean }) => void;
       callFunction: (input: CloudCallInput) => Promise<CloudCallResult>;
     };
   };
@@ -88,16 +88,13 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 const initializedCloudRuntimes = new WeakSet<object>();
 
 function ensureCloudRuntimeInitialized(cloudRuntime: {
-  init?: (options: { env: string; traceUser: boolean }) => void;
+  init?: (options: { env?: string; traceUser: boolean }) => void;
 }, envId = WECHAT_CLOUD_ENV_ID): void {
-  if (!envId || !cloudRuntime.init || initializedCloudRuntimes.has(cloudRuntime)) {
+  if (!cloudRuntime.init || initializedCloudRuntimes.has(cloudRuntime)) {
     return;
   }
 
-  cloudRuntime.init({
-    env: envId,
-    traceUser: true,
-  });
+  cloudRuntime.init(envId ? { env: envId, traceUser: true } : { traceUser: true });
   initializedCloudRuntimes.add(cloudRuntime);
 }
 
