@@ -250,11 +250,10 @@ export default function JuZhangPage() {
   }
 
   return (
-      <View className="detail-page">
-      <Text className="top-back" onClick={handleBackToWorkspaceList}>
+    <View className="detail-page">
+      <Button className="workspace-back-button" onClick={handleBackToWorkspaceList}>
         返回局长工作台
-      </Text>
-      <Text className="type-label">局长工作台</Text>
+      </Button>
       <Text className="detail-title">{workspace?.activity?.title ?? "暂无可管理的小局"}</Text>
       {workspace?.activity ? <Text className="detail-meta">系统会给任务提示，但局长只是协助流程，不承担额外压力。</Text> : null}
       {pageMessage ? <Text className="detail-meta">{pageMessage}</Text> : null}
