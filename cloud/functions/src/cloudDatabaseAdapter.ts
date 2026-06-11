@@ -18,6 +18,7 @@ import type {
   CloudSeedData,
   CloudSettlementDocument,
   CloudTopicCardDocument,
+  CloudWaitlistDocument,
 } from "./cloudSeed";
 
 export interface CloudDocumentReference {
@@ -410,26 +411,31 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
     async getJuZhangWorkspace(activityId: string, userId: string) {
       if (!(await hasActiveRegistration(db, activityId, userId))) {
         return {
+          currentUserId: userId,
           activity: undefined,
           assignment: undefined,
           topicCard: undefined,
           settlement: undefined,
-          activeRegistrations: [],
-          tasks: [],
-        };
+        activeRegistrations: [],
+        juZhangWaitlistEntry: undefined,
+        tasks: [],
+      };
       }
 
       const activity = await getDocument<CloudActivityDocument>(db, "activities", activityId);
       const assignments = await db.collection("juZhangAssignments").where({ activityId }).get();
       const topicCards = await db.collection("topicCards").where({ activityId }).get();
       const registrations = await db.collection("registrations").where({ activityId }).get();
+      const waitlists = await db.collection("waitlists").where({ activityId, userId, type: "juZhang" }).get();
       const settlement = await getDocument<CloudSettlementDocument>(db, "settlements", activityId);
 
       return {
         activity: activity?.reviewStatus === "approved" ? activity : undefined,
+        currentUserId: userId,
         assignment: assignments.data[0] as CloudJuZhangAssignmentDocument | undefined,
         topicCard: topicCards.data[0] as CloudTopicCardDocument | undefined,
         settlement,
+        juZhangWaitlistEntry: (waitlists.data as CloudWaitlistDocument[]).find((entry) => entry.status === "waiting"),
         activeRegistrations: (registrations.data as CloudRegistrationDocument[]).filter((registration) =>
           activeRegistrationStatuses.has(registration.status),
         ),

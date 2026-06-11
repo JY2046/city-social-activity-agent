@@ -126,6 +126,13 @@
   font-weight: 800;
 }
 
+.featured-cta.completed,
+.featured-cta.queued,
+.row-status.queued {
+  color: #5d665e;
+  background: rgba(244, 244, 238, 0.86);
+}
+
 .ai-strip {
   padding: 16px 22px 18px;
   background: linear-gradient(90deg, rgba(244, 249, 230, 0.98), rgba(255, 253, 247, 0.95));

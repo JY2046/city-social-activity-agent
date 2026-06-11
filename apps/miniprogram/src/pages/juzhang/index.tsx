@@ -1,9 +1,13 @@
 import { Button, Text, View } from "@tarojs/components";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "@tarojs/taro";
+import { navigateTo, useRouter } from "@tarojs/taro";
 
 import { getSettlementSummary } from "@city-social/domain";
-import { getJuZhangSettlementRows } from "../../services/flowViewModels";
+import {
+  getJuZhangBannerState,
+  getJuZhangSettlementRows,
+  getRegistrationStatusLabel,
+} from "../../services/flowViewModels";
 import { getUserDisplayName } from "../../services/mockData";
 import {
   createJuZhangAdapter,
@@ -35,6 +39,13 @@ export default function JuZhangPage() {
   const [confirmedPaymentUserIds, setConfirmedPaymentUserIds] = useState<string[]>([]);
   const settlementSummary = workspace?.settlement ? getSettlementSummary(workspace.settlement) : undefined;
   const settlementRows = getJuZhangSettlementRows(workspace?.settlement, getUserDisplayName, confirmedPaymentUserIds);
+  const bannerState = workspace?.activity
+    ? getJuZhangBannerState({
+        assignment: workspace.assignment,
+        currentUserId: workspace.currentUserId,
+        isQueued: workspace.juZhangWaitlistEntry?.status === "waiting",
+      })
+    : undefined;
 
   async function refreshWorkspace(nextMessage?: string) {
     const result = await runLoadJuZhangWorkspace(adapter, activityId);
@@ -70,6 +81,16 @@ export default function JuZhangPage() {
     setPendingAction(undefined);
   }
 
+  function handleJoinJuZhangQueue() {
+    if (!workspace?.activity || bannerState?.mode === "queued") {
+      return;
+    }
+
+    void navigateTo({
+      url: `/pages/waitlist/index?activityId=${encodeURIComponent(workspace.activity.id)}&type=juZhang`,
+    });
+  }
+
   async function handleArrival(userId: string) {
     setPendingAction(`arrival-${userId}`);
     const result = await runConfirmParticipantArrival(adapter, activityId, userId);
@@ -102,16 +123,29 @@ export default function JuZhangPage() {
       ) : null}
 
       {workspace?.activity ? <View className="juzhang-banner">
-        <Text className="banner-title">当前状态：{workspace?.assignment?.status ?? "candidate"}</Text>
-        <Text className="banner-copy">可接受或拒绝局长身份，拒绝不会退出活动。</Text>
-        <View className="action-row">
-          <Button className="accept-button" disabled={pendingAction === "accept"} onClick={handleAccept}>
-            {pendingAction === "accept" ? "同步中" : "接受局长"}
-          </Button>
-          <Button className="decline-button" disabled={pendingAction === "decline"} onClick={handleDecline}>
-            {pendingAction === "decline" ? "同步中" : "拒绝"}
-          </Button>
-        </View>
+        <Text className="banner-title">{bannerState?.title}</Text>
+        <Text className="banner-copy">{bannerState?.copy}</Text>
+        {bannerState?.mode === "respond" ? (
+          <View className="action-row">
+            <Button className="accept-button" disabled={pendingAction === "accept"} onClick={handleAccept}>
+              {pendingAction === "accept" ? "同步中" : bannerState.primaryLabel}
+            </Button>
+            <Button className="decline-button" disabled={pendingAction === "decline"} onClick={handleDecline}>
+              {pendingAction === "decline" ? "同步中" : bannerState.secondaryLabel}
+            </Button>
+          </View>
+        ) : null}
+        {bannerState?.mode === "queue" || bannerState?.mode === "queued" ? (
+          <View className="action-row">
+            <Button
+              className={bannerState.mode === "queued" ? "accept-button disabled" : "accept-button"}
+              disabled={bannerState.mode === "queued"}
+              onClick={handleJoinJuZhangQueue}
+            >
+              {bannerState.primaryLabel}
+            </Button>
+          </View>
+        ) : null}
       </View> : null}
 
       {workspace?.activity ? <View className="section">
@@ -156,7 +190,7 @@ export default function JuZhangPage() {
         {(workspace?.activeRegistrations ?? []).map((registration) => (
           <View className="participant-row" key={registration.id}>
             <Text className="participant-name">{registration.userId}</Text>
-            <Text className="participant-status">{registration.status}</Text>
+            <Text className="participant-status">{getRegistrationStatusLabel(registration.status)}</Text>
             <Button
               className="mini-action"
               disabled={pendingAction === `arrival-${registration.userId}`}

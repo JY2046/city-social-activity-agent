@@ -265,6 +265,7 @@ describe("cloud database adapter", () => {
     await adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: true }, "u-current");
 
     await expect(adapter.getJuZhangWorkspace("a-coffee", "u-current")).resolves.toMatchObject({
+      currentUserId: "u-current",
       activity: { id: "a-coffee" },
       topicCard: { activityId: "a-coffee" },
       settlement: { activityId: "a-coffee" },
@@ -291,6 +292,21 @@ describe("cloud database adapter", () => {
         isMutual: true,
         contactStateLabel: "已互选，可开放联系",
       });
+  });
+
+  it("returns ju zhang queue state in the workspace", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+    await adapter.signupActivity({ activityId: "a-sushi", willingToBeJuZhang: true }, "u-current");
+    await adapter.joinWaitlist({ activityId: "a-sushi", type: "juZhang" }, "u-current");
+
+    await expect(adapter.getJuZhangWorkspace("a-sushi", "u-current")).resolves.toMatchObject({
+      currentUserId: "u-current",
+      activity: { id: "a-sushi" },
+      assignment: { candidateUserId: "u-qiao", status: "accepted" },
+      juZhangWaitlistEntry: { activityId: "a-sushi", type: "juZhang", status: "waiting" },
+    });
   });
 
   it("hides ju zhang workspace after the current user cancels registration", async () => {

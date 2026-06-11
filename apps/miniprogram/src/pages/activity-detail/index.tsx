@@ -33,6 +33,14 @@ export default function ActivityDetailPage() {
     ? `primary-action ${primaryActionState.variant}`
     : "primary-action";
 
+  function handlePrimaryAction() {
+    if (primaryActionState.isCompleted || primaryActionState.variant === "queued") {
+      return;
+    }
+
+    void navigateTo({ url: buildSignupUrl(activityId) });
+  }
+
   useEffect(() => {
     let isMounted = true;
 
@@ -130,7 +138,7 @@ export default function ActivityDetailPage() {
         </Text>
         <Text
           className={primaryActionClassName}
-          onClick={() => void navigateTo({ url: buildSignupUrl(activity.id) })}
+          onClick={handlePrimaryAction}
         >
           {primaryActionState.label}
         </Text>

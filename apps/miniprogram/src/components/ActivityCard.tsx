@@ -1,8 +1,10 @@
 import { Image, Text, View } from "@tarojs/components";
+import type { Registration } from "@city-social/domain";
 
 import {
   formatActivityDateTime,
   getActivityCtaLabel,
+  getActivityCtaState,
   getActivityStatusLabel,
   getActivityTypeLabel,
   getCostLabel,
@@ -14,10 +16,16 @@ import "./ActivityCard.css";
 interface ActivityCardProps {
   activity: MiniProgramActivity;
   featured?: boolean;
+  registration?: Registration;
   onClick?: (activity: MiniProgramActivity) => void;
 }
 
-export default function ActivityCard({ activity, featured = false, onClick }: ActivityCardProps) {
+export default function ActivityCard({ activity, featured = false, registration, onClick }: ActivityCardProps) {
+  const ctaState = getActivityCtaState(activity, registration);
+  const ctaClassName = ctaState.variant ? `featured-cta ${ctaState.variant}` : "featured-cta";
+  const rowStatusLabel = registration ? ctaState.label : getActivityStatusLabel(activity);
+  const rowStatusClassName = registration?.status === "waitlisted" ? "row-status queued" : "row-status";
+
   const handleClick = () => {
     onClick?.(activity);
   };
@@ -45,7 +53,7 @@ export default function ActivityCard({ activity, featured = false, onClick }: Ac
               <Text className="featured-meta featured-meta-inline">
                 {formatActivityDateTime(activity.startsAt)} · {getCostLabel(activity)}
               </Text>
-              <Text className="featured-cta">{getActivityCtaLabel(activity)}</Text>
+              <Text className={ctaClassName}>{getActivityCtaLabel(activity, registration)}</Text>
             </View>
           </View>
         </View>
@@ -62,7 +70,7 @@ export default function ActivityCard({ activity, featured = false, onClick }: Ac
       <View className="row-content">
         <View className="row-topline">
           <Text className="row-type">{getActivityTypeLabel(activity.type)}</Text>
-          <Text className="row-status">{getActivityStatusLabel(activity)}</Text>
+          <Text className={rowStatusClassName}>{rowStatusLabel}</Text>
         </View>
         <Text className="row-title">{activity.title}</Text>
         <Text className="row-meta">

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { DEFAULT_CURRENT_USER_ID, getSettlementByActivityId } from "./mockData";
-import { cancelSignup, resetMockServices, signup } from "./registrationService";
+import { cancelSignup, joinWaitlist, resetMockServices, signup } from "./registrationService";
 import {
   acceptJuZhang,
   confirmParticipantArrival,
@@ -48,6 +48,17 @@ describe("ju zhang service", () => {
       assignment: undefined,
       activeRegistrations: [],
       tasks: [],
+    });
+  });
+
+  it("includes the current user's ju zhang waitlist state in the workspace", () => {
+    signup("a-sushi", { willingToBeJuZhang: true });
+    joinWaitlist("a-sushi", "juZhang");
+
+    expect(getJuZhangWorkspace("a-sushi")).toMatchObject({
+      activity: { id: "a-sushi" },
+      assignment: { candidateUserId: "u-qiao", status: "accepted" },
+      juZhangWaitlistEntry: { activityId: "a-sushi", type: "juZhang", status: "waiting" },
     });
   });
 

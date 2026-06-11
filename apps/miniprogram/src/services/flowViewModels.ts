@@ -1,4 +1,4 @@
-import type { Registration, Settlement } from "@city-social/domain";
+import type { JuZhangAssignment, JuZhangStatus, Registration, RegistrationStatus, Settlement } from "@city-social/domain";
 
 import type { ArrivalStatus } from "./registrationService";
 import type { WaitlistType } from "./mockData";
@@ -34,11 +34,46 @@ export interface JuZhangSettlementRow {
   canConfirm: boolean;
 }
 
+export interface JuZhangBannerInput {
+  assignment?: JuZhangAssignment;
+  currentUserId: string;
+  isQueued?: boolean;
+}
+
+export interface JuZhangBannerState {
+  title: string;
+  copy: string;
+  primaryLabel?: string;
+  secondaryLabel?: string;
+  mode: "respond" | "accepted" | "declined" | "queue" | "queued";
+}
+
 const arrivalOptions: ArrivalOption[] = [
   { status: "arrived", label: "我会准时到", description: "活动前 30 分钟同步给局长" },
   { status: "confirmed", label: "可能迟到", description: "局长会看到你的状态" },
   { status: "noShow", label: "无法到场", description: "系统会记录并提示风险" },
 ];
+
+const registrationStatusLabels: Record<RegistrationStatus, string> = {
+  registered: "已报名",
+  waitlisted: "排队中",
+  cancelled: "已取消",
+  confirmed: "已确认",
+  arrived: "已到场",
+  completed: "已完成",
+  noShow: "未到场",
+};
+
+const juZhangAssignmentLabels: Record<JuZhangStatus, string> = {
+  candidate: "候选中",
+  invited: "待确认",
+  accepted: "已接受",
+  declined: "已拒绝",
+  active: "进行中",
+  completed: "已完成",
+  withdrawn: "已退出",
+  replaced: "已替换",
+};
 
 export function shouldShowJuZhangTasks(registration?: Registration): boolean {
   return registration?.status === "confirmed" && registration.willingToBeJuZhang;
@@ -121,6 +156,54 @@ export function getActivityDetailPrimaryActionState(registration?: Registration)
 
 export function getArrivalOptions(): ArrivalOption[] {
   return arrivalOptions;
+}
+
+export function getRegistrationStatusLabel(status: RegistrationStatus): string {
+  return registrationStatusLabels[status];
+}
+
+export function getJuZhangAssignmentLabel(status: JuZhangStatus): string {
+  return juZhangAssignmentLabels[status];
+}
+
+export function getJuZhangBannerState({
+  assignment,
+  currentUserId,
+  isQueued = false,
+}: JuZhangBannerInput): JuZhangBannerState {
+  if (assignment?.status === "accepted" && assignment.candidateUserId !== currentUserId) {
+    return {
+      title: "当前状态：已有局长",
+      copy: "这个小局已经有局长，你可以加入候选排队；如果当前局长退出，系统会按顺序提醒。",
+      primaryLabel: isQueued ? "局长排队中" : "加入局长排队",
+      mode: isQueued ? "queued" : "queue",
+    };
+  }
+
+  if (assignment?.status === "accepted") {
+    return {
+      title: "当前状态：已接受局长",
+      copy: "系统会继续给你任务提示，活动中按步骤协助大家即可。",
+      mode: "accepted",
+    };
+  }
+
+  if (assignment?.status === "declined") {
+    return {
+      title: "当前状态：已拒绝局长",
+      copy: "你仍然保留活动报名；如果之后想参与候选，可以加入局长排队。",
+      primaryLabel: isQueued ? "局长排队中" : "加入局长排队",
+      mode: isQueued ? "queued" : "queue",
+    };
+  }
+
+  return {
+    title: `当前状态：${getJuZhangAssignmentLabel(assignment?.status ?? "candidate")}`,
+    copy: "可接受或拒绝局长身份，拒绝不会退出活动。",
+    primaryLabel: "接受局长",
+    secondaryLabel: "拒绝",
+    mode: "respond",
+  };
 }
 
 export function getPaymentActionLabel(settlement: Settlement | undefined, userId: string): string {

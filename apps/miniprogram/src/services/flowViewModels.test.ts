@@ -5,7 +5,10 @@ import type { Registration, Settlement } from "@city-social/domain";
 import {
   getArrivalOptions,
   getActivityDetailPrimaryActionState,
+  getJuZhangAssignmentLabel,
+  getJuZhangBannerState,
   getJuZhangSettlementRows,
+  getRegistrationStatusLabel,
   getPaymentActionLabel,
   getSignupPrimaryActionState,
   getSignupViewState,
@@ -82,6 +85,49 @@ describe("mini program flow view models", () => {
 
   it("uses short one-line arrival option labels", () => {
     expect(getArrivalOptions().map((option) => option.label)).toEqual(["我会准时到", "可能迟到", "无法到场"]);
+  });
+
+  it("formats workflow enum states as Chinese UI copy", () => {
+    expect(getRegistrationStatusLabel("confirmed")).toBe("已确认");
+    expect(getRegistrationStatusLabel("arrived")).toBe("已到场");
+    expect(getRegistrationStatusLabel("noShow")).toBe("未到场");
+    expect(getJuZhangAssignmentLabel("accepted")).toBe("已接受");
+  });
+
+  it("shows a ju zhang queue state when another participant has accepted", () => {
+    expect(
+      getJuZhangBannerState({
+        assignment: {
+          id: "jz-1",
+          activityId: "a-sushi",
+          candidateUserId: "u-qiao",
+          status: "accepted",
+          volunteered: true,
+        },
+        currentUserId: "u-current",
+        isQueued: false,
+      }),
+    ).toEqual({
+      title: "当前状态：已有局长",
+      copy: "这个小局已经有局长，你可以加入候选排队；如果当前局长退出，系统会按顺序提醒。",
+      primaryLabel: "加入局长排队",
+      secondaryLabel: undefined,
+      mode: "queue",
+    });
+
+    expect(
+      getJuZhangBannerState({
+        assignment: {
+          id: "jz-1",
+          activityId: "a-sushi",
+          candidateUserId: "u-qiao",
+          status: "accepted",
+          volunteered: true,
+        },
+        currentUserId: "u-current",
+        isQueued: true,
+      }).primaryLabel,
+    ).toBe("局长排队中");
   });
 
   it("shows payment work only for unpaid paid activities", () => {

@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 
+import type { Registration } from "@city-social/domain";
+
 import { getActivity } from "./activityService";
 import {
   formatActivityDateTime,
   getActivityCtaLabel,
+  getActivityCtaState,
   getActivityStatusLabel,
   getActivityTypeLabel,
   getCostLabel,
@@ -28,5 +31,27 @@ describe("activity presentation helpers", () => {
     expect(getActivityStatusLabel(sushi)).toBe("已成局");
     expect(getActivityCtaLabel(sushi)).toBe("查看活动");
     expect(getActivityCtaLabel(bar)).toBe("排队候补");
+  });
+
+  it("prioritizes the current user's registration state for feed CTAs", () => {
+    const sushi = getActivity("a-sushi")!;
+    const registration: Registration = {
+      id: "r-current",
+      userId: "u-current",
+      activityId: "a-sushi",
+      status: "confirmed",
+      willingToBeJuZhang: false,
+    };
+
+    expect(getActivityCtaState(sushi, registration)).toEqual({
+      label: "已报名",
+      disabled: true,
+      variant: "completed",
+    });
+    expect(getActivityCtaState(sushi, { ...registration, status: "waitlisted" })).toEqual({
+      label: "排队中",
+      disabled: true,
+      variant: "queued",
+    });
   });
 });

@@ -32,12 +32,8 @@ export default function ProfilePage() {
         </View>
         <View className="profile-stats">
           <View className="profile-stat">
-            <Text className="stat-value">{profile.reputationLevel}</Text>
-            <Text className="stat-label">当前等级</Text>
-          </View>
-          <View className="profile-stat">
-            <Text className="stat-value">{profile.creditScoreLabel}</Text>
-            <Text className="stat-label">仅自己可见</Text>
+            <Text className="stat-value">{profile.reputationWithCreditLabel}</Text>
+            <Text className="stat-label">等级对外展示，信用分仅自己可见</Text>
           </View>
           <View className="profile-stat">
             <Text className="stat-value">{profile.attendedSummary}</Text>

@@ -22,6 +22,7 @@ import {
   upsertJuZhangAssignment,
   upsertRegistration,
   type MiniProgramActivity,
+  type WaitlistEntry,
 } from "./mockData";
 import type { ArrivalStatus } from "./registrationService";
 
@@ -31,10 +32,12 @@ export interface JuZhangTask {
 }
 
 export interface JuZhangWorkspace {
+  currentUserId: string;
   activity?: MiniProgramActivity;
   assignment?: JuZhangAssignment;
   topicCard?: TopicCard;
   settlement?: Settlement;
+  juZhangWaitlistEntry?: WaitlistEntry;
   activeRegistrations: Registration[];
   tasks: JuZhangTask[];
 }
@@ -99,9 +102,11 @@ function hasActiveCurrentUserRegistration(activityId: string, userId = DEFAULT_C
 function emptyWorkspace(): JuZhangWorkspace {
   return {
     activity: undefined,
+    currentUserId: DEFAULT_CURRENT_USER_ID,
     assignment: undefined,
     topicCard: undefined,
     settlement: undefined,
+    juZhangWaitlistEntry: undefined,
     activeRegistrations: [],
     tasks: [],
   };
@@ -116,9 +121,19 @@ export function getJuZhangWorkspace(activityId: string): JuZhangWorkspace {
 
   return {
     activity: clone(store.activities.find((activity) => activity.id === activityId)),
+    currentUserId: DEFAULT_CURRENT_USER_ID,
     assignment: clone(store.juZhangAssignments.find((assignment) => assignment.activityId === activityId)),
     topicCard: clone(store.topicCards.find((topicCard) => topicCard.activityId === activityId)),
     settlement: clone(store.settlements.find((settlement) => settlement.activityId === activityId)),
+    juZhangWaitlistEntry: clone(
+      store.waitlistEntries.find(
+        (entry) =>
+          entry.activityId === activityId &&
+          entry.userId === DEFAULT_CURRENT_USER_ID &&
+          entry.type === "juZhang" &&
+          entry.status === "waiting",
+      ),
+    ),
     activeRegistrations: clone(
       store.registrations.filter(
         (registration) =>

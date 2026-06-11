@@ -25,6 +25,7 @@ describe("profile view model", () => {
       attendedVisibilityLabel: "对外展示中",
       juZhangEligibilityLabel: "可报名局长",
       creditScoreLabel: "信用分 86",
+      reputationWithCreditLabel: "可信参与者 · 信用分 86",
       publicReputationCopy: "对外只展示等级，不展示信用分",
       badges: [],
     });

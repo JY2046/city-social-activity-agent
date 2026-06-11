@@ -1,6 +1,12 @@
-import type { ActivityType } from "@city-social/domain";
+import type { ActivityType, Registration } from "@city-social/domain";
 
 import type { MiniProgramActivity } from "./mockData";
+
+export interface ActivityCtaState {
+  label: string;
+  disabled: boolean;
+  variant?: "completed" | "queued";
+}
 
 const typeLabels: Record<ActivityType, string> = {
   dinner: "饭局",
@@ -34,16 +40,45 @@ export function getCostLabel(activity: MiniProgramActivity): string {
   return `约 ${activity.estimatedCost} 元`;
 }
 
-export function getActivityCtaLabel(activity: MiniProgramActivity): string {
+export function getActivityCtaLabel(activity: MiniProgramActivity, registration?: Registration): string {
+  return getActivityCtaState(activity, registration).label;
+}
+
+export function getActivityCtaState(activity: MiniProgramActivity, registration?: Registration): ActivityCtaState {
+  if (registration?.status === "confirmed" || registration?.status === "arrived") {
+    return {
+      label: "已报名",
+      disabled: true,
+      variant: "completed",
+    };
+  }
+
+  if (registration?.status === "waitlisted") {
+    return {
+      label: "排队中",
+      disabled: true,
+      variant: "queued",
+    };
+  }
+
   if (activity.currentParticipantCount >= activity.capacity && activity.formationStatus !== "ended") {
-    return "排队候补";
+    return {
+      label: "排队候补",
+      disabled: false,
+    };
   }
 
   if (activity.formationStatus === "formed" || activity.formationStatus === "ongoing") {
-    return "查看活动";
+    return {
+      label: "查看活动",
+      disabled: false,
+    };
   }
 
-  return "报名加入";
+  return {
+    label: "报名加入",
+    disabled: false,
+  };
 }
 
 export function formatActivityDateTime(startsAt: string): string {

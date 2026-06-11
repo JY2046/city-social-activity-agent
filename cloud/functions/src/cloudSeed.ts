@@ -59,6 +59,18 @@ export interface CloudTopicCardDocument extends TopicCard {
   updatedAt: string;
 }
 
+export interface CloudWaitlistDocument {
+  _id: string;
+  id: string;
+  activityId: string;
+  userId: string;
+  type: "activity" | "juZhang";
+  order: number;
+  status: "waiting" | "promoted" | "cancelled";
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface CloudFeedbackDocument {
   _id: string;
   id: string;
@@ -75,7 +87,7 @@ export interface CloudSeedData {
   activities: CloudActivityDocument[];
   registrations: CloudRegistrationDocument[];
   settlements: CloudSettlementDocument[];
-  waitlists: [];
+  waitlists: CloudWaitlistDocument[];
   juZhangAssignments: CloudJuZhangAssignmentDocument[];
   topicCards: CloudTopicCardDocument[];
   feedback: CloudFeedbackDocument[];

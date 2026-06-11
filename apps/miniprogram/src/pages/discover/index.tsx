@@ -1,13 +1,14 @@
 import { Image, Picker, View, Text } from "@tarojs/components";
-import { navigateTo } from "@tarojs/taro";
-import { useEffect, useState } from "react";
-import type { ActivityType, BudgetType } from "@city-social/domain";
+import { navigateTo, useDidShow } from "@tarojs/taro";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { ActivityType, BudgetType, Registration } from "@city-social/domain";
 
 import ActivityCard from "../../components/ActivityCard";
 import { buildActivityDetailUrl } from "../../services/activityRouteService";
 import { loadActivityFeed, type ActivityFeedLoadState } from "../../services/activityReadService";
 import { cityOptions, getCityFromPickerIndex, getCityPickerIndex } from "../../services/citySelectorViewModel";
 import type { MiniProgramActivity } from "../../services/mockData";
+import { createUserActivityReadAdapter } from "../../services/userActivityService";
 
 import "./index.css";
 
@@ -37,29 +38,43 @@ export default function DiscoverPage() {
   const [feedState, setFeedState] = useState<ActivityFeedLoadState>(initialFeedState);
   const [selectedCity, setSelectedCity] = useState("上海");
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("recommended");
+  const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
+  const [registrationByActivityId, setRegistrationByActivityId] = useState<Record<string, Registration>>({});
   const activities = feedState.activities;
   const [featuredActivity, ...activityList] = activities;
 
-  useEffect(() => {
+  const refreshFeed = useCallback(() => {
     let isMounted = true;
     const category = categoryOptions.find((option) => option.key === selectedCategory);
 
     setFeedState(initialFeedState);
 
-    void loadActivityFeed(undefined, {
-      city: selectedCity,
-      type: category?.type,
-      budgetType: category?.budgetType,
-    }).then((nextState) => {
+    void Promise.all([
+      loadActivityFeed(undefined, {
+        city: selectedCity,
+        type: category?.type,
+        budgetType: category?.budgetType,
+      }),
+      userActivityReadAdapter.listMyRegistrations().catch(() => []),
+    ]).then(([nextState, registrations]) => {
       if (isMounted) {
         setFeedState(nextState);
+        setRegistrationByActivityId(
+          Object.fromEntries(registrations.map((registration) => [registration.activityId, registration])),
+        );
       }
     });
 
     return () => {
       isMounted = false;
     };
-  }, [selectedCategory, selectedCity]);
+  }, [selectedCategory, selectedCity, userActivityReadAdapter]);
+
+  useEffect(() => refreshFeed(), [refreshFeed]);
+
+  useDidShow(() => {
+    refreshFeed();
+  });
 
   function handleOpenActivity(activity: MiniProgramActivity) {
     void navigateTo({ url: buildActivityDetailUrl(activity.id) });
@@ -110,7 +125,14 @@ export default function DiscoverPage() {
       {feedState.status === "error" ? <Text className="feed-state">活动加载失败：{feedState.message}</Text> : null}
       {feedState.status === "empty" ? <Text className="feed-state">今天的小局还在准备中</Text> : null}
 
-      {featuredActivity ? <ActivityCard activity={featuredActivity} featured onClick={handleOpenActivity} /> : null}
+      {featuredActivity ? (
+        <ActivityCard
+          activity={featuredActivity}
+          featured
+          registration={registrationByActivityId[featuredActivity.id]}
+          onClick={handleOpenActivity}
+        />
+      ) : null}
 
       <View className="trust-strip">
         <View className="trust-item trust-privacy">
@@ -129,7 +151,12 @@ export default function DiscoverPage() {
 
       <View className="activity-list">
         {activityList.map((activity) => (
-          <ActivityCard activity={activity} key={activity.id} onClick={handleOpenActivity} />
+          <ActivityCard
+            activity={activity}
+            key={activity.id}
+            registration={registrationByActivityId[activity.id]}
+            onClick={handleOpenActivity}
+          />
         ))}
       </View>
     </View>

@@ -57,6 +57,11 @@
   background: #b8d890;
 }
 
+.accept-button.disabled {
+  color: rgba(247, 244, 236, 0.72);
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .decline-button {
   flex: 1;
   color: #f7f4ec;

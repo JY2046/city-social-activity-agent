@@ -9,6 +9,7 @@ export interface ProfileViewModel {
   bio: string;
   reputationLevel: string;
   creditScoreLabel: string;
+  reputationWithCreditLabel: string;
   publicReputationCopy: string;
   attendedSummary: string;
   attendedVisibilityLabel: string;
@@ -36,6 +37,7 @@ export function getProfileViewModel(user: User = getCurrentUserProfile()): Profi
     bio: user.bio,
     reputationLevel: user.reputationLevel,
     creditScoreLabel: "信用分 86",
+    reputationWithCreditLabel: `${user.reputationLevel} · 信用分 86`,
     publicReputationCopy: "对外只展示等级，不展示信用分",
     attendedSummary: user.showAttendedEventCount ? `参加过 ${user.attendedEventCount} 场小局` : "活动经历已隐藏",
     attendedVisibilityLabel: user.showAttendedEventCount ? "对外展示中" : "仅自己可见",

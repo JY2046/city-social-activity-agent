@@ -372,10 +372,12 @@ async function getJuZhangWorkspace(input) {
 
   if (!(await hasActiveRegistration(db, input.activityId, userId))) {
     return {
+      currentUserId: userId,
       activity: undefined,
       assignment: undefined,
       topicCard: undefined,
       settlement: undefined,
+      juZhangWaitlistEntry: undefined,
       activeRegistrations: [],
       tasks: [],
     };
@@ -385,13 +387,16 @@ async function getJuZhangWorkspace(input) {
   const assignments = await db.collection("juZhangAssignments").where({ activityId: input.activityId }).get();
   const topicCards = await db.collection("topicCards").where({ activityId: input.activityId }).get();
   const registrations = await db.collection("registrations").where({ activityId: input.activityId }).get();
+  const waitlists = await db.collection("waitlists").where({ activityId: input.activityId, userId, type: "juZhang" }).get();
   const settlement = await getDocument(db, "settlements", input.activityId);
 
   return {
     activity: activity?.reviewStatus === "approved" ? activity : undefined,
+    currentUserId: userId,
     assignment: assignments.data[0],
     topicCard: topicCards.data[0],
     settlement,
+    juZhangWaitlistEntry: waitlists.data.find((entry) => entry.status === "waiting"),
     activeRegistrations: registrations.data.filter((registration) => activeRegistrationStatuses.has(registration.status)),
     tasks: juZhangTasks,
   };
