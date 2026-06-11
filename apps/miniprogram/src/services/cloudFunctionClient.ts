@@ -58,10 +58,12 @@ export interface CloudCallAdapter {
 
 export interface WeChatCloudRuntime {
   cloud?: {
+    init?: (options: { env: string; traceUser: boolean }) => void;
     callFunction: (input: CloudCallInput) => Promise<CloudCallResult>;
   };
   wx?: {
     cloud?: {
+      init?: (options: { env: string; traceUser: boolean }) => void;
       callFunction: (input: CloudCallInput) => Promise<CloudCallResult>;
     };
   };
@@ -81,6 +83,22 @@ export class CloudFunctionError extends Error {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
+}
+
+const initializedCloudRuntimes = new WeakSet<object>();
+
+function ensureCloudRuntimeInitialized(cloudRuntime: {
+  init?: (options: { env: string; traceUser: boolean }) => void;
+}, envId = WECHAT_CLOUD_ENV_ID): void {
+  if (!envId || !cloudRuntime.init || initializedCloudRuntimes.has(cloudRuntime)) {
+    return;
+  }
+
+  cloudRuntime.init({
+    env: envId,
+    traceUser: true,
+  });
+  initializedCloudRuntimes.add(cloudRuntime);
 }
 
 function parseEnvelope<T>(functionName: CloudFunctionName, result: unknown): CloudFunctionEnvelope<T> {
@@ -105,7 +123,10 @@ export function isCloudDataSource(mode = DEFAULT_DATA_SOURCE_MODE): boolean {
   return getDataSourceMode(mode) === "cloud";
 }
 
-export function createWeChatCloudAdapter(runtime: WeChatCloudRuntime = globalThis as WeChatCloudRuntime): CloudCallAdapter {
+export function createWeChatCloudAdapter(
+  runtime: WeChatCloudRuntime = globalThis as WeChatCloudRuntime,
+  envId = WECHAT_CLOUD_ENV_ID,
+): CloudCallAdapter {
   return {
     async callFunction(input) {
       const cloudRuntime = runtime.cloud ?? runtime.wx?.cloud;
@@ -113,6 +134,8 @@ export function createWeChatCloudAdapter(runtime: WeChatCloudRuntime = globalThi
       if (!cloudRuntime?.callFunction) {
         throw new CloudFunctionError(input.name, "WECHAT_CLOUD_UNAVAILABLE", "WeChat cloud runtime is not available");
       }
+
+      ensureCloudRuntimeInitialized(cloudRuntime, envId);
 
       return cloudRuntime.callFunction(input);
     },

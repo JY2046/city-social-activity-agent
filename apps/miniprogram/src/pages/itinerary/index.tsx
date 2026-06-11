@@ -79,6 +79,7 @@ export default function ItineraryPage() {
   const activityPhase = activity ? resolveActivityFlowPhase(activity, stageOverride) : undefined;
   const stageState = activityPhase ? getItineraryStageState(activityPhase) : undefined;
   const queueActionState = getJuZhangQueueActionState(registration, isJuZhangQueued);
+  const shouldShowActivityDetailReturn = Boolean(selectedActivityId && activity);
 
   const refreshMyItems = useCallback(async () => {
     const result = await loadMyActivityFeed(userActivityReadAdapter);
@@ -436,14 +437,14 @@ export default function ItineraryPage() {
 
       {actionMessage ? <Text className="flow-message">{actionMessage}</Text> : null}
 
-      <View className="bottom-link-row">
+      {shouldShowActivityDetailReturn ? <View className="bottom-link-row">
         <Text
           className="bottom-link"
           onClick={() => void navigateTo({ url: buildActivityDetailUrl(selectedActivityId) })}
         >
           返回活动详情页
         </Text>
-      </View>
+      </View> : null}
     </View>
   );
 }

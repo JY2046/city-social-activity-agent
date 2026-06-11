@@ -92,6 +92,34 @@ describe("cloud function client", () => {
     expect(callFunction).toHaveBeenCalledWith({ name: "getActivityDetail", data: { activityId: "a-sushi" } });
   });
 
+  it("initializes wx.cloud before the first cloud function call", async () => {
+    let initialized = false;
+    const init = vi.fn(() => {
+      initialized = true;
+    });
+    const callFunction = vi.fn(async () => {
+      if (!initialized) {
+        throw new Error("Cloud API isn't enabled, please call wx.cloud.init first");
+      }
+
+      return {
+        result: {
+          ok: true,
+          code: "OK",
+          message: "ok",
+          data: ["a-sushi"],
+        },
+      };
+    });
+    const adapter = createWeChatCloudAdapter({ wx: { cloud: { init, callFunction } } }, "prod-env");
+
+    await expect(callCloudFunction<string[]>(adapter, "listActivities", { city: "上海" })).resolves.toEqual([
+      "a-sushi",
+    ]);
+    expect(init).toHaveBeenCalledTimes(1);
+    expect(init).toHaveBeenCalledWith({ env: "prod-env", traceUser: true });
+  });
+
   it("keeps mock data as the default source until cloud mode is explicitly enabled", () => {
     expect(getDataSourceMode()).toBe("mock");
     expect(getDataSourceMode("cloud")).toBe("cloud");
