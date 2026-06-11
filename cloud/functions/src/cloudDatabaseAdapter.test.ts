@@ -309,6 +309,34 @@ describe("cloud database adapter", () => {
     });
   });
 
+  it("hides ju zhang workspace when the current user did not opt in", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+    await adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: false }, "u-current");
+
+    await expect(adapter.getJuZhangWorkspace("a-coffee", "u-current")).resolves.toMatchObject({
+      activity: undefined,
+      assignment: undefined,
+      activeRegistrations: [],
+      tasks: [],
+    });
+  });
+
+  it("cancels ju zhang waitlist entries", async () => {
+    const db = createFakeDatabase();
+    await seedCloudDatabase(db, createCloudSeedData());
+    const adapter = createCloudDatabaseAdapter(db);
+    await adapter.joinWaitlist({ activityId: "a-sushi", type: "juZhang" }, "u-current");
+
+    await expect(adapter.cancelWaitlist({ activityId: "a-sushi", type: "juZhang" }, "u-current")).resolves
+      .toMatchObject({
+        activityId: "a-sushi",
+        type: "juZhang",
+        status: "cancelled",
+      });
+  });
+
   it("hides ju zhang workspace after the current user cancels registration", async () => {
     const db = createFakeDatabase();
     await seedCloudDatabase(db, createCloudSeedData());

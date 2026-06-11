@@ -21,6 +21,7 @@ export const cloudFunctionNames = [
   "signupActivity",
   "cancelRegistration",
   "joinWaitlist",
+  "cancelWaitlist",
   "promoteWaitlist",
   "selectJuZhangCandidate",
   "getJuZhangWorkspace",

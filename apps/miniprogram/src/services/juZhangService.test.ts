@@ -51,6 +51,17 @@ describe("ju zhang service", () => {
     });
   });
 
+  it("hides the workspace when the current user did not opt in to ju zhang", () => {
+    signup("a-coffee", { willingToBeJuZhang: false });
+
+    expect(getJuZhangWorkspace("a-coffee")).toMatchObject({
+      activity: undefined,
+      assignment: undefined,
+      activeRegistrations: [],
+      tasks: [],
+    });
+  });
+
   it("includes the current user's ju zhang waitlist state in the workspace", () => {
     signup("a-sushi", { willingToBeJuZhang: true });
     joinWaitlist("a-sushi", "juZhang");

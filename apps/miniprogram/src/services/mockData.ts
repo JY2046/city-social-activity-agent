@@ -148,6 +148,27 @@ export function createWaitlistEntry(activityId: string, userId: string, type: Wa
   return clone(entry);
 }
 
+export function cancelWaitlistEntry(activityId: string, userId: string, type: WaitlistType): WaitlistEntry {
+  const existingIndex = store.waitlistEntries.findIndex(
+    (entry) =>
+      entry.activityId === activityId &&
+      entry.userId === userId &&
+      entry.type === type &&
+      entry.status === "waiting",
+  );
+
+  if (existingIndex < 0) {
+    throw new Error(`Active waitlist entry not found for ${activityId}`);
+  }
+
+  store.waitlistEntries[existingIndex] = {
+    ...store.waitlistEntries[existingIndex],
+    status: "cancelled",
+  };
+
+  return clone(store.waitlistEntries[existingIndex]);
+}
+
 export function upsertRegistration(registration: Registration): Registration {
   const existingIndex = store.registrations.findIndex(
     (item) => item.activityId === registration.activityId && item.userId === registration.userId,

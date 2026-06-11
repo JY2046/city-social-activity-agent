@@ -5,8 +5,11 @@ import type { Registration, Settlement } from "@city-social/domain";
 import {
   getArrivalOptions,
   getActivityDetailPrimaryActionState,
+  getActivityFlowPhase,
+  getItineraryStageState,
   getJuZhangAssignmentLabel,
   getJuZhangBannerState,
+  getJuZhangStageState,
   getJuZhangSettlementRows,
   getRegistrationStatusLabel,
   getPaymentActionLabel,
@@ -94,6 +97,57 @@ describe("mini program flow view models", () => {
     expect(getJuZhangAssignmentLabel("accepted")).toBe("已接受");
   });
 
+  it("maps activity formation status to before, during and after phases", () => {
+    expect(getActivityFlowPhase({ formationStatus: "formed" })).toBe("before");
+    expect(getActivityFlowPhase({ formationStatus: "ongoing" })).toBe("during");
+    expect(getActivityFlowPhase({ formationStatus: "ended" })).toBe("after");
+  });
+
+  it("keeps itinerary sections scoped to the current activity phase", () => {
+    expect(getItineraryStageState("before")).toMatchObject({
+      showBeforeInfo: true,
+      showArrivalSync: false,
+      showPayment: false,
+      showFeedback: false,
+    });
+    expect(getItineraryStageState("during")).toMatchObject({
+      showBeforeInfo: false,
+      showArrivalSync: true,
+      showPayment: true,
+      showFeedback: false,
+    });
+    expect(getItineraryStageState("after")).toMatchObject({
+      showBeforeInfo: false,
+      showArrivalSync: false,
+      showPayment: false,
+      showFeedback: true,
+    });
+  });
+
+  it("keeps ju zhang workspace sections scoped to the current activity phase", () => {
+    expect(getJuZhangStageState("before")).toMatchObject({
+      showTaskCards: false,
+      showTopicCard: false,
+      showArrivalCheck: false,
+      showSettlement: false,
+      showAfterFeedback: false,
+    });
+    expect(getJuZhangStageState("during")).toMatchObject({
+      showTaskCards: true,
+      showTopicCard: true,
+      showArrivalCheck: true,
+      showSettlement: true,
+      showAfterFeedback: false,
+    });
+    expect(getJuZhangStageState("after")).toMatchObject({
+      showTaskCards: false,
+      showTopicCard: false,
+      showArrivalCheck: false,
+      showSettlement: false,
+      showAfterFeedback: true,
+    });
+  });
+
   it("shows a ju zhang queue state when another participant has accepted", () => {
     expect(
       getJuZhangBannerState({
@@ -105,6 +159,7 @@ describe("mini program flow view models", () => {
           volunteered: true,
         },
         currentUserId: "u-current",
+        currentRegistration: { ...registration, willingToBeJuZhang: true },
         isQueued: false,
       }),
     ).toEqual({
@@ -125,9 +180,33 @@ describe("mini program flow view models", () => {
           volunteered: true,
         },
         currentUserId: "u-current",
+        currentRegistration: { ...registration, willingToBeJuZhang: true },
         isQueued: true,
-      }).primaryLabel,
-    ).toBe("局长排队中");
+      }),
+    ).toMatchObject({
+      primaryLabel: "取消局长排队",
+      mode: "queued",
+    });
+  });
+
+  it("does not offer ju zhang queue actions when the user did not opt in", () => {
+    expect(
+      getJuZhangBannerState({
+        assignment: {
+          id: "jz-1",
+          activityId: "a-sushi",
+          candidateUserId: "u-qiao",
+          status: "accepted",
+          volunteered: true,
+        },
+        currentUserId: "u-current",
+        currentRegistration: registration,
+      }),
+    ).toEqual({
+      title: "暂无局长权限",
+      copy: "你报名时没有勾选愿意担任局长，因此不会进入局长候选队列。",
+      mode: "none",
+    });
   });
 
   it("shows payment work only for unpaid paid activities", () => {

@@ -16,6 +16,7 @@ const deployFunctionNames = [
   "signupActivity",
   "cancelRegistration",
   "joinWaitlist",
+  "cancelWaitlist",
   "confirmArrival",
   "confirmSettlement",
   "getJuZhangWorkspace",

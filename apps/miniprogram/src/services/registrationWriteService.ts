@@ -4,6 +4,7 @@ import { loadActivityDetail, type ActivityReadAdapter } from "./activityReadServ
 import {
   cloudConfirmArrival,
   cloudConfirmSettlement,
+  cloudCancelWaitlist,
   cloudJoinWaitlist,
   cloudSignupActivity,
   cloudCancelSignup,
@@ -23,6 +24,7 @@ import {
   confirmArrival,
   confirmPayment,
   cancelSignup as cancelMockSignup,
+  cancelWaitlist as cancelMockWaitlist,
   joinWaitlist,
   signup,
   type ArrivalStatus,
@@ -33,6 +35,7 @@ export interface RegistrationWriteAdapter {
   signupActivity: (activityId: string, options: SignupOptions) => Promise<Registration>;
   cancelSignup: (activityId: string) => Promise<Registration>;
   joinWaitlist: (activityId: string, type: WaitlistType) => Promise<WaitlistEntry>;
+  cancelWaitlist: (activityId: string, type: WaitlistType) => Promise<WaitlistEntry>;
   confirmArrival: (activityId: string, status: ArrivalStatus) => Promise<Registration>;
   confirmPayment: (activityId: string, mode?: SettlementConfirmationInput["mode"]) => Promise<Settlement>;
 }
@@ -58,6 +61,10 @@ export type CancelSignupWriteMyActivityRefreshState =
   | { status: "error"; message: string };
 
 export type WaitlistWriteState =
+  | { status: "ready"; waitlistEntry: WaitlistEntry }
+  | { status: "error"; message: string };
+
+export type CancelWaitlistWriteState =
   | { status: "ready"; waitlistEntry: WaitlistEntry }
   | { status: "error"; message: string };
 
@@ -88,6 +95,9 @@ export function createMockRegistrationWriteAdapter(): RegistrationWriteAdapter {
     async joinWaitlist(activityId, type) {
       return joinWaitlist(activityId, type);
     },
+    async cancelWaitlist(activityId, type) {
+      return cancelMockWaitlist(activityId, type);
+    },
     async confirmArrival(activityId, status) {
       return confirmArrival(activityId, status);
     },
@@ -113,6 +123,9 @@ export function createCloudRegistrationWriteAdapter(
     },
     joinWaitlist(activityId, type) {
       return cloudJoinWaitlist(cloudAdapter, activityId, type);
+    },
+    cancelWaitlist(activityId, type) {
+      return cloudCancelWaitlist(cloudAdapter, activityId, type);
     },
     confirmArrival(activityId, status) {
       return cloudConfirmArrival(cloudAdapter, activityId, status);
@@ -249,6 +262,24 @@ export async function runJoinWaitlist(
     return {
       status: "ready",
       waitlistEntry: await adapter.joinWaitlist(activityId, type),
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: toErrorMessage(error),
+    };
+  }
+}
+
+export async function runCancelWaitlist(
+  adapter: RegistrationWriteAdapter,
+  activityId: string,
+  type: WaitlistType,
+): Promise<CancelWaitlistWriteState> {
+  try {
+    return {
+      status: "ready",
+      waitlistEntry: await adapter.cancelWaitlist(activityId, type),
     };
   } catch (error) {
     return {

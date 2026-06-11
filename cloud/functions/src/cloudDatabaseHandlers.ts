@@ -1,6 +1,7 @@
 import type {
   ActivityFeedQuery,
   CancelRegistrationInput,
+  CancelWaitlistInput,
   CloudFunctionEnvelope,
   CloudRequestContext,
   ConfirmArrivalInput,
@@ -93,6 +94,10 @@ export function createCloudDatabaseHandlers(adapter: CloudDatabaseAdapter) {
 
     joinWaitlist(input: JoinWaitlistInput, context: CloudRequestContext) {
       return run(() => adapter.joinWaitlist(input, context.userId));
+    },
+
+    cancelWaitlist(input: CancelWaitlistInput, context: CloudRequestContext) {
+      return run(() => adapter.cancelWaitlist(input, context.userId));
     },
 
     confirmArrival(input: ConfirmArrivalInput, context: CloudRequestContext) {

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import {
   cancelSignup,
+  cancelWaitlist,
   confirmArrival,
   confirmPayment,
   joinWaitlist,
@@ -94,6 +95,19 @@ describe("mini program registration service", () => {
     expect(activityWaitlist.order).toBe(1);
     expect(juZhangWaitlist.type).toBe("juZhang");
     expect(listWaitlistEntries()).toHaveLength(2);
+  });
+
+  it("can cancel the current user's ju zhang waitlist entry", () => {
+    joinWaitlist("a-sushi", "juZhang");
+
+    const cancelled = cancelWaitlist("a-sushi", "juZhang");
+
+    expect(cancelled).toMatchObject({
+      activityId: "a-sushi",
+      type: "juZhang",
+      status: "cancelled",
+    });
+    expect(listWaitlistEntries()).toContainEqual(expect.objectContaining({ type: "juZhang", status: "cancelled" }));
   });
 
   it("updates arrival status for the current user's active registration", () => {

@@ -1,4 +1,11 @@
-import type { JuZhangAssignment, JuZhangStatus, Registration, RegistrationStatus, Settlement } from "@city-social/domain";
+import type {
+  FormationStatus,
+  JuZhangAssignment,
+  JuZhangStatus,
+  Registration,
+  RegistrationStatus,
+  Settlement,
+} from "@city-social/domain";
 
 import type { ArrivalStatus } from "./registrationService";
 import type { WaitlistType } from "./mockData";
@@ -37,6 +44,7 @@ export interface JuZhangSettlementRow {
 export interface JuZhangBannerInput {
   assignment?: JuZhangAssignment;
   currentUserId: string;
+  currentRegistration?: Registration;
   isQueued?: boolean;
 }
 
@@ -45,7 +53,26 @@ export interface JuZhangBannerState {
   copy: string;
   primaryLabel?: string;
   secondaryLabel?: string;
-  mode: "respond" | "accepted" | "declined" | "queue" | "queued";
+  mode: "respond" | "accepted" | "declined" | "queue" | "queued" | "none";
+}
+
+export type ActivityFlowPhase = "before" | "during" | "after";
+
+export interface ItineraryStageState {
+  showBeforeInfo: boolean;
+  showJuZhangApplication: boolean;
+  showArrivalSync: boolean;
+  showPayment: boolean;
+  showFeedback: boolean;
+}
+
+export interface JuZhangStageState {
+  showBeforeInfo: boolean;
+  showTaskCards: boolean;
+  showTopicCard: boolean;
+  showArrivalCheck: boolean;
+  showSettlement: boolean;
+  showAfterFeedback: boolean;
 }
 
 const arrivalOptions: ArrivalOption[] = [
@@ -74,6 +101,39 @@ const juZhangAssignmentLabels: Record<JuZhangStatus, string> = {
   withdrawn: "已退出",
   replaced: "已替换",
 };
+
+export function getActivityFlowPhase(activity: { formationStatus: FormationStatus }): ActivityFlowPhase {
+  if (activity.formationStatus === "ongoing") {
+    return "during";
+  }
+
+  if (activity.formationStatus === "ended" || activity.formationStatus === "cancelled") {
+    return "after";
+  }
+
+  return "before";
+}
+
+export function getItineraryStageState(phase: ActivityFlowPhase): ItineraryStageState {
+  return {
+    showBeforeInfo: phase === "before",
+    showJuZhangApplication: phase === "before",
+    showArrivalSync: phase === "during",
+    showPayment: phase === "during",
+    showFeedback: phase === "after",
+  };
+}
+
+export function getJuZhangStageState(phase: ActivityFlowPhase): JuZhangStageState {
+  return {
+    showBeforeInfo: phase === "before",
+    showTaskCards: phase === "during",
+    showTopicCard: phase === "during",
+    showArrivalCheck: phase === "during",
+    showSettlement: phase === "during",
+    showAfterFeedback: phase === "after",
+  };
+}
 
 export function shouldShowJuZhangTasks(registration?: Registration): boolean {
   return registration?.status === "confirmed" && registration.willingToBeJuZhang;
@@ -169,13 +229,25 @@ export function getJuZhangAssignmentLabel(status: JuZhangStatus): string {
 export function getJuZhangBannerState({
   assignment,
   currentUserId,
+  currentRegistration,
   isQueued = false,
 }: JuZhangBannerInput): JuZhangBannerState {
+  const isCurrentUserAssigned = assignment?.candidateUserId === currentUserId;
+  const canEnterJuZhangQueue = currentRegistration?.willingToBeJuZhang === true || isQueued || isCurrentUserAssigned;
+
+  if (!canEnterJuZhangQueue) {
+    return {
+      title: "暂无局长权限",
+      copy: "你报名时没有勾选愿意担任局长，因此不会进入局长候选队列。",
+      mode: "none",
+    };
+  }
+
   if (assignment?.status === "accepted" && assignment.candidateUserId !== currentUserId) {
     return {
       title: "当前状态：已有局长",
       copy: "这个小局已经有局长，你可以加入候选排队；如果当前局长退出，系统会按顺序提醒。",
-      primaryLabel: isQueued ? "局长排队中" : "加入局长排队",
+      primaryLabel: isQueued ? "取消局长排队" : "加入局长排队",
       mode: isQueued ? "queued" : "queue",
     };
   }
@@ -192,7 +264,7 @@ export function getJuZhangBannerState({
     return {
       title: "当前状态：已拒绝局长",
       copy: "你仍然保留活动报名；如果之后想参与候选，可以加入局长排队。",
-      primaryLabel: isQueued ? "局长排队中" : "加入局长排队",
+      primaryLabel: isQueued ? "取消局长排队" : "加入局长排队",
       mode: isQueued ? "queued" : "queue",
     };
   }

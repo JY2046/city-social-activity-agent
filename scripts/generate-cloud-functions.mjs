@@ -9,6 +9,7 @@ const functionNames = [
   "signupActivity",
   "cancelRegistration",
   "joinWaitlist",
+  "cancelWaitlist",
   "confirmArrival",
   "confirmSettlement",
   "getJuZhangWorkspace",
@@ -164,6 +165,26 @@ async function createOrGetWaitlistEntry(db, input, userId) {
   return setDocument(db, "waitlists", entry);
 }
 
+async function cancelExistingWaitlistEntry(db, input, userId) {
+  const result = await db.collection("waitlists").where({
+    activityId: input.activityId,
+    userId,
+    type: input.type,
+    status: "waiting",
+  }).get();
+  const existingEntry = result.data[0];
+
+  if (!existingEntry) {
+    throw new Error("Active waitlist entry not found");
+  }
+
+  return setDocument(db, "waitlists", {
+    ...existingEntry,
+    status: "cancelled",
+    updatedAt: now(),
+  });
+}
+
 async function listActivities(input = {}) {
   const db = getDb();
   const result = await db.collection("activities").where(
@@ -315,6 +336,13 @@ async function joinWaitlist(input) {
   return createOrGetWaitlistEntry(db, input, userId);
 }
 
+async function cancelWaitlist(input) {
+  const db = getDb();
+  const userId = await resolveUserId(db);
+
+  return cancelExistingWaitlistEntry(db, input, userId);
+}
+
 async function confirmArrival(input) {
   const db = getDb();
   const currentUserId = await resolveUserId(db);
@@ -370,9 +398,19 @@ async function getJuZhangWorkspace(input) {
   const db = getDb();
   const userId = await resolveUserId(db);
 
-  if (!(await hasActiveRegistration(db, input.activityId, userId))) {
+  const currentRegistration = await findRegistration(db, input.activityId, userId);
+  const currentUserAssignment = await findJuZhangAssignment(db, input.activityId, userId);
+  const currentUserWaitlists = await db.collection("waitlists").where({ activityId: input.activityId, userId, type: "juZhang" }).get();
+  const juZhangWaitlistEntry = currentUserWaitlists.data.find((entry) => entry.status === "waiting");
+  const canViewWorkspace =
+    currentRegistration?.willingToBeJuZhang === true ||
+    currentUserAssignment !== undefined ||
+    juZhangWaitlistEntry !== undefined;
+
+  if (!(await hasActiveRegistration(db, input.activityId, userId)) || !canViewWorkspace) {
     return {
       currentUserId: userId,
+      currentRegistration: undefined,
       activity: undefined,
       assignment: undefined,
       topicCard: undefined,
@@ -387,16 +425,16 @@ async function getJuZhangWorkspace(input) {
   const assignments = await db.collection("juZhangAssignments").where({ activityId: input.activityId }).get();
   const topicCards = await db.collection("topicCards").where({ activityId: input.activityId }).get();
   const registrations = await db.collection("registrations").where({ activityId: input.activityId }).get();
-  const waitlists = await db.collection("waitlists").where({ activityId: input.activityId, userId, type: "juZhang" }).get();
   const settlement = await getDocument(db, "settlements", input.activityId);
 
   return {
     activity: activity?.reviewStatus === "approved" ? activity : undefined,
     currentUserId: userId,
+    currentRegistration,
     assignment: assignments.data[0],
     topicCard: topicCards.data[0],
     settlement,
-    juZhangWaitlistEntry: waitlists.data.find((entry) => entry.status === "waiting"),
+    juZhangWaitlistEntry,
     activeRegistrations: registrations.data.filter((registration) => activeRegistrationStatuses.has(registration.status)),
     tasks: juZhangTasks,
   };
@@ -469,6 +507,7 @@ const handlers = {
   signupActivity,
   cancelRegistration,
   joinWaitlist,
+  cancelWaitlist,
   confirmArrival,
   confirmSettlement,
   getJuZhangWorkspace,

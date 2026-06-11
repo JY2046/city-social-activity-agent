@@ -140,3 +140,30 @@ export function createWaitlistEntry(
 
   return copy(entry);
 }
+
+export function cancelWaitlistEntry(
+  store: CloudStore,
+  activityId: string,
+  userId: string,
+  type: WaitlistType,
+): CloudWaitlistEntry {
+  const existingIndex = store.waitlists.findIndex(
+    (entry) =>
+      entry.activityId === activityId &&
+      entry.userId === userId &&
+      entry.type === type &&
+      entry.status === "waiting",
+  );
+
+  if (existingIndex < 0) {
+    throw new Error("Active waitlist entry not found");
+  }
+
+  store.waitlists[existingIndex] = {
+    ...store.waitlists[existingIndex],
+    status: "cancelled",
+    updatedAt: new Date().toISOString(),
+  };
+
+  return copy(store.waitlists[existingIndex]);
+}

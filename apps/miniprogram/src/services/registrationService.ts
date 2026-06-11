@@ -3,6 +3,7 @@ import type { Registration } from "@city-social/domain";
 import { clone } from "./clone";
 import {
   createWaitlistEntry,
+  cancelWaitlistEntry,
   DEFAULT_CURRENT_USER_ID,
   getMockStore,
   resetMockStore,
@@ -147,6 +148,10 @@ export function joinWaitlist(activityId: string, type: WaitlistType, userId?: st
   }
 
   return createWaitlistEntry(activityId, getUserId(userId), type);
+}
+
+export function cancelWaitlist(activityId: string, type: WaitlistType, userId?: string): WaitlistEntry {
+  return cancelWaitlistEntry(activityId, getUserId(userId), type);
 }
 
 export function confirmArrival(activityId: string, arrivalStatus: ArrivalStatus, userId?: string): Registration {

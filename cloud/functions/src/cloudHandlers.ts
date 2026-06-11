@@ -2,6 +2,7 @@ import type { Registration, Settlement } from "@city-social/domain";
 
 import {
   copy,
+  cancelWaitlistEntry,
   createWaitlistEntry,
   type CloudStore,
   type WaitlistType,
@@ -41,6 +42,11 @@ export interface CancelRegistrationInput {
 }
 
 export interface JoinWaitlistInput {
+  activityId: string;
+  type: WaitlistType;
+}
+
+export interface CancelWaitlistInput {
   activityId: string;
   type: WaitlistType;
 }
@@ -265,6 +271,10 @@ export function createCloudHandlers(store: CloudStore) {
       }
 
       return ok(createWaitlistEntry(store, input.activityId, context.userId, input.type, fixedNow));
+    },
+
+    async cancelWaitlist(input: CancelWaitlistInput, context: CloudRequestContext) {
+      return ok(cancelWaitlistEntry(store, input.activityId, context.userId, input.type));
     },
 
     async confirmArrival(input: ConfirmArrivalInput, context: CloudRequestContext) {

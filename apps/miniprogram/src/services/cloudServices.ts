@@ -67,6 +67,17 @@ export function cloudJoinWaitlist(
   });
 }
 
+export function cloudCancelWaitlist(
+  adapter: CloudCallAdapter,
+  activityId: string,
+  type: WaitlistType,
+): Promise<WaitlistEntry> {
+  return callCloudFunction<WaitlistEntry>(adapter, "cancelWaitlist", {
+    activityId,
+    type,
+  });
+}
+
 export function cloudConfirmArrival(
   adapter: CloudCallAdapter,
   activityId: string,

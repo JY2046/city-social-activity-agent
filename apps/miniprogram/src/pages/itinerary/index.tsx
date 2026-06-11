@@ -8,16 +8,23 @@ import { buildActivityDetailUrl, readActivityIdParam } from "../../services/acti
 import { createActivityReadAdapter, loadActivityDetail } from "../../services/activityReadService";
 import { getSettlementByActivityId } from "../../services/mockData";
 import { formatActivityDateTime, getCostLabel } from "../../services/activityPresentation";
-import { getArrivalOptions, getPaymentActionLabel } from "../../services/flowViewModels";
+import {
+  getActivityFlowPhase,
+  getArrivalOptions,
+  getItineraryStageState,
+  getPaymentActionLabel,
+} from "../../services/flowViewModels";
 import type { MiniProgramActivity } from "../../services/mockData";
 import type { ArrivalStatus } from "../../services/registrationService";
 import {
   createRegistrationWriteAdapter,
   runCancelSignupAndRefreshMyActivityFeed,
+  runCancelWaitlist,
   runConfirmArrival,
   runConfirmPayment,
   runJoinWaitlistAndRefreshActivity,
 } from "../../services/registrationWriteService";
+import { createJuZhangAdapter, runLoadJuZhangWorkspace } from "../../services/juZhangService";
 import {
   createUserActivityReadAdapter,
   loadMyActivityFeed,
@@ -49,6 +56,7 @@ export default function ItineraryPage() {
   const initialActivityId = router.params.activityId ? readActivityIdParam(router.params.activityId) : undefined;
   const activityReadAdapter = useMemo(() => createActivityReadAdapter(), []);
   const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
+  const juZhangAdapter = useMemo(() => createJuZhangAdapter(), []);
   const [selectedActivityId, setSelectedActivityId] = useState<string | undefined>(initialActivityId);
   const [myItems, setMyItems] = useState<UserActivityItem[]>([]);
   const [activity, setActivity] = useState<MiniProgramActivity | undefined>(() =>
@@ -62,6 +70,8 @@ export default function ItineraryPage() {
   );
   const [pendingAction, setPendingAction] = useState<string | undefined>();
   const [actionMessage, setActionMessage] = useState("");
+  const activityPhase = activity ? getActivityFlowPhase(activity) : undefined;
+  const stageState = activityPhase ? getItineraryStageState(activityPhase) : undefined;
 
   const refreshMyItems = useCallback(async () => {
     const result = await loadMyActivityFeed(userActivityReadAdapter);
@@ -114,6 +124,15 @@ export default function ItineraryPage() {
         setActivity(activityResult.activity);
         if (registrationResult.status === "ready") {
           setRegistration(registrationResult.registration);
+          if (registrationResult.registration?.willingToBeJuZhang) {
+            const workspaceResult = await runLoadJuZhangWorkspace(juZhangAdapter, selectedActivityId);
+            setIsJuZhangQueued(
+              workspaceResult.status === "ready" &&
+                workspaceResult.workspace.juZhangWaitlistEntry?.status === "waiting",
+            );
+          } else {
+            setIsJuZhangQueued(false);
+          }
           if (
             registrationResult.registration?.status === "confirmed" ||
             registrationResult.registration?.status === "arrived" ||
@@ -130,6 +149,7 @@ export default function ItineraryPage() {
       if (activityResult.status === "empty") {
         setActivity(undefined);
         setRegistration(undefined);
+        setIsJuZhangQueued(false);
         setActionMessage("活动不存在或暂不可查看");
         return;
       }
@@ -149,7 +169,7 @@ export default function ItineraryPage() {
     return () => {
       isMounted = false;
     };
-  }, [activityReadAdapter, selectedActivityId, userActivityReadAdapter]);
+  }, [activityReadAdapter, juZhangAdapter, selectedActivityId, userActivityReadAdapter]);
 
   async function handleArrival(status: ArrivalStatus) {
     if (!activity || !registration || registration.status === "waitlisted") {
@@ -198,22 +218,25 @@ export default function ItineraryPage() {
       return;
     }
 
+    if (!registration.willingToBeJuZhang) {
+      setActionMessage("你报名时没有勾选愿意担任局长，不会进入局长候选队列。");
+      return;
+    }
+
     setPendingAction("juZhangQueue");
     setActionMessage("");
-    const result = await runJoinWaitlistAndRefreshActivity(
-      createRegistrationWriteAdapter(),
-      activityReadAdapter,
-      activity.id,
-      "juZhang",
-    );
+    const writeAdapter = createRegistrationWriteAdapter();
+    const result = isJuZhangQueued
+      ? await runCancelWaitlist(writeAdapter, activity.id, "juZhang")
+      : await runJoinWaitlistAndRefreshActivity(writeAdapter, activityReadAdapter, activity.id, "juZhang");
     setPendingAction(undefined);
 
     if (result.status === "ready") {
-      setIsJuZhangQueued(true);
-      if (result.activity) {
+      setIsJuZhangQueued(!isJuZhangQueued);
+      if ("activity" in result && result.activity) {
         setActivity(result.activity);
       }
-      if (result.refreshMessage) {
+      if ("refreshMessage" in result && result.refreshMessage) {
         setActionMessage(result.refreshMessage);
       }
       return;
@@ -307,7 +330,13 @@ export default function ItineraryPage() {
         </View>
       ) : null}
 
-      <View className="flow-card">
+      {stageState?.showBeforeInfo ? <View className="flow-card">
+        <Text className="card-title">活动前准备</Text>
+        <Text className="card-copy">活动前不开放联系方式；活动开始前 30 分钟可同步到场状态。</Text>
+        <Text className="card-copy">需要变更计划时，请在规则允许时间内取消报名。</Text>
+      </View> : null}
+
+      {stageState?.showArrivalSync ? <View className="flow-card">
         <Text className="card-title">到场同步</Text>
         <View className="arrival-grid">
           {getArrivalOptions().map((option) => (
@@ -321,23 +350,48 @@ export default function ItineraryPage() {
             </Button>
           ))}
         </View>
-      </View>
+      </View> : null}
 
-      <View className="flow-card">
+      {stageState?.showJuZhangApplication ? <View className="flow-card">
         <Text className="card-title">局长申请</Text>
-        <Text className="card-copy">如果该活动已有局长，会进入候选队列。</Text>
-        <Button className="outline-button" disabled={pendingAction !== undefined} onClick={handleJuZhangQueue}>
-          {pendingAction === "juZhangQueue" ? "提交中" : isJuZhangQueued ? "局长排队中" : "申请局长"}
+        <Text className="card-copy">
+          {registration?.willingToBeJuZhang
+            ? "如果该活动已有局长，会进入候选队列。"
+            : "你报名时没有勾选愿意担任局长，因此不会进入候选队列。"}
+        </Text>
+        <Button
+          className="outline-button"
+          disabled={pendingAction !== undefined || registration?.willingToBeJuZhang !== true}
+          onClick={handleJuZhangQueue}
+        >
+          {pendingAction === "juZhangQueue"
+            ? "提交中"
+            : registration?.willingToBeJuZhang !== true
+              ? "未勾选局长"
+              : isJuZhangQueued
+                ? "取消局长排队"
+                : "申请局长"}
         </Button>
-      </View>
+      </View> : null}
 
-      <View className="flow-card">
+      {stageState?.showPayment ? <View className="flow-card">
         <Text className="card-title">费用确认</Text>
         <Text className="card-copy">普通参与者确认自己的费用和支付状态，局长再统一核准。</Text>
         <Button className="outline-button" disabled={pendingAction !== undefined} onClick={handlePayment}>
           {pendingAction === "payment" ? "确认中" : getPaymentActionLabel(settlement, registration?.userId ?? "")}
         </Button>
-      </View>
+      </View> : null}
+
+      {stageState?.showFeedback ? <View className="flow-card">
+        <Text className="card-title">活动后反馈</Text>
+        <Text className="card-copy">活动结束后开放反馈和互选，双方同意后才开放联系。</Text>
+        <Button
+          className="outline-button"
+          onClick={() => void navigateTo({ url: `/pages/feedback/index?activityId=${encodeURIComponent(selectedActivityId)}` })}
+        >
+          去反馈
+        </Button>
+      </View> : null}
 
       {actionMessage ? <Text className="flow-message">{actionMessage}</Text> : null}
 

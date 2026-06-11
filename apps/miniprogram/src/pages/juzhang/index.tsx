@@ -4,7 +4,9 @@ import { navigateTo, useRouter } from "@tarojs/taro";
 
 import { getSettlementSummary } from "@city-social/domain";
 import {
+  getActivityFlowPhase,
   getJuZhangBannerState,
+  getJuZhangStageState,
   getJuZhangSettlementRows,
   getRegistrationStatusLabel,
 } from "../../services/flowViewModels";
@@ -24,6 +26,7 @@ import {
   selectTopicFromHistory,
   type TopicDeck,
 } from "../../services/topicDeckViewModel";
+import { createRegistrationWriteAdapter, runCancelWaitlist } from "../../services/registrationWriteService";
 
 import "../activity-detail/index.css";
 import "./index.css";
@@ -39,10 +42,13 @@ export default function JuZhangPage() {
   const [confirmedPaymentUserIds, setConfirmedPaymentUserIds] = useState<string[]>([]);
   const settlementSummary = workspace?.settlement ? getSettlementSummary(workspace.settlement) : undefined;
   const settlementRows = getJuZhangSettlementRows(workspace?.settlement, getUserDisplayName, confirmedPaymentUserIds);
+  const activityPhase = workspace?.activity ? getActivityFlowPhase(workspace.activity) : undefined;
+  const stageState = activityPhase ? getJuZhangStageState(activityPhase) : undefined;
   const bannerState = workspace?.activity
     ? getJuZhangBannerState({
         assignment: workspace.assignment,
         currentUserId: workspace.currentUserId,
+        currentRegistration: workspace.currentRegistration,
         isQueued: workspace.juZhangWaitlistEntry?.status === "waiting",
       })
     : undefined;
@@ -54,10 +60,7 @@ export default function JuZhangPage() {
       if (result.workspace.activity) {
         setTopicDeck((deck) => deck ?? createTopicDeck(result.workspace.activity, result.workspace.topicCard));
       }
-      setPageMessage(
-        nextMessage ??
-          (result.workspace.activity ? "" : "你已不在该活动中，不能查看局长工作台。"),
-      );
+      setPageMessage(nextMessage ?? "");
       return;
     }
     setPageMessage(result.message);
@@ -82,13 +85,29 @@ export default function JuZhangPage() {
   }
 
   function handleJoinJuZhangQueue() {
-    if (!workspace?.activity || bannerState?.mode === "queued") {
+    if (!workspace?.activity) {
+      return;
+    }
+
+    if (bannerState?.mode === "queued") {
+      void handleCancelJuZhangQueue();
       return;
     }
 
     void navigateTo({
       url: `/pages/waitlist/index?activityId=${encodeURIComponent(workspace.activity.id)}&type=juZhang`,
     });
+  }
+
+  async function handleCancelJuZhangQueue() {
+    if (!workspace?.activity) {
+      return;
+    }
+
+    setPendingAction("cancelJuZhangQueue");
+    const result = await runCancelWaitlist(createRegistrationWriteAdapter(), workspace.activity.id, "juZhang");
+    await refreshWorkspace(result.status === "ready" ? "已取消局长候选排队。" : result.message);
+    setPendingAction(undefined);
   }
 
   async function handleArrival(userId: string) {
@@ -109,10 +128,10 @@ export default function JuZhangPage() {
   }
 
   return (
-    <View className="detail-page">
+      <View className="detail-page">
       <Text className="type-label">局长工作台</Text>
-      <Text className="detail-title">{workspace?.activity?.title ?? "开场、协调、AA 确认"}</Text>
-      <Text className="detail-meta">系统会给任务提示，但局长只是协助流程，不承担额外压力。</Text>
+      <Text className="detail-title">{workspace?.activity?.title ?? "暂无可管理的小局"}</Text>
+      {workspace?.activity ? <Text className="detail-meta">系统会给任务提示，但局长只是协助流程，不承担额外压力。</Text> : null}
       {pageMessage ? <Text className="detail-meta">{pageMessage}</Text> : null}
 
       {!workspace?.activity ? (
@@ -138,17 +157,23 @@ export default function JuZhangPage() {
         {bannerState?.mode === "queue" || bannerState?.mode === "queued" ? (
           <View className="action-row">
             <Button
-              className={bannerState.mode === "queued" ? "accept-button disabled" : "accept-button"}
-              disabled={bannerState.mode === "queued"}
+              className="accept-button"
+              disabled={pendingAction === "cancelJuZhangQueue"}
               onClick={handleJoinJuZhangQueue}
             >
-              {bannerState.primaryLabel}
+              {pendingAction === "cancelJuZhangQueue" ? "取消中" : bannerState.primaryLabel}
             </Button>
           </View>
         ) : null}
       </View> : null}
 
-      {workspace?.activity ? <View className="section">
+      {workspace?.activity && stageState?.showBeforeInfo ? <View className="section">
+        <Text className="section-title">活动前准备</Text>
+        <Text className="section-copy">活动前先不用处理开场、到场和 AA；系统会在临近开始时再提示你。</Text>
+        <Text className="section-copy">可以先确认集合地点、时间，以及是否需要提前到场。</Text>
+      </View> : null}
+
+      {workspace?.activity && stageState?.showTaskCards ? <View className="section">
         <View className="section-heading-row">
           <Text className="section-title">局长任务</Text>
           <Text className="tiny-chip">系统会提供指引</Text>
@@ -161,7 +186,7 @@ export default function JuZhangPage() {
         ))}
       </View> : null}
 
-      {workspace?.activity ? <View className="section topic-section">
+      {workspace?.activity && stageState?.showTopicCard ? <View className="section topic-section">
         <View className="section-heading-row">
           <Text className="section-title">AI 话题卡</Text>
           <Button className="topic-action top-right" onClick={() => setTopicDeck((deck) => (deck ? rotateTopicDeck(deck) : deck))}>
@@ -185,7 +210,7 @@ export default function JuZhangPage() {
         </View>
       </View> : null}
 
-      {workspace?.activity ? <View className="section">
+      {workspace?.activity && stageState?.showArrivalCheck ? <View className="section">
         <Text className="section-title">到场核准</Text>
         {(workspace?.activeRegistrations ?? []).map((registration) => (
           <View className="participant-row" key={registration.id}>
@@ -202,7 +227,7 @@ export default function JuZhangPage() {
         ))}
       </View> : null}
 
-      {workspace?.activity ? <View className="section">
+      {workspace?.activity && stageState?.showSettlement ? <View className="section">
         <View className="section-heading-row">
           <Text className="section-title">AA 确认</Text>
           <Text className="tiny-chip">{settlementSummary?.label ?? "无费用"}</Text>
@@ -224,9 +249,15 @@ export default function JuZhangPage() {
         ))}
       </View> : null}
 
-      {workspace?.activity ? <View className="section">
+      {workspace?.activity && stageState?.showAfterFeedback ? <View className="section">
         <Text className="section-title">活动后</Text>
         <Text className="section-copy">活动结束后进入反馈页，完成局长反馈、异常记录和互选。</Text>
+        <Button
+          className="accept-button"
+          onClick={() => void navigateTo({ url: `/pages/feedback/index?activityId=${encodeURIComponent(workspace.activity.id)}` })}
+        >
+          去反馈
+        </Button>
       </View> : null}
     </View>
   );

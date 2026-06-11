@@ -2,6 +2,7 @@ import type {
   ActivityFeedQuery,
   ArrivalStatus,
   CancelRegistrationInput,
+  CancelWaitlistInput,
   ConfirmArrivalInput,
   ConfirmSettlementInput,
   GetFeedbackCompletionStateInput,
@@ -181,6 +182,30 @@ async function createOrGetWaitlistEntry(
   return setDocument(db, "waitlists", entry);
 }
 
+async function cancelExistingWaitlistEntry(
+  db: CloudDatabaseLike,
+  input: CancelWaitlistInput,
+  userId: string,
+) {
+  const result = await db.collection("waitlists").where({
+    activityId: input.activityId,
+    userId,
+    type: input.type,
+    status: "waiting",
+  }).get();
+  const existingEntry = result.data[0] as CloudWaitlistDocument | undefined;
+
+  if (!existingEntry) {
+    throw new Error("Active waitlist entry not found");
+  }
+
+  return setDocument(db, "waitlists", {
+    ...existingEntry,
+    status: "cancelled",
+    updatedAt: now(),
+  });
+}
+
 export async function seedCloudDatabase(db: CloudDatabaseLike, seedData: CloudSeedData): Promise<void> {
   for (const collectionName of seedCollectionOrder) {
     const documents = seedData[collectionName] as unknown[];
@@ -351,6 +376,10 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
       return createOrGetWaitlistEntry(db, input, userId);
     },
 
+    async cancelWaitlist(input: CancelWaitlistInput, userId: string) {
+      return cancelExistingWaitlistEntry(db, input, userId);
+    },
+
     async confirmArrival(input: ConfirmArrivalInput, userId: string): Promise<CloudRegistrationDocument> {
       if (!isValidArrivalStatus(input.status)) {
         throw new Error("Invalid arrival status");
@@ -409,9 +438,21 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
     },
 
     async getJuZhangWorkspace(activityId: string, userId: string) {
-      if (!(await hasActiveRegistration(db, activityId, userId))) {
+      const currentRegistration = await findRegistration(db, activityId, userId);
+      const currentUserAssignment = await findJuZhangAssignment(db, activityId, userId);
+      const currentUserWaitlists = await db.collection("waitlists").where({ activityId, userId, type: "juZhang" }).get();
+      const juZhangWaitlistEntry = (currentUserWaitlists.data as CloudWaitlistDocument[]).find(
+        (entry) => entry.status === "waiting",
+      );
+      const canViewWorkspace =
+        currentRegistration?.willingToBeJuZhang === true ||
+        currentUserAssignment !== undefined ||
+        juZhangWaitlistEntry !== undefined;
+
+      if (!(await hasActiveRegistration(db, activityId, userId)) || !canViewWorkspace) {
         return {
           currentUserId: userId,
+          currentRegistration: undefined,
           activity: undefined,
           assignment: undefined,
           topicCard: undefined,
@@ -426,16 +467,16 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
       const assignments = await db.collection("juZhangAssignments").where({ activityId }).get();
       const topicCards = await db.collection("topicCards").where({ activityId }).get();
       const registrations = await db.collection("registrations").where({ activityId }).get();
-      const waitlists = await db.collection("waitlists").where({ activityId, userId, type: "juZhang" }).get();
       const settlement = await getDocument<CloudSettlementDocument>(db, "settlements", activityId);
 
       return {
         activity: activity?.reviewStatus === "approved" ? activity : undefined,
         currentUserId: userId,
+        currentRegistration,
         assignment: assignments.data[0] as CloudJuZhangAssignmentDocument | undefined,
         topicCard: topicCards.data[0] as CloudTopicCardDocument | undefined,
         settlement,
-        juZhangWaitlistEntry: (waitlists.data as CloudWaitlistDocument[]).find((entry) => entry.status === "waiting"),
+        juZhangWaitlistEntry,
         activeRegistrations: (registrations.data as CloudRegistrationDocument[]).filter((registration) =>
           activeRegistrationStatuses.has(registration.status),
         ),

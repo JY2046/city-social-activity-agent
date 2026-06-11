@@ -6,6 +6,7 @@ import type { CloudCallAdapter, CloudFunctionName } from "./cloudFunctionClient"
 import {
   cloudAcceptJuZhang,
   cloudCancelSignup,
+  cloudCancelWaitlist,
   cloudConfirmArrival,
   cloudConfirmSettlement,
   cloudGetFeedbackCompletionState,
@@ -94,11 +95,13 @@ describe("cloud service wrappers", () => {
     };
     const { adapter, calls } = createCapturingAdapter({
       joinWaitlist: { id: "w-a-sushi", activityId: "a-sushi", userId: "u-current", type: "juZhang", order: 1, status: "waiting" },
+      cancelWaitlist: { id: "w-a-sushi", activityId: "a-sushi", userId: "u-current", type: "juZhang", order: 1, status: "cancelled" },
       confirmArrival: { id: "r-a-sushi", activityId: "a-sushi", userId: "u-current", status: "arrived", willingToBeJuZhang: false },
       confirmSettlement: settlement,
     });
 
     await cloudJoinWaitlist(adapter, "a-sushi", "juZhang");
+    await cloudCancelWaitlist(adapter, "a-sushi", "juZhang");
     await cloudConfirmArrival(adapter, "a-sushi", "arrived");
     await expect(cloudConfirmSettlement(adapter, { activityId: "a-sushi", mode: "selfPayToMerchant" })).resolves.toEqual(
       settlement,
@@ -106,6 +109,7 @@ describe("cloud service wrappers", () => {
 
     expect(calls).toEqual([
       { name: "joinWaitlist", data: { activityId: "a-sushi", type: "juZhang" } },
+      { name: "cancelWaitlist", data: { activityId: "a-sushi", type: "juZhang" } },
       { name: "confirmArrival", data: { activityId: "a-sushi", status: "arrived" } },
       { name: "confirmSettlement", data: { activityId: "a-sushi", mode: "selfPayToMerchant" } },
     ]);

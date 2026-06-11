@@ -11,6 +11,7 @@ const functionNames = [
   "signupActivity",
   "cancelRegistration",
   "joinWaitlist",
+  "cancelWaitlist",
   "confirmArrival",
   "confirmSettlement",
   "getJuZhangWorkspace",

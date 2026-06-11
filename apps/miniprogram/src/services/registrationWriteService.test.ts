@@ -11,6 +11,7 @@ import {
   runCancelSignup,
   runCancelSignupAndRefreshActivity,
   runCancelSignupAndRefreshMyActivityFeed,
+  runCancelWaitlist,
   runConfirmArrival,
   runConfirmPayment,
   runJoinWaitlist,
@@ -148,6 +149,19 @@ describe("registration write service", () => {
     expect(listWaitlistEntries()).toHaveLength(1);
   });
 
+  it("cancels waitlists through the async write boundary", async () => {
+    await runJoinWaitlist(createMockRegistrationWriteAdapter(), "a-sushi", "juZhang");
+
+    await expect(runCancelWaitlist(createMockRegistrationWriteAdapter(), "a-sushi", "juZhang")).resolves.toMatchObject({
+      status: "ready",
+      waitlistEntry: {
+        activityId: "a-sushi",
+        type: "juZhang",
+        status: "cancelled",
+      },
+    });
+  });
+
   it("refreshes activity detail after joining a waitlist succeeds", async () => {
     const activityReadAdapter: ActivityReadAdapter = {
       listActivities: vi.fn(async () => []),
@@ -260,6 +274,7 @@ describe("registration write service", () => {
 
         return entry;
       }),
+      cancelWaitlist: vi.fn(async () => ({}) as Promise<WaitlistEntry>),
       confirmArrival: vi.fn(async () => ({}) as Promise<Registration>),
       confirmPayment: vi.fn(async () => ({}) as Promise<Settlement>),
       cancelSignup: vi.fn(async () => ({}) as Promise<Registration>),

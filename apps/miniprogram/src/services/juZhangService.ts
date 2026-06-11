@@ -33,6 +33,7 @@ export interface JuZhangTask {
 
 export interface JuZhangWorkspace {
   currentUserId: string;
+  currentRegistration?: Registration;
   activity?: MiniProgramActivity;
   assignment?: JuZhangAssignment;
   topicCard?: TopicCard;
@@ -99,10 +100,36 @@ function hasActiveCurrentUserRegistration(activityId: string, userId = DEFAULT_C
   );
 }
 
+function getCurrentUserRegistration(activityId: string, userId = DEFAULT_CURRENT_USER_ID): Registration | undefined {
+  return getMockStore().registrations.find(
+    (registration) =>
+      registration.activityId === activityId &&
+      registration.userId === userId &&
+      (registration.status === "confirmed" || registration.status === "arrived"),
+  );
+}
+
+function getCurrentUserJuZhangWaitlist(activityId: string, userId = DEFAULT_CURRENT_USER_ID): WaitlistEntry | undefined {
+  return getMockStore().waitlistEntries.find(
+    (entry) =>
+      entry.activityId === activityId &&
+      entry.userId === userId &&
+      entry.type === "juZhang" &&
+      entry.status === "waiting",
+  );
+}
+
+function getCurrentUserAssignment(activityId: string, userId = DEFAULT_CURRENT_USER_ID): JuZhangAssignment | undefined {
+  return getMockStore().juZhangAssignments.find(
+    (assignment) => assignment.activityId === activityId && assignment.candidateUserId === userId,
+  );
+}
+
 function emptyWorkspace(): JuZhangWorkspace {
   return {
     activity: undefined,
     currentUserId: DEFAULT_CURRENT_USER_ID,
+    currentRegistration: undefined,
     assignment: undefined,
     topicCard: undefined,
     settlement: undefined,
@@ -115,25 +142,26 @@ function emptyWorkspace(): JuZhangWorkspace {
 export function getJuZhangWorkspace(activityId: string): JuZhangWorkspace {
   const store = getMockStore();
 
-  if (!hasActiveCurrentUserRegistration(activityId)) {
+  const currentRegistration = getCurrentUserRegistration(activityId);
+  const currentUserAssignment = getCurrentUserAssignment(activityId);
+  const juZhangWaitlistEntry = getCurrentUserJuZhangWaitlist(activityId);
+  const canViewWorkspace =
+    currentRegistration?.willingToBeJuZhang === true ||
+    currentUserAssignment !== undefined ||
+    juZhangWaitlistEntry !== undefined;
+
+  if (!hasActiveCurrentUserRegistration(activityId) || !canViewWorkspace) {
     return emptyWorkspace();
   }
 
   return {
     activity: clone(store.activities.find((activity) => activity.id === activityId)),
     currentUserId: DEFAULT_CURRENT_USER_ID,
+    currentRegistration: clone(currentRegistration),
     assignment: clone(store.juZhangAssignments.find((assignment) => assignment.activityId === activityId)),
     topicCard: clone(store.topicCards.find((topicCard) => topicCard.activityId === activityId)),
     settlement: clone(store.settlements.find((settlement) => settlement.activityId === activityId)),
-    juZhangWaitlistEntry: clone(
-      store.waitlistEntries.find(
-        (entry) =>
-          entry.activityId === activityId &&
-          entry.userId === DEFAULT_CURRENT_USER_ID &&
-          entry.type === "juZhang" &&
-          entry.status === "waiting",
-      ),
-    ),
+    juZhangWaitlistEntry: clone(juZhangWaitlistEntry),
     activeRegistrations: clone(
       store.registrations.filter(
         (registration) =>
