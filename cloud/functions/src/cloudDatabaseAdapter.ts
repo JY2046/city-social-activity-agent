@@ -111,7 +111,7 @@ async function findRegistration(
 async function hasActiveRegistration(db: CloudDatabaseLike, activityId: string, userId: string): Promise<boolean> {
   const registration = await findRegistration(db, activityId, userId);
 
-  return registration ? activeRegistrationStatuses.has(registration.status) : false;
+  return registration ? registration.status !== "cancelled" : false;
 }
 
 function isMutualContact(
@@ -444,12 +444,12 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
       const juZhangWaitlistEntry = (currentUserWaitlists.data as CloudWaitlistDocument[]).find(
         (entry) => entry.status === "waiting",
       );
-      const canViewWorkspace =
+      const canManageWorkspace =
         currentRegistration?.willingToBeJuZhang === true ||
         currentUserAssignment !== undefined ||
         juZhangWaitlistEntry !== undefined;
 
-      if (!(await hasActiveRegistration(db, activityId, userId)) || !canViewWorkspace) {
+      if (!(await hasActiveRegistration(db, activityId, userId))) {
         return {
           currentUserId: userId,
           currentRegistration: undefined,
@@ -457,10 +457,10 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
           assignment: undefined,
           topicCard: undefined,
           settlement: undefined,
-        activeRegistrations: [],
-        juZhangWaitlistEntry: undefined,
-        tasks: [],
-      };
+          activeRegistrations: [],
+          juZhangWaitlistEntry: undefined,
+          tasks: [],
+        };
       }
 
       const activity = await getDocument<CloudActivityDocument>(db, "activities", activityId);
@@ -475,12 +475,14 @@ export function createCloudDatabaseAdapter(db: CloudDatabaseLike) {
         currentRegistration,
         assignment: assignments.data[0] as CloudJuZhangAssignmentDocument | undefined,
         topicCard: topicCards.data[0] as CloudTopicCardDocument | undefined,
-        settlement,
+        settlement: canManageWorkspace ? settlement : undefined,
         juZhangWaitlistEntry,
-        activeRegistrations: (registrations.data as CloudRegistrationDocument[]).filter((registration) =>
-          activeRegistrationStatuses.has(registration.status),
-        ),
-        tasks: juZhangTasks,
+        activeRegistrations: canManageWorkspace
+          ? (registrations.data as CloudRegistrationDocument[]).filter((registration) =>
+              activeRegistrationStatuses.has(registration.status),
+            )
+          : [],
+        tasks: canManageWorkspace ? juZhangTasks : [],
       };
     },
 

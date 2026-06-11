@@ -309,14 +309,15 @@ describe("cloud database adapter", () => {
     });
   });
 
-  it("hides ju zhang workspace when the current user did not opt in", async () => {
+  it("opens ju zhang workspace without tasks when the current user did not opt in", async () => {
     const db = createFakeDatabase();
     await seedCloudDatabase(db, createCloudSeedData());
     const adapter = createCloudDatabaseAdapter(db);
     await adapter.signupActivity({ activityId: "a-coffee", willingToBeJuZhang: false }, "u-current");
 
     await expect(adapter.getJuZhangWorkspace("a-coffee", "u-current")).resolves.toMatchObject({
-      activity: undefined,
+      activity: { id: "a-coffee" },
+      currentRegistration: { activityId: "a-coffee", willingToBeJuZhang: false },
       assignment: undefined,
       activeRegistrations: [],
       tasks: [],

@@ -1,6 +1,6 @@
 import { Button, Text, View } from "@tarojs/components";
 import { useEffect, useMemo, useState } from "react";
-import { navigateTo, useRouter } from "@tarojs/taro";
+import { navigateTo, useDidShow, useRouter } from "@tarojs/taro";
 
 import { getSettlementSummary } from "@city-social/domain";
 import {
@@ -13,6 +13,8 @@ import {
 } from "../../services/flowViewModels";
 import type { ActivityFlowPhase } from "../../services/flowViewModels";
 import { getUserDisplayName } from "../../services/mockData";
+import { formatActivityDateTime } from "../../services/activityPresentation";
+import { readActivityIdParam } from "../../services/activityRouteService";
 import {
   createJuZhangAdapter,
   runAcceptJuZhang,
@@ -29,6 +31,8 @@ import {
   type TopicDeck,
 } from "../../services/topicDeckViewModel";
 import { createRegistrationWriteAdapter, runCancelWaitlist } from "../../services/registrationWriteService";
+import { buildJuZhangWorkspaceItems, type JuZhangWorkspaceListItem } from "../../services/juZhangWorkspaceList";
+import { createUserActivityReadAdapter, loadMyActivityFeed } from "../../services/userActivityService";
 
 import "../activity-detail/index.css";
 import "./index.css";
@@ -37,8 +41,11 @@ const isStageDebugEnabled = __CITY_SOCIAL_ENABLE_STAGE_DEBUG__ !== "false";
 
 export default function JuZhangPage() {
   const router = useRouter();
-  const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
+  const initialActivityId = router.params.activityId ? readActivityIdParam(router.params.activityId) : undefined;
   const adapter = useMemo(() => createJuZhangAdapter(), []);
+  const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
+  const [selectedActivityId, setSelectedActivityId] = useState<string | undefined>(initialActivityId);
+  const [workspaceItems, setWorkspaceItems] = useState<JuZhangWorkspaceListItem[]>([]);
   const [workspace, setWorkspace] = useState<JuZhangWorkspace | undefined>();
   const [pageMessage, setPageMessage] = useState("正在同步局长工作台...");
   const [pendingAction, setPendingAction] = useState<string | undefined>();
@@ -59,11 +66,15 @@ export default function JuZhangPage() {
     : undefined;
 
   async function refreshWorkspace(nextMessage?: string) {
-    const result = await runLoadJuZhangWorkspace(adapter, activityId);
+    if (!selectedActivityId) {
+      return;
+    }
+
+    const result = await runLoadJuZhangWorkspace(adapter, selectedActivityId);
     if (result.status === "ready") {
       setWorkspace(result.workspace);
       if (result.workspace.activity) {
-        setTopicDeck((deck) => deck ?? createTopicDeck(result.workspace.activity, result.workspace.topicCard));
+        setTopicDeck(createTopicDeck(result.workspace.activity, result.workspace.topicCard));
       }
       setPageMessage(nextMessage ?? "");
       return;
@@ -71,20 +82,62 @@ export default function JuZhangPage() {
     setPageMessage(result.message);
   }
 
+  async function refreshWorkspaceList() {
+    const result = await loadMyActivityFeed(userActivityReadAdapter);
+
+    if (result.status === "ready") {
+      setWorkspaceItems(buildJuZhangWorkspaceItems(result.items));
+      setPageMessage("");
+      return;
+    }
+
+    if (result.status === "empty") {
+      setWorkspaceItems([]);
+      setPageMessage("");
+      return;
+    }
+
+    setWorkspaceItems([]);
+    setPageMessage(result.message);
+  }
+
   useEffect(() => {
-    void refreshWorkspace();
-  }, [activityId, adapter]);
+    if (selectedActivityId) {
+      void refreshWorkspace();
+      return;
+    }
+
+    setWorkspace(undefined);
+    setTopicDeck(undefined);
+    setStageOverride(undefined);
+    setConfirmedPaymentUserIds([]);
+    void refreshWorkspaceList();
+  }, [selectedActivityId, adapter, userActivityReadAdapter]);
+
+  useDidShow(() => {
+    if (!selectedActivityId) {
+      void refreshWorkspaceList();
+    }
+  });
 
   async function handleAccept() {
+    if (!selectedActivityId) {
+      return;
+    }
+
     setPendingAction("accept");
-    const result = await runAcceptJuZhang(adapter, activityId);
+    const result = await runAcceptJuZhang(adapter, selectedActivityId);
     await refreshWorkspace(result.status === "ready" ? "已接受局长身份，系统会继续给你任务提示。" : result.message);
     setPendingAction(undefined);
   }
 
   async function handleDecline() {
+    if (!selectedActivityId) {
+      return;
+    }
+
     setPendingAction("decline");
-    const result = await runDeclineJuZhang(adapter, activityId);
+    const result = await runDeclineJuZhang(adapter, selectedActivityId);
     await refreshWorkspace(result.status === "ready" ? "已拒绝局长身份，你仍然保留活动报名。" : result.message);
     setPendingAction(undefined);
   }
@@ -116,15 +169,23 @@ export default function JuZhangPage() {
   }
 
   async function handleArrival(userId: string) {
+    if (!selectedActivityId) {
+      return;
+    }
+
     setPendingAction(`arrival-${userId}`);
-    const result = await runConfirmParticipantArrival(adapter, activityId, userId);
+    const result = await runConfirmParticipantArrival(adapter, selectedActivityId, userId);
     await refreshWorkspace(result.status === "ready" ? "已更新到场状态。" : result.message);
     setPendingAction(undefined);
   }
 
   async function handlePayment(userId: string) {
+    if (!selectedActivityId) {
+      return;
+    }
+
     setPendingAction(`payment-${userId}`);
-    const result = await runConfirmParticipantPayment(adapter, activityId, userId);
+    const result = await runConfirmParticipantPayment(adapter, selectedActivityId, userId);
     await refreshWorkspace(result.status === "ready" ? "已确认该成员完成支付。" : result.message);
     if (result.status === "ready") {
       setConfirmedPaymentUserIds((userIds) => (userIds.includes(userId) ? userIds : [...userIds, userId]));
@@ -132,8 +193,67 @@ export default function JuZhangPage() {
     setPendingAction(undefined);
   }
 
+  function handleBackToWorkspaceList() {
+    setSelectedActivityId(undefined);
+    setWorkspace(undefined);
+    setTopicDeck(undefined);
+    setStageOverride(undefined);
+    setConfirmedPaymentUserIds([]);
+    setPendingAction(undefined);
+  }
+
+  if (!selectedActivityId) {
+    return (
+      <View className="detail-page">
+        <Text className="type-label">局长工作台</Text>
+        <Text className="detail-title">我的小局</Text>
+        <Text className="detail-meta">这里和我的行程保持一致，每个小局都可以进入查看局长状态。</Text>
+
+        {workspaceItems.length > 0 ? (
+          <View className="workspace-list">
+            {workspaceItems.map((item) => (
+              <View className="workspace-card" key={item.registration.id}>
+                <View className="workspace-card-head">
+                  <Text className="workspace-title">{item.activity.title}</Text>
+                  <Text className="workspace-status">{item.statusLabel}</Text>
+                </View>
+                <Text className="workspace-copy">
+                  {formatActivityDateTime(item.activity.startsAt)} · {item.activity.area}
+                </Text>
+                <Text className="workspace-copy">{item.activity.venue}</Text>
+                <View className="workspace-card-foot">
+                  <Text className="workspace-chip">{item.juZhangLabel}</Text>
+                  <Button
+                    className="workspace-action"
+                    disabled={!item.canOpenWorkspace}
+                    onClick={() => {
+                      setStageOverride(undefined);
+                      setSelectedActivityId(item.activity.id);
+                    }}
+                  >
+                    查看局长页
+                  </Button>
+                </View>
+              </View>
+            ))}
+          </View>
+        ) : (
+          <View className="section">
+            <Text className="section-title">暂无可管理的小局</Text>
+            <Text className="section-copy">报名或候补的小局会同步出现在这里。</Text>
+          </View>
+        )}
+
+        {pageMessage ? <Text className="detail-meta">{pageMessage}</Text> : null}
+      </View>
+    );
+  }
+
   return (
       <View className="detail-page">
+      <Text className="top-back" onClick={handleBackToWorkspaceList}>
+        返回局长工作台
+      </Text>
       <Text className="type-label">局长工作台</Text>
       <Text className="detail-title">{workspace?.activity?.title ?? "暂无可管理的小局"}</Text>
       {workspace?.activity ? <Text className="detail-meta">系统会给任务提示，但局长只是协助流程，不承担额外压力。</Text> : null}

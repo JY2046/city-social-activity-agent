@@ -6,6 +6,87 @@
   border: 1px solid rgba(184, 216, 144, 0.26);
 }
 
+.workspace-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.workspace-card {
+  padding: 24px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.workspace-card-head,
+.workspace-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.workspace-title,
+.workspace-status,
+.workspace-copy,
+.workspace-chip {
+  display: block;
+}
+
+.workspace-title {
+  flex: 1;
+  min-width: 0;
+  color: #f7f4ec;
+  font-size: 28px;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.workspace-status {
+  flex: 0 0 auto;
+  padding: 7px 13px;
+  border-radius: 999px;
+  color: #17251d;
+  background: #b8d890;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.workspace-copy {
+  margin-top: 11px;
+  color: rgba(247, 244, 236, 0.7);
+  font-size: 22px;
+  line-height: 1.35;
+}
+
+.workspace-card-foot {
+  margin-top: 20px;
+}
+
+.workspace-chip {
+  flex: 1;
+  min-width: 0;
+  color: #b8d890;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.workspace-action {
+  flex: 0 0 auto;
+  width: 174px;
+  height: 62px;
+  line-height: 62px;
+  margin: 0;
+  padding: 0 16px;
+  border-radius: 999px;
+  color: #17251d;
+  background: #b8d890;
+  font-size: 22px;
+  font-weight: 850;
+}
+
 .banner-title,
 .banner-copy,
 .tiny-chip,

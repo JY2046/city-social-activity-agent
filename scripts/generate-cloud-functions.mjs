@@ -109,7 +109,7 @@ async function findRegistration(db, activityId, userId) {
 async function hasActiveRegistration(db, activityId, userId) {
   const registration = await findRegistration(db, activityId, userId);
 
-  return registration ? activeRegistrationStatuses.has(registration.status) : false;
+  return registration ? registration.status !== "cancelled" : false;
 }
 
 async function findJuZhangAssignment(db, activityId, userId) {
@@ -402,12 +402,12 @@ async function getJuZhangWorkspace(input) {
   const currentUserAssignment = await findJuZhangAssignment(db, input.activityId, userId);
   const currentUserWaitlists = await db.collection("waitlists").where({ activityId: input.activityId, userId, type: "juZhang" }).get();
   const juZhangWaitlistEntry = currentUserWaitlists.data.find((entry) => entry.status === "waiting");
-  const canViewWorkspace =
+  const canManageWorkspace =
     currentRegistration?.willingToBeJuZhang === true ||
     currentUserAssignment !== undefined ||
     juZhangWaitlistEntry !== undefined;
 
-  if (!(await hasActiveRegistration(db, input.activityId, userId)) || !canViewWorkspace) {
+  if (!(await hasActiveRegistration(db, input.activityId, userId))) {
     return {
       currentUserId: userId,
       currentRegistration: undefined,
@@ -433,10 +433,12 @@ async function getJuZhangWorkspace(input) {
     currentRegistration,
     assignment: assignments.data[0],
     topicCard: topicCards.data[0],
-    settlement,
+    settlement: canManageWorkspace ? settlement : undefined,
     juZhangWaitlistEntry,
-    activeRegistrations: registrations.data.filter((registration) => activeRegistrationStatuses.has(registration.status)),
-    tasks: juZhangTasks,
+    activeRegistrations: canManageWorkspace
+      ? registrations.data.filter((registration) => activeRegistrationStatuses.has(registration.status))
+      : [],
+    tasks: canManageWorkspace ? juZhangTasks : [],
   };
 }
 

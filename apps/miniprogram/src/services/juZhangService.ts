@@ -96,7 +96,7 @@ function hasActiveCurrentUserRegistration(activityId: string, userId = DEFAULT_C
     (registration) =>
       registration.activityId === activityId &&
       registration.userId === userId &&
-      (registration.status === "confirmed" || registration.status === "arrived"),
+      registration.status !== "cancelled",
   );
 }
 
@@ -105,7 +105,7 @@ function getCurrentUserRegistration(activityId: string, userId = DEFAULT_CURRENT
     (registration) =>
       registration.activityId === activityId &&
       registration.userId === userId &&
-      (registration.status === "confirmed" || registration.status === "arrived"),
+      registration.status !== "cancelled",
   );
 }
 
@@ -145,12 +145,12 @@ export function getJuZhangWorkspace(activityId: string): JuZhangWorkspace {
   const currentRegistration = getCurrentUserRegistration(activityId);
   const currentUserAssignment = getCurrentUserAssignment(activityId);
   const juZhangWaitlistEntry = getCurrentUserJuZhangWaitlist(activityId);
-  const canViewWorkspace =
+  const canManageWorkspace =
     currentRegistration?.willingToBeJuZhang === true ||
     currentUserAssignment !== undefined ||
     juZhangWaitlistEntry !== undefined;
 
-  if (!hasActiveCurrentUserRegistration(activityId) || !canViewWorkspace) {
+  if (!hasActiveCurrentUserRegistration(activityId)) {
     return emptyWorkspace();
   }
 
@@ -160,16 +160,20 @@ export function getJuZhangWorkspace(activityId: string): JuZhangWorkspace {
     currentRegistration: clone(currentRegistration),
     assignment: clone(store.juZhangAssignments.find((assignment) => assignment.activityId === activityId)),
     topicCard: clone(store.topicCards.find((topicCard) => topicCard.activityId === activityId)),
-    settlement: clone(store.settlements.find((settlement) => settlement.activityId === activityId)),
+    settlement: canManageWorkspace
+      ? clone(store.settlements.find((settlement) => settlement.activityId === activityId))
+      : undefined,
     juZhangWaitlistEntry: clone(juZhangWaitlistEntry),
-    activeRegistrations: clone(
-      store.registrations.filter(
-        (registration) =>
-          registration.activityId === activityId &&
-          (registration.status === "confirmed" || registration.status === "arrived"),
-      ),
-    ),
-    tasks,
+    activeRegistrations: canManageWorkspace
+      ? clone(
+          store.registrations.filter(
+            (registration) =>
+              registration.activityId === activityId &&
+              (registration.status === "confirmed" || registration.status === "arrived"),
+          ),
+        )
+      : [],
+    tasks: canManageWorkspace ? tasks : [],
   };
 }
 

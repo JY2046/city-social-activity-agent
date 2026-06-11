@@ -51,11 +51,12 @@ describe("ju zhang service", () => {
     });
   });
 
-  it("hides the workspace when the current user did not opt in to ju zhang", () => {
+  it("opens a scoped workspace without tasks when the current user did not opt in to ju zhang", () => {
     signup("a-coffee", { willingToBeJuZhang: false });
 
     expect(getJuZhangWorkspace("a-coffee")).toMatchObject({
-      activity: undefined,
+      activity: { id: "a-coffee" },
+      currentRegistration: { activityId: "a-coffee", willingToBeJuZhang: false },
       assignment: undefined,
       activeRegistrations: [],
       tasks: [],
