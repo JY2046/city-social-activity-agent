@@ -72,6 +72,39 @@
   justify-content: space-between;
 }
 
+.debug-stage-card {
+  background: linear-gradient(135deg, rgba(184, 216, 144, 0.18), rgba(255, 255, 255, 0.07));
+}
+
+.debug-stage-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.debug-stage-button {
+  width: 100%;
+  min-width: 0;
+  height: 64px;
+  line-height: 64px;
+  margin: 0;
+  padding: 0 8px;
+  border-radius: 999px;
+  color: rgba(247, 244, 236, 0.72);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 20px;
+  font-weight: 800;
+  box-sizing: border-box;
+}
+
+.debug-stage-button.active {
+  color: #17251d;
+  background: #b8d890;
+  border-color: #b8d890;
+}
+
 .tiny-chip {
   flex: 0 0 auto;
   padding: 6px 12px;

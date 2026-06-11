@@ -9,7 +9,9 @@ import {
   getJuZhangStageState,
   getJuZhangSettlementRows,
   getRegistrationStatusLabel,
+  resolveActivityFlowPhase,
 } from "../../services/flowViewModels";
+import type { ActivityFlowPhase } from "../../services/flowViewModels";
 import { getUserDisplayName } from "../../services/mockData";
 import {
   createJuZhangAdapter,
@@ -31,6 +33,8 @@ import { createRegistrationWriteAdapter, runCancelWaitlist } from "../../service
 import "../activity-detail/index.css";
 import "./index.css";
 
+const isStageDebugEnabled = __CITY_SOCIAL_ENABLE_STAGE_DEBUG__ !== "false";
+
 export default function JuZhangPage() {
   const router = useRouter();
   const activityId = typeof router.params.activityId === "string" ? router.params.activityId : "a-sushi";
@@ -39,10 +43,11 @@ export default function JuZhangPage() {
   const [pageMessage, setPageMessage] = useState("正在同步局长工作台...");
   const [pendingAction, setPendingAction] = useState<string | undefined>();
   const [topicDeck, setTopicDeck] = useState<TopicDeck | undefined>();
+  const [stageOverride, setStageOverride] = useState<ActivityFlowPhase | undefined>();
   const [confirmedPaymentUserIds, setConfirmedPaymentUserIds] = useState<string[]>([]);
   const settlementSummary = workspace?.settlement ? getSettlementSummary(workspace.settlement) : undefined;
   const settlementRows = getJuZhangSettlementRows(workspace?.settlement, getUserDisplayName, confirmedPaymentUserIds);
-  const activityPhase = workspace?.activity ? getActivityFlowPhase(workspace.activity) : undefined;
+  const activityPhase = workspace?.activity ? resolveActivityFlowPhase(workspace.activity, stageOverride) : undefined;
   const stageState = activityPhase ? getJuZhangStageState(activityPhase) : undefined;
   const bannerState = workspace?.activity
     ? getJuZhangBannerState({
@@ -166,6 +171,26 @@ export default function JuZhangPage() {
           </View>
         ) : null}
       </View> : null}
+
+      {isStageDebugEnabled && workspace?.activity ? (
+        <View className="section debug-stage-card">
+          <Text className="section-title">测试阶段切换</Text>
+          <Text className="section-copy">仅测试阶段显示，用于预览局长工作台的活动前、活动中、活动后。</Text>
+          <View className="debug-stage-row">
+            {(["before", "during", "after"] as ActivityFlowPhase[]).map((phase) => (
+              <Button
+                className={activityPhase === phase ? "debug-stage-button active" : "debug-stage-button"}
+                key={phase}
+                onClick={() =>
+                  setStageOverride(phase === getActivityFlowPhase(workspace.activity) ? undefined : phase)
+                }
+              >
+                {phase === "before" ? "活动前" : phase === "during" ? "活动中" : "活动后"}
+              </Button>
+            ))}
+          </View>
+        </View>
+      ) : null}
 
       {workspace?.activity && stageState?.showBeforeInfo ? <View className="section">
         <Text className="section-title">活动前准备</Text>
