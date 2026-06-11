@@ -5,6 +5,7 @@ export default defineAppConfig({
     "pages/activity-detail/index",
     "pages/signup/index",
     "pages/itinerary/index",
+    "pages/itinerary-detail/index",
     "pages/juzhang/index",
     "pages/waitlist/index",
     "pages/feedback/index",
