@@ -54,7 +54,7 @@ function toCloudActivity(activity: Activity): CloudActivity {
 
   return {
     ...activity,
-    city: "上海",
+    city: activity.city,
     coverImagePath: gallery[0]?.imagePath ?? "/assets/images/activity-sushi.jpg",
     gallery,
     reviewStatus: "approved",

@@ -25,8 +25,9 @@ describe("cloud seed data", () => {
     expect(seed.juZhangAssignments).toEqual(
       expect.arrayContaining([expect.objectContaining({ _id: "jz-1", activityId: "a-sushi" })]),
     );
+    expect(seed.topicCards).toHaveLength(seed.activities.length);
     expect(seed.topicCards).toEqual(
-      expect.arrayContaining([expect.objectContaining({ _id: "topic-sushi", activityId: "a-sushi" })]),
+      expect.arrayContaining([expect.objectContaining({ _id: "topic-a-sushi", activityId: "a-sushi" })]),
     );
   });
 });

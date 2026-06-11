@@ -111,6 +111,24 @@ export default function ProfilePage() {
         <Text className="profile-copy">普通参与者活动前 12 小时内退出会影响等级；局长接受后 24 小时内退出会触发替换。</Text>
         <Text className="profile-copy">活动前不开放联系方式，活动后双方互选才开放联系。</Text>
       </View>
+
+      <View className="profile-section">
+        <Text className="profile-section-title">协议与隐私</Text>
+        <View className="legal-link-row">
+          <Text
+            className="legal-link"
+            onClick={() => void navigateTo({ url: "/pages/legal/index?type=user-agreement" })}
+          >
+            用户协议
+          </Text>
+          <Text
+            className="legal-link"
+            onClick={() => void navigateTo({ url: "/pages/legal/index?type=privacy-policy" })}
+          >
+            隐私政策
+          </Text>
+        </View>
+      </View>
     </View>
   );
 }

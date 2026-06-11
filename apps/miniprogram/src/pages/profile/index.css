@@ -228,6 +228,25 @@
   border-color: #24452f;
 }
 
+.legal-link-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.legal-link {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 12px;
+  border-radius: 999px;
+  color: #24452f;
+  background: #f4f8ee;
+  border: 1px solid rgba(36, 69, 47, 0.14);
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+}
+
 .safety-section {
   background: linear-gradient(135deg, #fffdfa, #fff3ef);
   border-color: rgba(217, 92, 77, 0.18);

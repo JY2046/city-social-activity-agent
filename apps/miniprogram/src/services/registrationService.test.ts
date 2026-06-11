@@ -20,9 +20,15 @@ describe("mini program registration service", () => {
   it("lists activities with mini program image paths", () => {
     const activities = listActivities();
 
-    expect(activities).toHaveLength(4);
+    expect(activities.length).toBeGreaterThanOrEqual(36);
     expect(activities[0].coverImagePath).toBe("/assets/images/activity-sushi.jpg");
-    expect(activities[0].gallery.every((item) => item.imagePath.startsWith("/assets/"))).toBe(true);
+    expect(
+      activities.every(
+        (activity) =>
+          activity.coverImagePath.startsWith("/assets/") &&
+          activity.gallery.every((item) => item.imagePath.startsWith("/assets/")),
+      ),
+    ).toBe(true);
   });
 
   it("returns an activity by id", () => {

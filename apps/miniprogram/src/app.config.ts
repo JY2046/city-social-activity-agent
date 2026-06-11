@@ -8,6 +8,7 @@ export default defineAppConfig({
     "pages/juzhang/index",
     "pages/waitlist/index",
     "pages/feedback/index",
+    "pages/legal/index",
     "pages/profile/index",
   ],
   window: {

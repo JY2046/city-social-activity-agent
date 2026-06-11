@@ -1,0 +1,11 @@
+{"id":"r-1","userId":"u-lin","activityId":"a-sushi","status":"confirmed","willingToBeJuZhang":true,"_id":"r-1","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}
+{"id":"r-2","userId":"u-chen","activityId":"a-sushi","status":"confirmed","willingToBeJuZhang":false,"_id":"r-2","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}
+{"id":"r-3","userId":"u-qiao","activityId":"a-sushi","status":"arrived","willingToBeJuZhang":true,"_id":"r-3","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}
+{"id":"r-sushi-momo","userId":"u-momo","activityId":"a-sushi","status":"confirmed","willingToBeJuZhang":false,"_id":"r-sushi-momo","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}
+{"id":"r-coffee-chen","userId":"u-chen","activityId":"a-coffee","status":"confirmed","willingToBeJuZhang":false,"_id":"r-coffee-chen","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}
+{"id":"r-coffee-qiao","userId":"u-qiao","activityId":"a-coffee","status":"confirmed","willingToBeJuZhang":true,"_id":"r-coffee-qiao","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}
+{"id":"r-bar-lin","userId":"u-lin","activityId":"a-bar","status":"confirmed","willingToBeJuZhang":true,"_id":"r-bar-lin","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}
+{"id":"r-bar-momo","userId":"u-momo","activityId":"a-bar","status":"confirmed","willingToBeJuZhang":false,"_id":"r-bar-momo","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}
+{"id":"r-walk-lin","userId":"u-lin","activityId":"a-walk","status":"confirmed","willingToBeJuZhang":true,"_id":"r-walk-lin","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}
+{"id":"r-walk-chen","userId":"u-chen","activityId":"a-walk","status":"confirmed","willingToBeJuZhang":false,"_id":"r-walk-chen","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}
+{"id":"r-walk-qiao","userId":"u-qiao","activityId":"a-walk","status":"confirmed","willingToBeJuZhang":true,"_id":"r-walk-qiao","createdAt":"2026-06-09T12:00:00.000Z","updatedAt":"2026-06-09T12:00:00.000Z"}

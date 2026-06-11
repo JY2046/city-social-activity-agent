@@ -41,6 +41,7 @@ export interface Activity {
   id: string;
   title: string;
   type: ActivityType;
+  city: string;
   startsAt: string;
   area: string;
   venue: string;
@@ -111,6 +112,22 @@ export interface SettlementSummary {
 }
 
 const activeRegistrationStatuses = new Set<Registration["status"]>(["confirmed", "arrived"]);
+
+function createTopicCardText(activity: Pick<Activity, "type" | "city" | "area" | "venue">): string {
+  if (activity.type === "dinner") {
+    return `如果把${activity.city}最近最想吃的一顿饭推荐给新朋友，你会从${activity.area}哪道菜聊起？`;
+  }
+
+  if (activity.type === "coffee") {
+    return `如果在${activity.area}用一杯咖啡开启周末聊天，你最想问新朋友什么轻松问题？`;
+  }
+
+  if (activity.type === "bar") {
+    return `如果在${activity.venue}只安排一杯微醺时间，你会用什么话题让大家放松下来？`;
+  }
+
+  return `如果只能把${activity.city}一段最适合放松散步的路线推荐给新朋友，你会选哪里？`;
+}
 
 export function getParticipantPreview(user: User): ParticipantPreview {
   return {
@@ -238,11 +255,516 @@ export const mockUsers: User[] = [
   },
 ];
 
+const participantPool = ["u-lin", "u-chen", "u-momo", "u-qiao"];
+
+const typeImageByActivityType: Record<ActivityType, string> = {
+  dinner: "images/activity-sushi.jpg",
+  coffee: "images/activity-coffee.jpg",
+  bar: "images/activity-bar.jpg",
+  walk: "images/activity-walk.jpg",
+};
+
+const typeCopyByActivityType: Record<ActivityType, { noun: string; highlight: string; scene: string }> = {
+  dinner: {
+    noun: "饭局",
+    highlight: "适合边吃边聊，点单和 AA 都比较清楚",
+    scene: "下班后找一张小桌，轻松认识几位新朋友",
+  },
+  coffee: {
+    noun: "咖啡局",
+    highlight: "预算轻、停留感强，适合第一次尝试陌生人轻社交",
+    scene: "用一杯咖啡打开周末下午的松弛聊天",
+  },
+  bar: {
+    noun: "微醺局",
+    highlight: "人数可控，不强制拼酒，平台会强调边界和安全",
+    scene: "在小酒馆里慢慢聊，不需要进入热闹大局",
+  },
+  walk: {
+    noun: "散步局",
+    highlight: "费用低或免费，边走边聊更自然",
+    scene: "沿着城市路线走一段，沉默也不会尴尬",
+  },
+};
+
+interface CuratedActivitySeed {
+  id: string;
+  city: string;
+  title: string;
+  type: ActivityType;
+  area: string;
+  venue: string;
+  budgetType: BudgetType;
+  estimatedCost: number;
+  capacity: number;
+  currentParticipantCount: number;
+  startsAt: string;
+}
+
+function createCuratedActivity(seed: CuratedActivitySeed): Activity {
+  const typeCopy = typeCopyByActivityType[seed.type];
+  const participantIds = participantPool.slice(0, Math.min(seed.currentParticipantCount, participantPool.length));
+
+  return {
+    id: seed.id,
+    title: seed.title,
+    type: seed.type,
+    city: seed.city,
+    startsAt: seed.startsAt,
+    area: seed.area,
+    venue: seed.venue,
+    budgetType: seed.budgetType,
+    estimatedCost: seed.estimatedCost,
+    capacity: seed.capacity,
+    currentParticipantCount: seed.currentParticipantCount,
+    formationStatus: seed.currentParticipantCount >= Math.ceil(seed.capacity / 2) ? "formed" : "forming",
+    aiRecommendationReason: `AI 根据${seed.city}的年轻人下班和周末社交场景筛选，${typeCopy.highlight}。`,
+    aaRule: seed.budgetType === "free" ? "本活动无费用。" : "线下 AA，按实际消费结算。",
+    cancellationRule: "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    privacyRule: "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    requiresSettlement: seed.budgetType === "paid",
+    participantIds,
+    gallery: [
+      { imagePath: typeImageByActivityType[seed.type], alt: `${seed.venue}${typeCopy.noun}氛围`, sourceLabel: "场所公开图" },
+      { imagePath: "images/city-skyline.jpg", alt: `${seed.city}城市氛围`, sourceLabel: "城市图" },
+      { imagePath: "images/activity-coffee.jpg", alt: "以往小局轻松聊天氛围", sourceLabel: "用户活动图" },
+    ],
+    attractionSummary: `${seed.venue}位于${seed.city}${seed.area}，${typeCopy.scene}。这场${typeCopy.noun}人数控制在 ${seed.capacity} 人以内，预算${seed.budgetType === "free" ? "为 0" : `约 ${seed.estimatedCost} 元`}，适合想扩大社交圈、但不想进入大群聊天的人。`,
+    venueProofs: [`${seed.area}年轻人常去区域`, "AI 策展推荐", typeCopy.highlight],
+    experienceHighlights: [
+      { title: "低压力开场", description: "活动会提供话题卡，第一次见面也不用硬聊。" },
+      { title: "人数可控", description: `最多 ${seed.capacity} 人，适合自然轮流聊天。` },
+      { title: seed.budgetType === "free" ? "无需 AA" : "AA 清晰", description: seed.budgetType === "free" ? "免费活动更适合新用户试水。" : "现场按实际消费结算，局长协助确认。" },
+    ],
+    locationGuide: `${seed.city}${seed.area}附近集合，建议活动开始前 10 分钟到达 ${seed.venue}。`,
+  };
+}
+
+const additionalCuratedActivities: Activity[] = [
+  createCuratedActivity({
+    id: "a-shanghai-bookstore-coffee",
+    city: "上海",
+    title: "上生新所咖啡翻书局",
+    type: "coffee",
+    area: "长宁",
+    venue: "上生新所咖啡角",
+    budgetType: "paid",
+    estimatedCost: 62,
+    capacity: 6,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-08T15:00:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-shanghai-gallery-walk",
+    city: "上海",
+    title: "西岸免费展览散步局",
+    type: "walk",
+    area: "徐汇滨江",
+    venue: "西岸美术馆外集合",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 4,
+    startsAt: "2026-06-09T10:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-beijing-hutong-dinner",
+    city: "北京",
+    title: "鼓楼胡同小馆饭局",
+    type: "dinner",
+    area: "鼓楼",
+    venue: "胡同里小馆",
+    budgetType: "paid",
+    estimatedCost: 128,
+    capacity: 6,
+    currentParticipantCount: 3,
+    startsAt: "2026-06-08T19:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-beijing-sanlitun-coffee",
+    city: "北京",
+    title: "三里屯下午咖啡局",
+    type: "coffee",
+    area: "三里屯",
+    venue: "街角咖啡窗",
+    budgetType: "paid",
+    estimatedCost: 56,
+    capacity: 5,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-09T15:00:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-beijing-liangma-walk",
+    city: "北京",
+    title: "亮马河免费夜散步",
+    type: "walk",
+    area: "亮马河",
+    venue: "蓝港桥下集合",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 5,
+    startsAt: "2026-06-10T19:40:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-beijing-guomao-bar",
+    city: "北京",
+    title: "国贸微醺下班局",
+    type: "bar",
+    area: "国贸",
+    venue: "楼上小酒馆",
+    budgetType: "paid",
+    estimatedCost: 118,
+    capacity: 4,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-11T20:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-beijing-798-walk",
+    city: "北京",
+    title: "798 周末看展散步",
+    type: "walk",
+    area: "798",
+    venue: "艺术区南门集合",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 3,
+    startsAt: "2026-06-13T14:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-beijing-wangjing-dinner",
+    city: "北京",
+    title: "望京韩餐轻松饭局",
+    type: "dinner",
+    area: "望京",
+    venue: "望京小食堂",
+    budgetType: "paid",
+    estimatedCost: 108,
+    capacity: 6,
+    currentParticipantCount: 4,
+    startsAt: "2026-06-14T18:50:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-hangzhou-lakeside-coffee",
+    city: "杭州",
+    title: "湖滨下午咖啡聊天",
+    type: "coffee",
+    area: "湖滨",
+    venue: "湖边咖啡馆",
+    budgetType: "paid",
+    estimatedCost: 52,
+    capacity: 5,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-08T15:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-hangzhou-westlake-walk",
+    city: "杭州",
+    title: "西湖免费晨间散步",
+    type: "walk",
+    area: "西湖",
+    venue: "断桥旁集合",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 5,
+    startsAt: "2026-06-09T09:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-hangzhou-binjiang-dinner",
+    city: "杭州",
+    title: "滨江下班小馆饭局",
+    type: "dinner",
+    area: "滨江",
+    venue: "江边小馆",
+    budgetType: "paid",
+    estimatedCost: 118,
+    capacity: 6,
+    currentParticipantCount: 3,
+    startsAt: "2026-06-10T19:20:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-hangzhou-wulin-bar",
+    city: "杭州",
+    title: "武林小酒馆微醺局",
+    type: "bar",
+    area: "武林",
+    venue: "二楼小酒馆",
+    budgetType: "paid",
+    estimatedCost: 98,
+    capacity: 4,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-11T20:20:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-hangzhou-liangzhu-walk",
+    city: "杭州",
+    title: "良渚文化村散步局",
+    type: "walk",
+    area: "良渚",
+    venue: "玉鸟集入口",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 4,
+    startsAt: "2026-06-12T16:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-hangzhou-xixi-coffee",
+    city: "杭州",
+    title: "西溪湿地轻咖啡局",
+    type: "coffee",
+    area: "西溪",
+    venue: "湿地边咖啡",
+    budgetType: "paid",
+    estimatedCost: 60,
+    capacity: 5,
+    currentParticipantCount: 1,
+    startsAt: "2026-06-13T15:00:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-chengdu-taikoo-dinner",
+    city: "成都",
+    title: "太古里川菜小饭局",
+    type: "dinner",
+    area: "太古里",
+    venue: "巷子川菜馆",
+    budgetType: "paid",
+    estimatedCost: 106,
+    capacity: 6,
+    currentParticipantCount: 4,
+    startsAt: "2026-06-08T19:10:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-chengdu-yulin-coffee",
+    city: "成都",
+    title: "玉林咖啡聊天局",
+    type: "coffee",
+    area: "玉林",
+    venue: "玉林街角咖啡",
+    budgetType: "paid",
+    estimatedCost: 45,
+    capacity: 5,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-09T15:00:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-chengdu-jinjiang-walk",
+    city: "成都",
+    title: "锦江免费夜散步",
+    type: "walk",
+    area: "锦江",
+    venue: "东门码头集合",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 5,
+    startsAt: "2026-06-10T19:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-chengdu-fangcao-bar",
+    city: "成都",
+    title: "芳草街微醺聊天局",
+    type: "bar",
+    area: "芳草街",
+    venue: "街边小酒馆",
+    budgetType: "paid",
+    estimatedCost: 88,
+    capacity: 4,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-11T20:00:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-chengdu-kuanzhai-walk",
+    city: "成都",
+    title: "宽窄巷子慢走局",
+    type: "walk",
+    area: "宽窄巷子",
+    venue: "宽巷子口集合",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 3,
+    startsAt: "2026-06-12T16:00:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-chengdu-finance-dinner",
+    city: "成都",
+    title: "金融城下班小饭局",
+    type: "dinner",
+    area: "金融城",
+    venue: "南门小馆",
+    budgetType: "paid",
+    estimatedCost: 112,
+    capacity: 6,
+    currentParticipantCount: 3,
+    startsAt: "2026-06-13T19:00:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-shenzhen-nanshan-coffee",
+    city: "深圳",
+    title: "南山下班咖啡局",
+    type: "coffee",
+    area: "南山",
+    venue: "科技园咖啡窗",
+    budgetType: "paid",
+    estimatedCost: 55,
+    capacity: 5,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-08T19:00:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-shenzhen-bay-walk",
+    city: "深圳",
+    title: "深圳湾免费海风散步",
+    type: "walk",
+    area: "深圳湾",
+    venue: "人才公园集合",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 5,
+    startsAt: "2026-06-09T19:10:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-shenzhen-coco-dinner",
+    city: "深圳",
+    title: "福田下班简餐饭局",
+    type: "dinner",
+    area: "福田",
+    venue: "中心区小馆",
+    budgetType: "paid",
+    estimatedCost: 118,
+    capacity: 6,
+    currentParticipantCount: 3,
+    startsAt: "2026-06-10T19:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-shenzhen-shekou-bar",
+    city: "深圳",
+    title: "蛇口海边微醺局",
+    type: "bar",
+    area: "蛇口",
+    venue: "海边小酒馆",
+    budgetType: "paid",
+    estimatedCost: 126,
+    capacity: 4,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-11T20:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-shenzhen-oct-walk",
+    city: "深圳",
+    title: "华侨城创意园散步",
+    type: "walk",
+    area: "华侨城",
+    venue: "创意园北门",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 3,
+    startsAt: "2026-06-12T16:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-shenzhen-baoan-coffee",
+    city: "深圳",
+    title: "宝安周末咖啡聊天",
+    type: "coffee",
+    area: "宝安",
+    venue: "湾区咖啡角",
+    budgetType: "paid",
+    estimatedCost: 48,
+    capacity: 5,
+    currentParticipantCount: 1,
+    startsAt: "2026-06-13T15:20:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-guangzhou-dongshankou-coffee",
+    city: "广州",
+    title: "东山口咖啡聊天局",
+    type: "coffee",
+    area: "东山口",
+    venue: "老街咖啡馆",
+    budgetType: "paid",
+    estimatedCost: 46,
+    capacity: 5,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-08T15:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-guangzhou-zhujiang-walk",
+    city: "广州",
+    title: "珠江新城免费夜走",
+    type: "walk",
+    area: "珠江新城",
+    venue: "花城广场集合",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 5,
+    startsAt: "2026-06-09T19:40:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-guangzhou-tianhe-dinner",
+    city: "广州",
+    title: "天河粤菜小饭局",
+    type: "dinner",
+    area: "天河",
+    venue: "天河南小馆",
+    budgetType: "paid",
+    estimatedCost: 108,
+    capacity: 6,
+    currentParticipantCount: 3,
+    startsAt: "2026-06-10T19:20:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-guangzhou-yongqing-walk",
+    city: "广州",
+    title: "永庆坊老街散步局",
+    type: "walk",
+    area: "永庆坊",
+    venue: "粤剧艺术博物馆外",
+    budgetType: "free",
+    estimatedCost: 0,
+    capacity: 8,
+    currentParticipantCount: 4,
+    startsAt: "2026-06-11T16:30:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-guangzhou-pazhou-bar",
+    city: "广州",
+    title: "琶洲下班微醺局",
+    type: "bar",
+    area: "琶洲",
+    venue: "江边小酒馆",
+    budgetType: "paid",
+    estimatedCost: 96,
+    capacity: 4,
+    currentParticipantCount: 2,
+    startsAt: "2026-06-12T20:20:00+08:00",
+  }),
+  createCuratedActivity({
+    id: "a-guangzhou-shamian-coffee",
+    city: "广州",
+    title: "沙面周末咖啡局",
+    type: "coffee",
+    area: "沙面",
+    venue: "骑楼边咖啡",
+    budgetType: "paid",
+    estimatedCost: 50,
+    capacity: 5,
+    currentParticipantCount: 1,
+    startsAt: "2026-06-13T15:00:00+08:00",
+  }),
+];
+
 export const mockActivities: Activity[] = [
   {
     id: "a-sushi",
     title: "周五下班日料小局",
     type: "dinner",
+    city: "上海",
     startsAt: "2026-06-05T19:30:00+08:00",
     area: "静安寺",
     venue: "若竹日料",
@@ -276,6 +798,7 @@ export const mockActivities: Activity[] = [
     id: "a-coffee",
     title: "周末咖啡聊天局",
     type: "coffee",
+    city: "上海",
     startsAt: "2026-06-06T15:00:00+08:00",
     area: "武康路",
     venue: "梧桐边咖啡",
@@ -309,6 +832,7 @@ export const mockActivities: Activity[] = [
     id: "a-bar",
     title: "小酒馆微醺聊天局",
     type: "bar",
+    city: "上海",
     startsAt: "2026-06-06T20:30:00+08:00",
     area: "陕西南路",
     venue: "三楼小酒馆",
@@ -342,6 +866,7 @@ export const mockActivities: Activity[] = [
     id: "a-walk",
     title: "免费城市散步局",
     type: "walk",
+    city: "上海",
     startsAt: "2026-06-07T10:00:00+08:00",
     area: "苏州河",
     venue: "四行仓库集合",
@@ -371,6 +896,7 @@ export const mockActivities: Activity[] = [
     ],
     locationGuide: "四行仓库附近集合，沿苏州河轻松步行，本活动无费用。",
   },
+  ...additionalCuratedActivities,
 ];
 
 export const mockRegistrations: Registration[] = [
@@ -391,28 +917,11 @@ export const mockJuZhangAssignments: JuZhangAssignment[] = [
   { id: "jz-1", activityId: "a-sushi", candidateUserId: "u-qiao", status: "accepted", volunteered: true },
 ];
 
-export const mockTopicCards: TopicCard[] = [
-  {
-    id: "topic-sushi",
-    activityId: "a-sushi",
-    visibleText: "如果只能把上海一个下班后最放松的地方推荐给新朋友，你会选哪里？",
-  },
-  {
-    id: "topic-coffee",
-    activityId: "a-coffee",
-    visibleText: "最近有没有一个让你愿意专门出门的咖啡馆、展览或小店？",
-  },
-  {
-    id: "topic-bar",
-    activityId: "a-bar",
-    visibleText: "你更喜欢热闹小酒馆，还是能安静聊天的小吧台？",
-  },
-  {
-    id: "topic-walk",
-    activityId: "a-walk",
-    visibleText: "你在这座城市里最喜欢的一段路是哪一段？",
-  },
-];
+export const mockTopicCards: TopicCard[] = mockActivities.map((activity) => ({
+  id: `topic-${activity.id}`,
+  activityId: activity.id,
+  visibleText: createTopicCardText(activity),
+}));
 
 export const mockSettlements: Settlement[] = [
   {
@@ -454,4 +963,14 @@ export const mockSettlements: Settlement[] = [
     participantCount: 3,
     paymentStatusByUser: {},
   },
+  ...additionalCuratedActivities.map((activity): Settlement => ({
+    activityId: activity.id,
+    type: activity.budgetType,
+    totalAmount: activity.budgetType === "free" ? 0 : activity.estimatedCost * Math.max(activity.currentParticipantCount, 1),
+    participantCount: Math.max(activity.currentParticipantCount, 1),
+    paymentStatusByUser:
+      activity.budgetType === "free"
+        ? {}
+        : Object.fromEntries(activity.participantIds.map((participantId, index) => [participantId, index % 2 === 0])),
+  })),
 ];

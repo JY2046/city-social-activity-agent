@@ -219,3 +219,16 @@
   font-size: 19px;
   line-height: 1.25;
 }
+
+.load-more-button {
+  display: block;
+  margin: 28px auto 8px;
+  padding: 18px 28px;
+  border-radius: 999px;
+  color: #24452f;
+  background: #fffdfa;
+  border: 1px solid rgba(36, 69, 47, 0.16);
+  text-align: center;
+  font-size: 23px;
+  font-weight: 800;
+}

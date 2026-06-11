@@ -3,6 +3,7 @@
     "id": "a-sushi",
     "title": "周五下班日料小局",
     "type": "dinner",
+    "city": "上海",
     "startsAt": "2026-06-05T19:30:00+08:00",
     "area": "静安寺",
     "venue": "若竹日料",
@@ -61,7 +62,6 @@
     ],
     "locationGuide": "静安寺商圈步行可达，建议活动开始前 10 分钟到店门口集合。",
     "_id": "a-sushi",
-    "city": "上海",
     "coverImagePath": "/assets/images/activity-sushi.jpg",
     "photos": [
       {
@@ -88,6 +88,7 @@
     "id": "a-coffee",
     "title": "周末咖啡聊天局",
     "type": "coffee",
+    "city": "上海",
     "startsAt": "2026-06-06T15:00:00+08:00",
     "area": "武康路",
     "venue": "梧桐边咖啡",
@@ -144,7 +145,6 @@
     ],
     "locationGuide": "武康路梧桐街区内，建议地铁到站后步行前往，活动后可顺路散步。",
     "_id": "a-coffee",
-    "city": "上海",
     "coverImagePath": "/assets/images/activity-coffee.jpg",
     "photos": [
       {
@@ -171,6 +171,7 @@
     "id": "a-bar",
     "title": "小酒馆微醺聊天局",
     "type": "bar",
+    "city": "上海",
     "startsAt": "2026-06-06T20:30:00+08:00",
     "area": "陕西南路",
     "venue": "三楼小酒馆",
@@ -227,7 +228,6 @@
     ],
     "locationGuide": "陕西南路附近，建议结伴离场或使用打车，活动中不强制饮酒。",
     "_id": "a-bar",
-    "city": "上海",
     "coverImagePath": "/assets/images/activity-bar.jpg",
     "photos": [
       {
@@ -254,6 +254,7 @@
     "id": "a-walk",
     "title": "免费城市散步局",
     "type": "walk",
+    "city": "上海",
     "startsAt": "2026-06-07T10:00:00+08:00",
     "area": "苏州河",
     "venue": "四行仓库集合",
@@ -311,7 +312,6 @@
     ],
     "locationGuide": "四行仓库附近集合，沿苏州河轻松步行，本活动无费用。",
     "_id": "a-walk",
-    "city": "上海",
     "coverImagePath": "/assets/images/activity-walk.jpg",
     "photos": [
       {
@@ -327,6 +327,2687 @@
       {
         "imagePath": "/assets/images/activity-coffee.jpg",
         "alt": "以往散步后咖啡休息照片",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-shanghai-bookstore-coffee",
+    "title": "上生新所咖啡翻书局",
+    "type": "coffee",
+    "city": "上海",
+    "startsAt": "2026-06-08T15:00:00+08:00",
+    "area": "长宁",
+    "venue": "上生新所咖啡角",
+    "budgetType": "paid",
+    "estimatedCost": 62,
+    "capacity": 6,
+    "currentParticipantCount": 2,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据上海的年轻人下班和周末社交场景筛选，预算轻、停留感强，适合第一次尝试陌生人轻社交。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "上生新所咖啡角咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "上海城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "上生新所咖啡角位于上海长宁，用一杯咖啡打开周末下午的松弛聊天。这场咖啡局人数控制在 6 人以内，预算约 62 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "长宁年轻人常去区域",
+      "AI 策展推荐",
+      "预算轻、停留感强，适合第一次尝试陌生人轻社交"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 6 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "上海长宁附近集合，建议活动开始前 10 分钟到达 上生新所咖啡角。",
+    "_id": "a-shanghai-bookstore-coffee",
+    "coverImagePath": "/assets/images/activity-coffee.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "上生新所咖啡角咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "上海城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-shanghai-gallery-walk",
+    "title": "西岸免费展览散步局",
+    "type": "walk",
+    "city": "上海",
+    "startsAt": "2026-06-09T10:30:00+08:00",
+    "area": "徐汇滨江",
+    "venue": "西岸美术馆外集合",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 4,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据上海的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo",
+      "u-qiao"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "西岸美术馆外集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "上海城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "西岸美术馆外集合位于上海徐汇滨江，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "徐汇滨江年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "上海徐汇滨江附近集合，建议活动开始前 10 分钟到达 西岸美术馆外集合。",
+    "_id": "a-shanghai-gallery-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "西岸美术馆外集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "上海城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-beijing-hutong-dinner",
+    "title": "鼓楼胡同小馆饭局",
+    "type": "dinner",
+    "city": "北京",
+    "startsAt": "2026-06-08T19:30:00+08:00",
+    "area": "鼓楼",
+    "venue": "胡同里小馆",
+    "budgetType": "paid",
+    "estimatedCost": 128,
+    "capacity": 6,
+    "currentParticipantCount": 3,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据北京的年轻人下班和周末社交场景筛选，适合边吃边聊，点单和 AA 都比较清楚。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "胡同里小馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "胡同里小馆位于北京鼓楼，下班后找一张小桌，轻松认识几位新朋友。这场饭局人数控制在 6 人以内，预算约 128 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "鼓楼年轻人常去区域",
+      "AI 策展推荐",
+      "适合边吃边聊，点单和 AA 都比较清楚"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 6 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "北京鼓楼附近集合，建议活动开始前 10 分钟到达 胡同里小馆。",
+    "_id": "a-beijing-hutong-dinner",
+    "coverImagePath": "/assets/images/activity-sushi.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "胡同里小馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-beijing-sanlitun-coffee",
+    "title": "三里屯下午咖啡局",
+    "type": "coffee",
+    "city": "北京",
+    "startsAt": "2026-06-09T15:00:00+08:00",
+    "area": "三里屯",
+    "venue": "街角咖啡窗",
+    "budgetType": "paid",
+    "estimatedCost": 56,
+    "capacity": 5,
+    "currentParticipantCount": 2,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据北京的年轻人下班和周末社交场景筛选，预算轻、停留感强，适合第一次尝试陌生人轻社交。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "街角咖啡窗咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "街角咖啡窗位于北京三里屯，用一杯咖啡打开周末下午的松弛聊天。这场咖啡局人数控制在 5 人以内，预算约 56 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "三里屯年轻人常去区域",
+      "AI 策展推荐",
+      "预算轻、停留感强，适合第一次尝试陌生人轻社交"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 5 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "北京三里屯附近集合，建议活动开始前 10 分钟到达 街角咖啡窗。",
+    "_id": "a-beijing-sanlitun-coffee",
+    "coverImagePath": "/assets/images/activity-coffee.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "街角咖啡窗咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-beijing-liangma-walk",
+    "title": "亮马河免费夜散步",
+    "type": "walk",
+    "city": "北京",
+    "startsAt": "2026-06-10T19:40:00+08:00",
+    "area": "亮马河",
+    "venue": "蓝港桥下集合",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 5,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据北京的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo",
+      "u-qiao"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "蓝港桥下集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "蓝港桥下集合位于北京亮马河，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "亮马河年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "北京亮马河附近集合，建议活动开始前 10 分钟到达 蓝港桥下集合。",
+    "_id": "a-beijing-liangma-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "蓝港桥下集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-beijing-guomao-bar",
+    "title": "国贸微醺下班局",
+    "type": "bar",
+    "city": "北京",
+    "startsAt": "2026-06-11T20:30:00+08:00",
+    "area": "国贸",
+    "venue": "楼上小酒馆",
+    "budgetType": "paid",
+    "estimatedCost": 118,
+    "capacity": 4,
+    "currentParticipantCount": 2,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据北京的年轻人下班和周末社交场景筛选，人数可控，不强制拼酒，平台会强调边界和安全。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-bar.jpg",
+        "alt": "楼上小酒馆微醺局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "楼上小酒馆位于北京国贸，在小酒馆里慢慢聊，不需要进入热闹大局。这场微醺局人数控制在 4 人以内，预算约 118 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "国贸年轻人常去区域",
+      "AI 策展推荐",
+      "人数可控，不强制拼酒，平台会强调边界和安全"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 4 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "北京国贸附近集合，建议活动开始前 10 分钟到达 楼上小酒馆。",
+    "_id": "a-beijing-guomao-bar",
+    "coverImagePath": "/assets/images/activity-bar.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-bar.jpg",
+        "alt": "楼上小酒馆微醺局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-beijing-798-walk",
+    "title": "798 周末看展散步",
+    "type": "walk",
+    "city": "北京",
+    "startsAt": "2026-06-13T14:30:00+08:00",
+    "area": "798",
+    "venue": "艺术区南门集合",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 3,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据北京的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "艺术区南门集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "艺术区南门集合位于北京798，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "798年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "北京798附近集合，建议活动开始前 10 分钟到达 艺术区南门集合。",
+    "_id": "a-beijing-798-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "艺术区南门集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-beijing-wangjing-dinner",
+    "title": "望京韩餐轻松饭局",
+    "type": "dinner",
+    "city": "北京",
+    "startsAt": "2026-06-14T18:50:00+08:00",
+    "area": "望京",
+    "venue": "望京小食堂",
+    "budgetType": "paid",
+    "estimatedCost": 108,
+    "capacity": 6,
+    "currentParticipantCount": 4,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据北京的年轻人下班和周末社交场景筛选，适合边吃边聊，点单和 AA 都比较清楚。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo",
+      "u-qiao"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "望京小食堂饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "望京小食堂位于北京望京，下班后找一张小桌，轻松认识几位新朋友。这场饭局人数控制在 6 人以内，预算约 108 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "望京年轻人常去区域",
+      "AI 策展推荐",
+      "适合边吃边聊，点单和 AA 都比较清楚"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 6 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "北京望京附近集合，建议活动开始前 10 分钟到达 望京小食堂。",
+    "_id": "a-beijing-wangjing-dinner",
+    "coverImagePath": "/assets/images/activity-sushi.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "望京小食堂饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "北京城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-hangzhou-lakeside-coffee",
+    "title": "湖滨下午咖啡聊天",
+    "type": "coffee",
+    "city": "杭州",
+    "startsAt": "2026-06-08T15:30:00+08:00",
+    "area": "湖滨",
+    "venue": "湖边咖啡馆",
+    "budgetType": "paid",
+    "estimatedCost": 52,
+    "capacity": 5,
+    "currentParticipantCount": 2,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据杭州的年轻人下班和周末社交场景筛选，预算轻、停留感强，适合第一次尝试陌生人轻社交。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "湖边咖啡馆咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "湖边咖啡馆位于杭州湖滨，用一杯咖啡打开周末下午的松弛聊天。这场咖啡局人数控制在 5 人以内，预算约 52 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "湖滨年轻人常去区域",
+      "AI 策展推荐",
+      "预算轻、停留感强，适合第一次尝试陌生人轻社交"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 5 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "杭州湖滨附近集合，建议活动开始前 10 分钟到达 湖边咖啡馆。",
+    "_id": "a-hangzhou-lakeside-coffee",
+    "coverImagePath": "/assets/images/activity-coffee.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "湖边咖啡馆咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-hangzhou-westlake-walk",
+    "title": "西湖免费晨间散步",
+    "type": "walk",
+    "city": "杭州",
+    "startsAt": "2026-06-09T09:30:00+08:00",
+    "area": "西湖",
+    "venue": "断桥旁集合",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 5,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据杭州的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo",
+      "u-qiao"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "断桥旁集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "断桥旁集合位于杭州西湖，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "西湖年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "杭州西湖附近集合，建议活动开始前 10 分钟到达 断桥旁集合。",
+    "_id": "a-hangzhou-westlake-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "断桥旁集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-hangzhou-binjiang-dinner",
+    "title": "滨江下班小馆饭局",
+    "type": "dinner",
+    "city": "杭州",
+    "startsAt": "2026-06-10T19:20:00+08:00",
+    "area": "滨江",
+    "venue": "江边小馆",
+    "budgetType": "paid",
+    "estimatedCost": 118,
+    "capacity": 6,
+    "currentParticipantCount": 3,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据杭州的年轻人下班和周末社交场景筛选，适合边吃边聊，点单和 AA 都比较清楚。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "江边小馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "江边小馆位于杭州滨江，下班后找一张小桌，轻松认识几位新朋友。这场饭局人数控制在 6 人以内，预算约 118 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "滨江年轻人常去区域",
+      "AI 策展推荐",
+      "适合边吃边聊，点单和 AA 都比较清楚"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 6 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "杭州滨江附近集合，建议活动开始前 10 分钟到达 江边小馆。",
+    "_id": "a-hangzhou-binjiang-dinner",
+    "coverImagePath": "/assets/images/activity-sushi.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "江边小馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-hangzhou-wulin-bar",
+    "title": "武林小酒馆微醺局",
+    "type": "bar",
+    "city": "杭州",
+    "startsAt": "2026-06-11T20:20:00+08:00",
+    "area": "武林",
+    "venue": "二楼小酒馆",
+    "budgetType": "paid",
+    "estimatedCost": 98,
+    "capacity": 4,
+    "currentParticipantCount": 2,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据杭州的年轻人下班和周末社交场景筛选，人数可控，不强制拼酒，平台会强调边界和安全。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-bar.jpg",
+        "alt": "二楼小酒馆微醺局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "二楼小酒馆位于杭州武林，在小酒馆里慢慢聊，不需要进入热闹大局。这场微醺局人数控制在 4 人以内，预算约 98 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "武林年轻人常去区域",
+      "AI 策展推荐",
+      "人数可控，不强制拼酒，平台会强调边界和安全"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 4 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "杭州武林附近集合，建议活动开始前 10 分钟到达 二楼小酒馆。",
+    "_id": "a-hangzhou-wulin-bar",
+    "coverImagePath": "/assets/images/activity-bar.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-bar.jpg",
+        "alt": "二楼小酒馆微醺局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-hangzhou-liangzhu-walk",
+    "title": "良渚文化村散步局",
+    "type": "walk",
+    "city": "杭州",
+    "startsAt": "2026-06-12T16:30:00+08:00",
+    "area": "良渚",
+    "venue": "玉鸟集入口",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 4,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据杭州的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo",
+      "u-qiao"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "玉鸟集入口散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "玉鸟集入口位于杭州良渚，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "良渚年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "杭州良渚附近集合，建议活动开始前 10 分钟到达 玉鸟集入口。",
+    "_id": "a-hangzhou-liangzhu-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "玉鸟集入口散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-hangzhou-xixi-coffee",
+    "title": "西溪湿地轻咖啡局",
+    "type": "coffee",
+    "city": "杭州",
+    "startsAt": "2026-06-13T15:00:00+08:00",
+    "area": "西溪",
+    "venue": "湿地边咖啡",
+    "budgetType": "paid",
+    "estimatedCost": 60,
+    "capacity": 5,
+    "currentParticipantCount": 1,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据杭州的年轻人下班和周末社交场景筛选，预算轻、停留感强，适合第一次尝试陌生人轻社交。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "湿地边咖啡咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "湿地边咖啡位于杭州西溪，用一杯咖啡打开周末下午的松弛聊天。这场咖啡局人数控制在 5 人以内，预算约 60 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "西溪年轻人常去区域",
+      "AI 策展推荐",
+      "预算轻、停留感强，适合第一次尝试陌生人轻社交"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 5 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "杭州西溪附近集合，建议活动开始前 10 分钟到达 湿地边咖啡。",
+    "_id": "a-hangzhou-xixi-coffee",
+    "coverImagePath": "/assets/images/activity-coffee.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "湿地边咖啡咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "杭州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-chengdu-taikoo-dinner",
+    "title": "太古里川菜小饭局",
+    "type": "dinner",
+    "city": "成都",
+    "startsAt": "2026-06-08T19:10:00+08:00",
+    "area": "太古里",
+    "venue": "巷子川菜馆",
+    "budgetType": "paid",
+    "estimatedCost": 106,
+    "capacity": 6,
+    "currentParticipantCount": 4,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据成都的年轻人下班和周末社交场景筛选，适合边吃边聊，点单和 AA 都比较清楚。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo",
+      "u-qiao"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "巷子川菜馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "巷子川菜馆位于成都太古里，下班后找一张小桌，轻松认识几位新朋友。这场饭局人数控制在 6 人以内，预算约 106 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "太古里年轻人常去区域",
+      "AI 策展推荐",
+      "适合边吃边聊，点单和 AA 都比较清楚"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 6 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "成都太古里附近集合，建议活动开始前 10 分钟到达 巷子川菜馆。",
+    "_id": "a-chengdu-taikoo-dinner",
+    "coverImagePath": "/assets/images/activity-sushi.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "巷子川菜馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-chengdu-yulin-coffee",
+    "title": "玉林咖啡聊天局",
+    "type": "coffee",
+    "city": "成都",
+    "startsAt": "2026-06-09T15:00:00+08:00",
+    "area": "玉林",
+    "venue": "玉林街角咖啡",
+    "budgetType": "paid",
+    "estimatedCost": 45,
+    "capacity": 5,
+    "currentParticipantCount": 2,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据成都的年轻人下班和周末社交场景筛选，预算轻、停留感强，适合第一次尝试陌生人轻社交。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "玉林街角咖啡咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "玉林街角咖啡位于成都玉林，用一杯咖啡打开周末下午的松弛聊天。这场咖啡局人数控制在 5 人以内，预算约 45 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "玉林年轻人常去区域",
+      "AI 策展推荐",
+      "预算轻、停留感强，适合第一次尝试陌生人轻社交"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 5 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "成都玉林附近集合，建议活动开始前 10 分钟到达 玉林街角咖啡。",
+    "_id": "a-chengdu-yulin-coffee",
+    "coverImagePath": "/assets/images/activity-coffee.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "玉林街角咖啡咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-chengdu-jinjiang-walk",
+    "title": "锦江免费夜散步",
+    "type": "walk",
+    "city": "成都",
+    "startsAt": "2026-06-10T19:30:00+08:00",
+    "area": "锦江",
+    "venue": "东门码头集合",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 5,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据成都的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo",
+      "u-qiao"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "东门码头集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "东门码头集合位于成都锦江，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "锦江年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "成都锦江附近集合，建议活动开始前 10 分钟到达 东门码头集合。",
+    "_id": "a-chengdu-jinjiang-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "东门码头集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-chengdu-fangcao-bar",
+    "title": "芳草街微醺聊天局",
+    "type": "bar",
+    "city": "成都",
+    "startsAt": "2026-06-11T20:00:00+08:00",
+    "area": "芳草街",
+    "venue": "街边小酒馆",
+    "budgetType": "paid",
+    "estimatedCost": 88,
+    "capacity": 4,
+    "currentParticipantCount": 2,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据成都的年轻人下班和周末社交场景筛选，人数可控，不强制拼酒，平台会强调边界和安全。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-bar.jpg",
+        "alt": "街边小酒馆微醺局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "街边小酒馆位于成都芳草街，在小酒馆里慢慢聊，不需要进入热闹大局。这场微醺局人数控制在 4 人以内，预算约 88 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "芳草街年轻人常去区域",
+      "AI 策展推荐",
+      "人数可控，不强制拼酒，平台会强调边界和安全"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 4 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "成都芳草街附近集合，建议活动开始前 10 分钟到达 街边小酒馆。",
+    "_id": "a-chengdu-fangcao-bar",
+    "coverImagePath": "/assets/images/activity-bar.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-bar.jpg",
+        "alt": "街边小酒馆微醺局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-chengdu-kuanzhai-walk",
+    "title": "宽窄巷子慢走局",
+    "type": "walk",
+    "city": "成都",
+    "startsAt": "2026-06-12T16:00:00+08:00",
+    "area": "宽窄巷子",
+    "venue": "宽巷子口集合",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 3,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据成都的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "宽巷子口集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "宽巷子口集合位于成都宽窄巷子，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "宽窄巷子年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "成都宽窄巷子附近集合，建议活动开始前 10 分钟到达 宽巷子口集合。",
+    "_id": "a-chengdu-kuanzhai-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "宽巷子口集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-chengdu-finance-dinner",
+    "title": "金融城下班小饭局",
+    "type": "dinner",
+    "city": "成都",
+    "startsAt": "2026-06-13T19:00:00+08:00",
+    "area": "金融城",
+    "venue": "南门小馆",
+    "budgetType": "paid",
+    "estimatedCost": 112,
+    "capacity": 6,
+    "currentParticipantCount": 3,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据成都的年轻人下班和周末社交场景筛选，适合边吃边聊，点单和 AA 都比较清楚。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "南门小馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "南门小馆位于成都金融城，下班后找一张小桌，轻松认识几位新朋友。这场饭局人数控制在 6 人以内，预算约 112 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "金融城年轻人常去区域",
+      "AI 策展推荐",
+      "适合边吃边聊，点单和 AA 都比较清楚"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 6 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "成都金融城附近集合，建议活动开始前 10 分钟到达 南门小馆。",
+    "_id": "a-chengdu-finance-dinner",
+    "coverImagePath": "/assets/images/activity-sushi.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "南门小馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "成都城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-shenzhen-nanshan-coffee",
+    "title": "南山下班咖啡局",
+    "type": "coffee",
+    "city": "深圳",
+    "startsAt": "2026-06-08T19:00:00+08:00",
+    "area": "南山",
+    "venue": "科技园咖啡窗",
+    "budgetType": "paid",
+    "estimatedCost": 55,
+    "capacity": 5,
+    "currentParticipantCount": 2,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据深圳的年轻人下班和周末社交场景筛选，预算轻、停留感强，适合第一次尝试陌生人轻社交。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "科技园咖啡窗咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "科技园咖啡窗位于深圳南山，用一杯咖啡打开周末下午的松弛聊天。这场咖啡局人数控制在 5 人以内，预算约 55 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "南山年轻人常去区域",
+      "AI 策展推荐",
+      "预算轻、停留感强，适合第一次尝试陌生人轻社交"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 5 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "深圳南山附近集合，建议活动开始前 10 分钟到达 科技园咖啡窗。",
+    "_id": "a-shenzhen-nanshan-coffee",
+    "coverImagePath": "/assets/images/activity-coffee.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "科技园咖啡窗咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-shenzhen-bay-walk",
+    "title": "深圳湾免费海风散步",
+    "type": "walk",
+    "city": "深圳",
+    "startsAt": "2026-06-09T19:10:00+08:00",
+    "area": "深圳湾",
+    "venue": "人才公园集合",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 5,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据深圳的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo",
+      "u-qiao"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "人才公园集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "人才公园集合位于深圳深圳湾，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "深圳湾年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "深圳深圳湾附近集合，建议活动开始前 10 分钟到达 人才公园集合。",
+    "_id": "a-shenzhen-bay-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "人才公园集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-shenzhen-coco-dinner",
+    "title": "福田下班简餐饭局",
+    "type": "dinner",
+    "city": "深圳",
+    "startsAt": "2026-06-10T19:30:00+08:00",
+    "area": "福田",
+    "venue": "中心区小馆",
+    "budgetType": "paid",
+    "estimatedCost": 118,
+    "capacity": 6,
+    "currentParticipantCount": 3,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据深圳的年轻人下班和周末社交场景筛选，适合边吃边聊，点单和 AA 都比较清楚。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "中心区小馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "中心区小馆位于深圳福田，下班后找一张小桌，轻松认识几位新朋友。这场饭局人数控制在 6 人以内，预算约 118 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "福田年轻人常去区域",
+      "AI 策展推荐",
+      "适合边吃边聊，点单和 AA 都比较清楚"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 6 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "深圳福田附近集合，建议活动开始前 10 分钟到达 中心区小馆。",
+    "_id": "a-shenzhen-coco-dinner",
+    "coverImagePath": "/assets/images/activity-sushi.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "中心区小馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-shenzhen-shekou-bar",
+    "title": "蛇口海边微醺局",
+    "type": "bar",
+    "city": "深圳",
+    "startsAt": "2026-06-11T20:30:00+08:00",
+    "area": "蛇口",
+    "venue": "海边小酒馆",
+    "budgetType": "paid",
+    "estimatedCost": 126,
+    "capacity": 4,
+    "currentParticipantCount": 2,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据深圳的年轻人下班和周末社交场景筛选，人数可控，不强制拼酒，平台会强调边界和安全。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-bar.jpg",
+        "alt": "海边小酒馆微醺局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "海边小酒馆位于深圳蛇口，在小酒馆里慢慢聊，不需要进入热闹大局。这场微醺局人数控制在 4 人以内，预算约 126 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "蛇口年轻人常去区域",
+      "AI 策展推荐",
+      "人数可控，不强制拼酒，平台会强调边界和安全"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 4 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "深圳蛇口附近集合，建议活动开始前 10 分钟到达 海边小酒馆。",
+    "_id": "a-shenzhen-shekou-bar",
+    "coverImagePath": "/assets/images/activity-bar.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-bar.jpg",
+        "alt": "海边小酒馆微醺局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-shenzhen-oct-walk",
+    "title": "华侨城创意园散步",
+    "type": "walk",
+    "city": "深圳",
+    "startsAt": "2026-06-12T16:30:00+08:00",
+    "area": "华侨城",
+    "venue": "创意园北门",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 3,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据深圳的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "创意园北门散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "创意园北门位于深圳华侨城，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "华侨城年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "深圳华侨城附近集合，建议活动开始前 10 分钟到达 创意园北门。",
+    "_id": "a-shenzhen-oct-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "创意园北门散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-shenzhen-baoan-coffee",
+    "title": "宝安周末咖啡聊天",
+    "type": "coffee",
+    "city": "深圳",
+    "startsAt": "2026-06-13T15:20:00+08:00",
+    "area": "宝安",
+    "venue": "湾区咖啡角",
+    "budgetType": "paid",
+    "estimatedCost": 48,
+    "capacity": 5,
+    "currentParticipantCount": 1,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据深圳的年轻人下班和周末社交场景筛选，预算轻、停留感强，适合第一次尝试陌生人轻社交。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "湾区咖啡角咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "湾区咖啡角位于深圳宝安，用一杯咖啡打开周末下午的松弛聊天。这场咖啡局人数控制在 5 人以内，预算约 48 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "宝安年轻人常去区域",
+      "AI 策展推荐",
+      "预算轻、停留感强，适合第一次尝试陌生人轻社交"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 5 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "深圳宝安附近集合，建议活动开始前 10 分钟到达 湾区咖啡角。",
+    "_id": "a-shenzhen-baoan-coffee",
+    "coverImagePath": "/assets/images/activity-coffee.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "湾区咖啡角咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "深圳城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-guangzhou-dongshankou-coffee",
+    "title": "东山口咖啡聊天局",
+    "type": "coffee",
+    "city": "广州",
+    "startsAt": "2026-06-08T15:30:00+08:00",
+    "area": "东山口",
+    "venue": "老街咖啡馆",
+    "budgetType": "paid",
+    "estimatedCost": 46,
+    "capacity": 5,
+    "currentParticipantCount": 2,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据广州的年轻人下班和周末社交场景筛选，预算轻、停留感强，适合第一次尝试陌生人轻社交。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "老街咖啡馆咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "老街咖啡馆位于广州东山口，用一杯咖啡打开周末下午的松弛聊天。这场咖啡局人数控制在 5 人以内，预算约 46 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "东山口年轻人常去区域",
+      "AI 策展推荐",
+      "预算轻、停留感强，适合第一次尝试陌生人轻社交"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 5 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "广州东山口附近集合，建议活动开始前 10 分钟到达 老街咖啡馆。",
+    "_id": "a-guangzhou-dongshankou-coffee",
+    "coverImagePath": "/assets/images/activity-coffee.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "老街咖啡馆咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-guangzhou-zhujiang-walk",
+    "title": "珠江新城免费夜走",
+    "type": "walk",
+    "city": "广州",
+    "startsAt": "2026-06-09T19:40:00+08:00",
+    "area": "珠江新城",
+    "venue": "花城广场集合",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 5,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据广州的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo",
+      "u-qiao"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "花城广场集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "花城广场集合位于广州珠江新城，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "珠江新城年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "广州珠江新城附近集合，建议活动开始前 10 分钟到达 花城广场集合。",
+    "_id": "a-guangzhou-zhujiang-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "花城广场集合散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-guangzhou-tianhe-dinner",
+    "title": "天河粤菜小饭局",
+    "type": "dinner",
+    "city": "广州",
+    "startsAt": "2026-06-10T19:20:00+08:00",
+    "area": "天河",
+    "venue": "天河南小馆",
+    "budgetType": "paid",
+    "estimatedCost": 108,
+    "capacity": 6,
+    "currentParticipantCount": 3,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据广州的年轻人下班和周末社交场景筛选，适合边吃边聊，点单和 AA 都比较清楚。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "天河南小馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "天河南小馆位于广州天河，下班后找一张小桌，轻松认识几位新朋友。这场饭局人数控制在 6 人以内，预算约 108 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "天河年轻人常去区域",
+      "AI 策展推荐",
+      "适合边吃边聊，点单和 AA 都比较清楚"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 6 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "广州天河附近集合，建议活动开始前 10 分钟到达 天河南小馆。",
+    "_id": "a-guangzhou-tianhe-dinner",
+    "coverImagePath": "/assets/images/activity-sushi.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-sushi.jpg",
+        "alt": "天河南小馆饭局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-guangzhou-yongqing-walk",
+    "title": "永庆坊老街散步局",
+    "type": "walk",
+    "city": "广州",
+    "startsAt": "2026-06-11T16:30:00+08:00",
+    "area": "永庆坊",
+    "venue": "粤剧艺术博物馆外",
+    "budgetType": "free",
+    "estimatedCost": 0,
+    "capacity": 8,
+    "currentParticipantCount": 4,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据广州的年轻人下班和周末社交场景筛选，费用低或免费，边走边聊更自然。",
+    "aaRule": "本活动无费用。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": false,
+    "participantIds": [
+      "u-lin",
+      "u-chen",
+      "u-momo",
+      "u-qiao"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "粤剧艺术博物馆外散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "粤剧艺术博物馆外位于广州永庆坊，沿着城市路线走一段，沉默也不会尴尬。这场散步局人数控制在 8 人以内，预算为 0，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "永庆坊年轻人常去区域",
+      "AI 策展推荐",
+      "费用低或免费，边走边聊更自然"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 8 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "无需 AA",
+        "description": "免费活动更适合新用户试水。"
+      }
+    ],
+    "locationGuide": "广州永庆坊附近集合，建议活动开始前 10 分钟到达 粤剧艺术博物馆外。",
+    "_id": "a-guangzhou-yongqing-walk",
+    "coverImagePath": "/assets/images/activity-walk.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-walk.jpg",
+        "alt": "粤剧艺术博物馆外散步局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-guangzhou-pazhou-bar",
+    "title": "琶洲下班微醺局",
+    "type": "bar",
+    "city": "广州",
+    "startsAt": "2026-06-12T20:20:00+08:00",
+    "area": "琶洲",
+    "venue": "江边小酒馆",
+    "budgetType": "paid",
+    "estimatedCost": 96,
+    "capacity": 4,
+    "currentParticipantCount": 2,
+    "formationStatus": "formed",
+    "aiRecommendationReason": "AI 根据广州的年轻人下班和周末社交场景筛选，人数可控，不强制拼酒，平台会强调边界和安全。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin",
+      "u-chen"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-bar.jpg",
+        "alt": "江边小酒馆微醺局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "江边小酒馆位于广州琶洲，在小酒馆里慢慢聊，不需要进入热闹大局。这场微醺局人数控制在 4 人以内，预算约 96 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "琶洲年轻人常去区域",
+      "AI 策展推荐",
+      "人数可控，不强制拼酒，平台会强调边界和安全"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 4 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "广州琶洲附近集合，建议活动开始前 10 分钟到达 江边小酒馆。",
+    "_id": "a-guangzhou-pazhou-bar",
+    "coverImagePath": "/assets/images/activity-bar.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-bar.jpg",
+        "alt": "江边小酒馆微醺局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "reviewStatus": "approved",
+    "createdAt": "2026-06-09T12:00:00.000Z",
+    "updatedAt": "2026-06-09T12:00:00.000Z"
+  },
+  {
+    "id": "a-guangzhou-shamian-coffee",
+    "title": "沙面周末咖啡局",
+    "type": "coffee",
+    "city": "广州",
+    "startsAt": "2026-06-13T15:00:00+08:00",
+    "area": "沙面",
+    "venue": "骑楼边咖啡",
+    "budgetType": "paid",
+    "estimatedCost": 50,
+    "capacity": 5,
+    "currentParticipantCount": 1,
+    "formationStatus": "forming",
+    "aiRecommendationReason": "AI 根据广州的年轻人下班和周末社交场景筛选，预算轻、停留感强，适合第一次尝试陌生人轻社交。",
+    "aaRule": "线下 AA，按实际消费结算。",
+    "cancellationRule": "普通参与者 12 小时外可自由退出；临近活动退出会影响内部信誉。",
+    "privacyRule": "活动前不开放私信和联系方式，活动后双方互选才开放联系。",
+    "requiresSettlement": true,
+    "participantIds": [
+      "u-lin"
+    ],
+    "gallery": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "骑楼边咖啡咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
+        "sourceLabel": "用户活动图"
+      }
+    ],
+    "attractionSummary": "骑楼边咖啡位于广州沙面，用一杯咖啡打开周末下午的松弛聊天。这场咖啡局人数控制在 5 人以内，预算约 50 元，适合想扩大社交圈、但不想进入大群聊天的人。",
+    "venueProofs": [
+      "沙面年轻人常去区域",
+      "AI 策展推荐",
+      "预算轻、停留感强，适合第一次尝试陌生人轻社交"
+    ],
+    "experienceHighlights": [
+      {
+        "title": "低压力开场",
+        "description": "活动会提供话题卡，第一次见面也不用硬聊。"
+      },
+      {
+        "title": "人数可控",
+        "description": "最多 5 人，适合自然轮流聊天。"
+      },
+      {
+        "title": "AA 清晰",
+        "description": "现场按实际消费结算，局长协助确认。"
+      }
+    ],
+    "locationGuide": "广州沙面附近集合，建议活动开始前 10 分钟到达 骑楼边咖啡。",
+    "_id": "a-guangzhou-shamian-coffee",
+    "coverImagePath": "/assets/images/activity-coffee.jpg",
+    "photos": [
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "骑楼边咖啡咖啡局氛围",
+        "sourceLabel": "场所公开图"
+      },
+      {
+        "imagePath": "/assets/images/city-skyline.jpg",
+        "alt": "广州城市氛围",
+        "sourceLabel": "城市图"
+      },
+      {
+        "imagePath": "/assets/images/activity-coffee.jpg",
+        "alt": "以往小局轻松聊天氛围",
         "sourceLabel": "用户活动图"
       }
     ],

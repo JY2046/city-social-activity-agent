@@ -36,7 +36,7 @@ export function createMockActivityReadAdapter(): ActivityReadAdapter {
       const keyword = query.keyword?.trim().toLowerCase();
 
       return listActivities().filter((activity) => {
-        const matchesCity = !query.city || query.city === "上海";
+        const matchesCity = !query.city || activity.city === query.city;
         const matchesType = !query.type || activity.type === query.type;
         const matchesBudget = !query.budgetType || activity.budgetType === query.budgetType;
         const matchesKeyword =

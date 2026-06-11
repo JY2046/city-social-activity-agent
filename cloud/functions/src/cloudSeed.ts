@@ -138,7 +138,7 @@ function toCloudActivityDocument(activity: Activity): CloudActivityDocument {
   return {
     ...activity,
     _id: activity.id,
-    city: "上海",
+    city: activity.city,
     coverImagePath: gallery[0]?.imagePath ?? "/assets/images/activity-sushi.jpg",
     gallery,
     photos: gallery,

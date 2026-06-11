@@ -51,7 +51,7 @@ function toCloudActivityDocument(activity) {
   return {
     ...activity,
     _id: activity.id,
-    city: "上海",
+    city: activity.city,
     coverImagePath: gallery[0]?.imagePath ?? "/assets/images/activity-sushi.jpg",
     gallery,
     photos: gallery,
@@ -113,9 +113,10 @@ const seedData = {
 await mkdir(outputDir, { recursive: true });
 
 await Promise.all(
-  Object.entries(seedData).map(([name, documents]) =>
+  Object.entries(seedData).flatMap(([name, documents]) => [
     writeFile(resolve(outputDir, `${name}.json`), `${JSON.stringify(documents, null, 2)}\n`),
-  ),
+    writeFile(resolve(outputDir, `${name}.jsonl`), `${documents.map((document) => JSON.stringify(document)).join("\n")}\n`),
+  ]),
 );
 
-console.log(`Wrote ${Object.keys(seedData).length} seed files to ${outputDir}`);
+console.log(`Wrote ${Object.keys(seedData).length * 2} seed files to ${outputDir}`);

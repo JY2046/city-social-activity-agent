@@ -17,8 +17,28 @@ describe("domain package", () => {
   it("exports curated activities with matching topic cards", () => {
     const topicActivityIds = new Set(mockTopicCards.map((topicCard) => topicCard.activityId));
 
-    expect(mockActivities).toHaveLength(4);
+    expect(mockActivities.length).toBeGreaterThanOrEqual(36);
     expect(mockActivities.every((activity) => topicActivityIds.has(activity.id))).toBe(true);
+  });
+
+  it("keeps each launch city stocked with at least six curated activities", () => {
+    const cityNames = ["上海", "北京", "杭州", "成都", "深圳", "广州"];
+
+    expect(
+      Object.fromEntries(
+        cityNames.map((city) => [city, mockActivities.filter((activity) => activity.city === city).length]),
+      ),
+    ).toEqual({
+      上海: expect.any(Number),
+      北京: expect.any(Number),
+      杭州: expect.any(Number),
+      成都: expect.any(Number),
+      深圳: expect.any(Number),
+      广州: expect.any(Number),
+    });
+    expect(cityNames.every((city) => mockActivities.filter((activity) => activity.city === city).length >= 6)).toBe(
+      true,
+    );
   });
 
   it("keeps paid and free settlement behavior explicit", () => {

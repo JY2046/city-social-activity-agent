@@ -25,14 +25,22 @@ describe("activity read service", () => {
     const result = await loadActivityFeed(createMockActivityReadAdapter(), { type: "coffee" });
 
     expect(result).toMatchObject({ status: "ready" });
-    expect(result.activities.map((activity) => activity.id)).toEqual(["a-coffee"]);
+    expect(result.activities.every((activity) => activity.type === "coffee")).toBe(true);
   });
 
   it("filters the mock activity feed by free budget type", async () => {
     const result = await loadActivityFeed(createMockActivityReadAdapter(), { budgetType: "free" });
 
     expect(result).toMatchObject({ status: "ready" });
-    expect(result.activities.map((activity) => activity.id)).toEqual(["a-walk"]);
+    expect(result.activities.every((activity) => activity.budgetType === "free")).toBe(true);
+  });
+
+  it("filters the mock activity feed by launch city", async () => {
+    const result = await loadActivityFeed(createMockActivityReadAdapter(), { city: "北京" });
+
+    expect(result).toMatchObject({ status: "ready" });
+    expect(result.activities.length).toBeGreaterThanOrEqual(6);
+    expect(result.activities.every((activity) => activity.city === "北京")).toBe(true);
   });
 
   it("loads mock activity feed when structuredClone is unavailable in the mini program runtime", async () => {

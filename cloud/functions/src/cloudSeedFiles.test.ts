@@ -14,6 +14,12 @@ function readSeedFile(name: string): unknown[] {
   return parsed;
 }
 
+function readSeedLinesFile(name: string): unknown[] {
+  const lines = readFileSync(resolve(seedDir, `${name}.jsonl`), "utf8").trim().split("\n");
+
+  return lines.map((line) => JSON.parse(line));
+}
+
 describe("cloud seed JSON files", () => {
   it("contains importable seed files for the first cloud collections", () => {
     const users = readSeedFile("users");
@@ -37,5 +43,15 @@ describe("cloud seed JSON files", () => {
     expect(registrations.every((item) => typeof (item as { _id?: unknown })._id === "string")).toBe(true);
     expect(settlements).toEqual(expect.arrayContaining([expect.objectContaining({ _id: "a-coffee" })]));
     expect(waitlists).toEqual([]);
+  });
+
+  it("also writes JSON Lines files for WeChat cloud database imports", () => {
+    const activities = readSeedFile("activities");
+    const activityLines = readSeedLinesFile("activities");
+    const topicCardLines = readSeedLinesFile("topicCards");
+
+    expect(activityLines).toHaveLength(activities.length);
+    expect(activityLines[0]).toEqual(activities[0]);
+    expect(topicCardLines).toEqual(expect.arrayContaining([expect.objectContaining({ _id: "topic-a-sushi" })]));
   });
 });

@@ -1,0 +1,15 @@
+.legal-page {
+  padding-bottom: 80px;
+}
+
+.legal-copy {
+  display: block;
+  margin-top: 18px;
+  color: #5f665f;
+  font-size: 24px;
+  line-height: 1.55;
+}
+
+.legal-copy:first-child {
+  margin-top: 0;
+}

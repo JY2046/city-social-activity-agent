@@ -5,6 +5,7 @@ import type { ActivityType, BudgetType, Registration } from "@city-social/domain
 
 import ActivityCard from "../../components/ActivityCard";
 import { buildActivityDetailUrl } from "../../services/activityRouteService";
+import { getActivityFeedPage } from "../../services/activityFeedPagination";
 import { loadActivityFeed, type ActivityFeedLoadState } from "../../services/activityReadService";
 import { cityOptions, getCityFromPickerIndex, getCityPickerIndex } from "../../services/citySelectorViewModel";
 import type { MiniProgramActivity } from "../../services/mockData";
@@ -17,6 +18,8 @@ const initialFeedState: ActivityFeedLoadState = {
   status: "loading",
   activities: [],
 };
+
+const activityPageSize = 5;
 
 type CategoryKey = "recommended" | ActivityType | "free";
 
@@ -40,16 +43,22 @@ export default function DiscoverPage() {
   const [selectedCity, setSelectedCity] = useState("上海");
   const [currentDateTime, setCurrentDateTime] = useState(() => formatBeijingDateTime());
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>("recommended");
+  const [visibleActivityCount, setVisibleActivityCount] = useState(activityPageSize);
   const userActivityReadAdapter = useMemo(() => createUserActivityReadAdapter(), []);
   const [registrationByActivityId, setRegistrationByActivityId] = useState<Record<string, Registration>>({});
-  const activities = feedState.activities;
-  const [featuredActivity, ...activityList] = activities;
+  const { visibleActivities, hasMore, nextVisibleCount } = getActivityFeedPage(
+    feedState.activities,
+    visibleActivityCount,
+    activityPageSize,
+  );
+  const [featuredActivity, ...activityList] = visibleActivities;
 
   const refreshFeed = useCallback(() => {
     let isMounted = true;
     const category = categoryOptions.find((option) => option.key === selectedCategory);
 
     setFeedState(initialFeedState);
+    setVisibleActivityCount(activityPageSize);
 
     void Promise.all([
       loadActivityFeed(undefined, {
@@ -98,7 +107,10 @@ export default function DiscoverPage() {
               mode="selector"
               range={cityOptions}
               value={getCityPickerIndex(selectedCity)}
-              onChange={(event) => setSelectedCity(getCityFromPickerIndex(event.detail.value))}
+              onChange={(event) => {
+                setVisibleActivityCount(activityPageSize);
+                setSelectedCity(getCityFromPickerIndex(event.detail.value));
+              }}
             >
               <Text className="location-city">{selectedCity}⌄</Text>
             </Picker>
@@ -121,7 +133,10 @@ export default function DiscoverPage() {
           <Text
             className={selectedCategory === category.key ? "category-active" : "category"}
             key={category.key}
-            onClick={() => setSelectedCategory(category.key)}
+            onClick={() => {
+              setVisibleActivityCount(activityPageSize);
+              setSelectedCategory(category.key);
+            }}
           >
             {category.label}
           </Text>
@@ -166,6 +181,12 @@ export default function DiscoverPage() {
           />
         ))}
       </View>
+
+      {hasMore ? (
+        <Text className="load-more-button" onClick={() => setVisibleActivityCount(nextVisibleCount)}>
+          加载更多小局
+        </Text>
+      ) : null}
     </View>
   );
 }
