@@ -31,7 +31,11 @@ import {
   type TopicDeck,
 } from "../../services/topicDeckViewModel";
 import { createRegistrationWriteAdapter, runCancelWaitlist } from "../../services/registrationWriteService";
-import { buildJuZhangWorkspaceItems, type JuZhangWorkspaceListItem } from "../../services/juZhangWorkspaceList";
+import {
+  buildJuZhangWorkspaceItems,
+  buildJuZhangWorkspaceListContext,
+  type JuZhangWorkspaceListItem,
+} from "../../services/juZhangWorkspaceList";
 import { createUserActivityReadAdapter, loadMyActivityFeed } from "../../services/userActivityService";
 
 import "../activity-detail/index.css";
@@ -86,7 +90,13 @@ export default function JuZhangPage() {
     const result = await loadMyActivityFeed(userActivityReadAdapter);
 
     if (result.status === "ready") {
-      setWorkspaceItems(buildJuZhangWorkspaceItems(result.items));
+      const workspaceResults = await Promise.all(
+        result.items.map((item) => runLoadJuZhangWorkspace(adapter, item.activity.id)),
+      );
+      const workspaces = workspaceResults.flatMap((workspaceResult) =>
+        workspaceResult.status === "ready" ? [workspaceResult.workspace] : [],
+      );
+      setWorkspaceItems(buildJuZhangWorkspaceItems(result.items, buildJuZhangWorkspaceListContext(workspaces)));
       setPageMessage("");
       return;
     }

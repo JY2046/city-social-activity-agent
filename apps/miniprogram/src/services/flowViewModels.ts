@@ -79,7 +79,7 @@ export interface JuZhangQueueActionState {
   copy: string;
   label: string;
   disabled: boolean;
-  mode: "available" | "queued" | "unavailable";
+  mode: "available" | "queued" | "accepted" | "unavailable";
 }
 
 const arrivalOptions: ArrivalOption[] = [
@@ -152,7 +152,18 @@ export function getJuZhangStageState(phase: ActivityFlowPhase): JuZhangStageStat
 export function getJuZhangQueueActionState(
   registration: Registration | undefined,
   isQueued: boolean,
+  assignment?: JuZhangAssignment,
+  currentUserId = "",
 ): JuZhangQueueActionState {
+  if (assignment?.status === "accepted" && assignment.candidateUserId === currentUserId) {
+    return {
+      copy: "你已是本场小局局长，活动开始前系统会继续给任务提示。",
+      label: "已担任局长",
+      disabled: true,
+      mode: "accepted",
+    };
+  }
+
   if (isQueued) {
     return {
       copy: "你已在局长候选队列，可随时取消排队。",

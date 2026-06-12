@@ -3,6 +3,7 @@ import type { JuZhangAssignment, Registration } from "@city-social/domain";
 import { getJuZhangAssignmentLabel } from "./flowViewModels";
 import { DEFAULT_CURRENT_USER_ID, listWaitlistEntries, type MiniProgramActivity, type WaitlistEntry } from "./mockData";
 import type { UserActivityItem } from "./userActivityService";
+import type { JuZhangWorkspace } from "./juZhangService";
 
 export interface JuZhangWorkspaceListItem {
   activity: MiniProgramActivity;
@@ -12,7 +13,26 @@ export interface JuZhangWorkspaceListItem {
   canOpenWorkspace: boolean;
 }
 
-function getWorkspaceRegistrationStatusLabel(registration: Registration): string {
+export interface JuZhangWorkspaceListContext {
+  assignments: JuZhangAssignment[];
+  waitlistEntries: WaitlistEntry[];
+  currentUserId: string;
+}
+
+function getWorkspaceRegistrationStatusLabel(
+  registration: Registration,
+  assignment?: JuZhangAssignment,
+  isQueued = false,
+  currentUserId = DEFAULT_CURRENT_USER_ID,
+): string {
+  if (assignment?.status === "accepted" && assignment.candidateUserId === currentUserId) {
+    return "已担任局长";
+  }
+
+  if (isQueued) {
+    return "局长排队中";
+  }
+
   if (registration.status === "waitlisted") {
     return "排队中";
   }
@@ -61,7 +81,7 @@ export function getJuZhangWorkspaceListLabel(
   }
 
   if (assignment?.status === "accepted" && assignment.candidateUserId === currentUserId) {
-    return "已是局长";
+    return "已担任局长";
   }
 
   if (assignment?.status === "accepted") {
@@ -94,9 +114,22 @@ export function buildJuZhangWorkspaceItems(
     return {
       activity: item.activity,
       registration: item.registration,
-      statusLabel: getWorkspaceRegistrationStatusLabel(item.registration),
+      statusLabel: getWorkspaceRegistrationStatusLabel(item.registration, assignment, isQueued, currentUserId),
       juZhangLabel: getJuZhangWorkspaceListLabel(item.registration, assignment, isQueued, currentUserId),
       canOpenWorkspace: item.registration.status !== "cancelled",
     };
   });
+}
+
+export function buildJuZhangWorkspaceListContext(
+  workspaces: JuZhangWorkspace[],
+  fallbackCurrentUserId = DEFAULT_CURRENT_USER_ID,
+): JuZhangWorkspaceListContext {
+  return {
+    assignments: workspaces.flatMap((workspace) => (workspace.assignment ? [workspace.assignment] : [])),
+    waitlistEntries: workspaces.flatMap((workspace) =>
+      workspace.juZhangWaitlistEntry ? [workspace.juZhangWaitlistEntry] : [],
+    ),
+    currentUserId: workspaces.find((workspace) => workspace.currentUserId)?.currentUserId ?? fallbackCurrentUserId,
+  };
 }

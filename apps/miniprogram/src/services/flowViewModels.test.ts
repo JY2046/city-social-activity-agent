@@ -236,6 +236,25 @@ describe("mini program flow view models", () => {
       disabled: false,
       mode: "available",
     });
+    expect(
+      getJuZhangQueueActionState(
+        { ...registration, willingToBeJuZhang: true },
+        false,
+        {
+          id: "jz-current",
+          activityId: "a-coffee",
+          candidateUserId: "u-current",
+          status: "accepted",
+          volunteered: true,
+        },
+        "u-current",
+      ),
+    ).toEqual({
+      copy: "你已是本场小局局长，活动开始前系统会继续给任务提示。",
+      label: "已担任局长",
+      disabled: true,
+      mode: "accepted",
+    });
   });
 
   it("shows payment work only for unpaid paid activities", () => {

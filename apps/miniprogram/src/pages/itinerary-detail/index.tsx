@@ -1,5 +1,5 @@
 import { Button, Text, View } from "@tarojs/components";
-import type { Registration } from "@city-social/domain";
+import type { JuZhangAssignment, Registration } from "@city-social/domain";
 import { useEffect, useMemo, useState } from "react";
 import { navigateBack, navigateTo, switchTab, useRouter } from "@tarojs/taro";
 
@@ -27,7 +27,7 @@ import {
   runConfirmPayment,
   runJoinWaitlistAndRefreshActivity,
 } from "../../services/registrationWriteService";
-import { createJuZhangAdapter, runLoadJuZhangWorkspace } from "../../services/juZhangService";
+import { createJuZhangAdapter, runAcceptJuZhang, runLoadJuZhangWorkspace } from "../../services/juZhangService";
 import { createUserActivityReadAdapter, loadMyRegistrationForActivity } from "../../services/userActivityService";
 
 import "../signup/index.css";
@@ -61,6 +61,8 @@ export default function ItineraryDetailPage() {
   const [registration, setRegistration] = useState<Registration | undefined>();
   const [arrivalStatus, setArrivalStatus] = useState<ArrivalStatus>("confirmed");
   const [isJuZhangQueued, setIsJuZhangQueued] = useState(false);
+  const [juZhangAssignment, setJuZhangAssignment] = useState<JuZhangAssignment | undefined>();
+  const [currentUserId, setCurrentUserId] = useState("");
   const [settlement, setSettlement] = useState(() => getSettlementByActivityId(activityId));
   const [pendingAction, setPendingAction] = useState<string | undefined>();
   const [actionMessage, setActionMessage] = useState("");
@@ -68,7 +70,7 @@ export default function ItineraryDetailPage() {
   const [stageOverride, setStageOverride] = useState<ActivityFlowPhase | undefined>();
   const activityPhase = activity ? resolveActivityFlowPhase(activity, stageOverride) : undefined;
   const stageState = activityPhase ? getItineraryStageState(activityPhase) : undefined;
-  const queueActionState = getJuZhangQueueActionState(registration, isJuZhangQueued);
+  const queueActionState = getJuZhangQueueActionState(registration, isJuZhangQueued, juZhangAssignment, currentUserId);
   const shouldShowActivityDetailReturn = Boolean(activity);
   const pageTitle = getItineraryDetailTitle(activity, isActivityLoading);
 
@@ -97,6 +99,8 @@ export default function ItineraryDetailPage() {
           setIsJuZhangQueued(
             workspaceResult.status === "ready" && workspaceResult.workspace.juZhangWaitlistEntry?.status === "waiting",
           );
+          setJuZhangAssignment(workspaceResult.status === "ready" ? workspaceResult.workspace.assignment : undefined);
+          setCurrentUserId(workspaceResult.status === "ready" ? workspaceResult.workspace.currentUserId : "");
           if (
             registrationResult.registration?.status === "confirmed" ||
             registrationResult.registration?.status === "arrived" ||
@@ -115,6 +119,8 @@ export default function ItineraryDetailPage() {
         setActivity(undefined);
         setRegistration(undefined);
         setIsJuZhangQueued(false);
+        setJuZhangAssignment(undefined);
+        setCurrentUserId("");
         setActionMessage("活动不存在或暂不可查看");
         setIsActivityLoading(false);
         return;
@@ -210,6 +216,21 @@ export default function ItineraryDetailPage() {
       if (result.status === "ready") {
         setIsJuZhangQueued(false);
         setActionMessage("已取消局长候选排队。");
+        return;
+      }
+
+      setActionMessage(result.message);
+      return;
+    }
+
+    if (!juZhangAssignment) {
+      const result = await runAcceptJuZhang(juZhangAdapter, activity.id);
+      setPendingAction(undefined);
+
+      if (result.status === "ready") {
+        setJuZhangAssignment(result.assignment);
+        setIsJuZhangQueued(false);
+        setActionMessage("已担任本场小局局长，系统会继续给你任务提示。");
         return;
       }
 

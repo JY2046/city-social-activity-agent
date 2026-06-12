@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
+import { acceptJuZhang } from "./juZhangService";
 import { joinWaitlist, resetMockServices, signup } from "./registrationService";
 import { createMockUserActivityReadAdapter, loadMyActivityFeed } from "./userActivityService";
-import { buildJuZhangWorkspaceItems } from "./juZhangWorkspaceList";
+import { buildJuZhangWorkspaceItems, buildJuZhangWorkspaceListContext } from "./juZhangWorkspaceList";
 
 describe("ju zhang workspace list", () => {
   beforeEach(() => {
@@ -28,7 +29,7 @@ describe("ju zhang workspace list", () => {
       expect.objectContaining({
         activity: expect.objectContaining({ id: "a-coffee" }),
         registration: expect.objectContaining({ willingToBeJuZhang: true }),
-        statusLabel: "已报名",
+        statusLabel: "局长排队中",
         juZhangLabel: "已在局长候选队列",
         canOpenWorkspace: true,
       }),
@@ -40,5 +41,68 @@ describe("ju zhang workspace list", () => {
         canOpenWorkspace: true,
       }),
     ]);
+  });
+
+  it("marks a current user's accepted ju zhang activity as managed in the workspace list", async () => {
+    signup("a-coffee", { willingToBeJuZhang: true });
+    const assignment = acceptJuZhang("a-coffee");
+
+    const itinerary = await loadMyActivityFeed(createMockUserActivityReadAdapter());
+
+    expect(itinerary.status).toBe("ready");
+    if (itinerary.status !== "ready") {
+      throw new Error("expected itinerary to load");
+    }
+
+    const items = buildJuZhangWorkspaceItems(itinerary.items, { assignments: [assignment] });
+
+    expect(items).toEqual([
+      expect.objectContaining({
+        activity: expect.objectContaining({ id: "a-coffee" }),
+        statusLabel: "已担任局长",
+        juZhangLabel: "已担任局长",
+        canOpenWorkspace: true,
+      }),
+    ]);
+  });
+
+  it("builds list context from loaded ju zhang workspaces", () => {
+    const context = buildJuZhangWorkspaceListContext([
+      {
+        currentUserId: "u-current",
+        assignment: {
+          id: "jz-a-coffee-u-current",
+          activityId: "a-coffee",
+          candidateUserId: "u-current",
+          status: "accepted",
+          volunteered: true,
+        },
+        juZhangWaitlistEntry: undefined,
+        activeRegistrations: [],
+        tasks: [],
+      },
+      {
+        currentUserId: "u-current",
+        assignment: undefined,
+        juZhangWaitlistEntry: {
+          id: "w-a-sushi-juZhang-u-current",
+          activityId: "a-sushi",
+          userId: "u-current",
+          type: "juZhang",
+          order: 1,
+          status: "waiting",
+        },
+        activeRegistrations: [],
+        tasks: [],
+      },
+    ]);
+
+    expect(context.assignments).toEqual([
+      expect.objectContaining({ activityId: "a-coffee", candidateUserId: "u-current", status: "accepted" }),
+    ]);
+    expect(context.waitlistEntries).toEqual([
+      expect.objectContaining({ activityId: "a-sushi", type: "juZhang", status: "waiting" }),
+    ]);
+    expect(context.currentUserId).toBe("u-current");
   });
 });
