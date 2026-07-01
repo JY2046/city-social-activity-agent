@@ -1,2 +1,12 @@
 .superpowers/
 .worktrees/
+node_modules/
+dist/
+.swc/
+.DS_Store
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+/project.config.json
+project.private.config.json
+apps/miniprogram/project.private.config.json

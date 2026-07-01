@@ -1,0 +1,97 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { getActivity } from "./activityService";
+import {
+  createMockActivityReadAdapter,
+  loadActivityDetail,
+  loadActivityFeed,
+  type ActivityReadAdapter,
+} from "./activityReadService";
+import { resetMockServices } from "./registrationService";
+
+describe("activity read service", () => {
+  beforeEach(() => {
+    resetMockServices();
+  });
+
+  it("loads the mock activity feed through the async read boundary", async () => {
+    await expect(loadActivityFeed(createMockActivityReadAdapter())).resolves.toMatchObject({
+      status: "ready",
+      activities: expect.arrayContaining([expect.objectContaining({ id: "a-sushi" })]),
+    });
+  });
+
+  it("filters the mock activity feed by activity type", async () => {
+    const result = await loadActivityFeed(createMockActivityReadAdapter(), { type: "coffee" });
+
+    expect(result).toMatchObject({ status: "ready" });
+    expect(result.activities.every((activity) => activity.type === "coffee")).toBe(true);
+  });
+
+  it("filters the mock activity feed by free budget type", async () => {
+    const result = await loadActivityFeed(createMockActivityReadAdapter(), { budgetType: "free" });
+
+    expect(result).toMatchObject({ status: "ready" });
+    expect(result.activities.every((activity) => activity.budgetType === "free")).toBe(true);
+  });
+
+  it("filters the mock activity feed by launch city", async () => {
+    const result = await loadActivityFeed(createMockActivityReadAdapter(), { city: "北京" });
+
+    expect(result).toMatchObject({ status: "ready" });
+    expect(result.activities.length).toBeGreaterThanOrEqual(6);
+    expect(result.activities.every((activity) => activity.city === "北京")).toBe(true);
+  });
+
+  it("loads mock activity feed when structuredClone is unavailable in the mini program runtime", async () => {
+    const originalStructuredClone = globalThis.structuredClone;
+
+    try {
+      Object.defineProperty(globalThis, "structuredClone", {
+        configurable: true,
+        value: undefined,
+      });
+
+      resetMockServices();
+
+      await expect(loadActivityFeed(createMockActivityReadAdapter())).resolves.toMatchObject({
+        status: "ready",
+        activities: expect.arrayContaining([expect.objectContaining({ id: "a-sushi" })]),
+      });
+    } finally {
+      Object.defineProperty(globalThis, "structuredClone", {
+        configurable: true,
+        value: originalStructuredClone,
+      });
+    }
+  });
+
+  it("loads activity detail through the async read boundary", async () => {
+    await expect(loadActivityDetail("a-sushi", createMockActivityReadAdapter())).resolves.toMatchObject({
+      status: "ready",
+      activity: expect.objectContaining({ id: "a-sushi", title: "周五下班日料小局" }),
+    });
+  });
+
+  it("returns an empty state when a detail record is missing", async () => {
+    await expect(loadActivityDetail("missing", createMockActivityReadAdapter())).resolves.toEqual({
+      status: "empty",
+      activity: undefined,
+    });
+  });
+
+  it("returns an error state when the adapter fails", async () => {
+    const adapter: ActivityReadAdapter = {
+      listActivities: vi.fn(async () => {
+        throw new Error("cloud unavailable");
+      }),
+      getActivity: vi.fn(async () => getActivity("a-sushi")),
+    };
+
+    await expect(loadActivityFeed(adapter)).resolves.toEqual({
+      status: "error",
+      message: "cloud unavailable",
+      activities: [],
+    });
+  });
+});

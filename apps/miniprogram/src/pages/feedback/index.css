@@ -1,0 +1,37 @@
+.selection-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.selection-button {
+  width: auto;
+  height: 66px;
+  line-height: 66px;
+  margin: 0;
+  padding: 0 22px;
+  border-radius: 999px;
+  color: #24452f;
+  background: #edf5e7;
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.selection-button.active {
+  color: #fff;
+  background: #24452f;
+}
+
+.feedback-textarea {
+  width: 100%;
+  min-height: 180px;
+  margin-top: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  color: #17251d;
+  background: #f7f4ec;
+  font-size: 25px;
+  line-height: 1.5;
+}

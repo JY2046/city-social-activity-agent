@@ -1,0 +1,39 @@
+{
+  "name": "city-social-activity-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "pretest": "npm --workspace @city-social/domain run build",
+    "build": "tsc -b && vite build",
+    "generate:cloud-seed": "npm --workspace @city-social/domain run build && node scripts/generate-cloud-seed.mjs",
+    "generate:cloud-functions": "node scripts/generate-cloud-functions.mjs",
+    "wechat:cloud-functions:dry-run": "node scripts/wechat-cloud-deploy.mjs",
+    "wechat:cloud-functions:deploy": "node scripts/wechat-cloud-deploy.mjs --execute",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "lucide-react": "^1.17.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^25.9.1",
+    "@types/react": "^19.2.16",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "jsdom": "^29.1.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
+    "vitest": "^4.1.8"
+  }
+}

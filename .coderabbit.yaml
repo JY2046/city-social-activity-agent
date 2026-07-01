@@ -1,0 +1,43 @@
+language: zh-CN
+tone_instructions: "请用简洁中文 review。优先指出会影响上线、安全、隐私、数据一致性、微信小程序兼容性和用户体验的问题，少做纯风格 nitpick。"
+
+reviews:
+  profile: chill
+  high_level_summary: true
+  review_status: true
+  review_details: true
+  commit_status: true
+  fail_commit_status: true
+  poem: false
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    auto_pause_after_reviewed_commits: 0
+    drafts: true
+    base_branches:
+      - ".*"
+    ignore_title_keywords:
+      - "[skip review]"
+    labels:
+      - "!do-not-review"
+    ignore_usernames:
+      - "dependabot[bot]"
+      - "renovate[bot]"
+  path_filters:
+    - "**/*"
+    - "!apps/miniprogram/dist/**"
+    - "!**/node_modules/**"
+    - "!**/*.tsbuildinfo"
+    - "!**/*.png"
+    - "!**/*.jpg"
+    - "!**/*.jpeg"
+    - "!**/*.webp"
+  path_instructions:
+    - path: "apps/miniprogram/src/**/*.ts*"
+      instructions: "这是 Taro + React + TypeScript 微信小程序代码。重点 review 页面状态、异步云函数接入、Taro/微信运行时兼容性、按钮/文本溢出风险、报名/排队/局长/AA/反馈流程的数据一致性。"
+    - path: "packages/domain/src/**/*.ts"
+      instructions: "这是共享领域模型和纯规则。重点 review 类型边界、状态枚举、取消/结算/互选等规则是否可预测、是否容易被页面或云函数误用。"
+    - path: "docs/miniprogram/**"
+      instructions: "这是小程序发布、云开发和 QA 文档。重点 review 是否有安全遗漏、AppID/AppSecret/云环境/支付密钥等信息暴露风险，以及发布步骤是否可执行。"
+    - path: "apps/miniprogram/project.config.json"
+      instructions: "这是微信开发者工具项目配置。重点确认 public 仓库不要提交真实 AppID、AppSecret 或云环境密钥；真实 AppID 只应本地临时用于预览。"
